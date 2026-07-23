@@ -98,8 +98,9 @@ export function EyeHero({
         </clipPath>
       </defs>
 
-      {/* halo detrás del ojo */}
-      <ellipse cx="470" cy="300" rx="330" ry="230" fill="url(#ehGlow)" />
+      {/* halo detrás del ojo (doble capa para más atmósfera) */}
+      <ellipse cx="470" cy="300" rx="420" ry="300" fill="url(#ehGlow)" opacity="0.7" />
+      <ellipse cx="470" cy="300" rx="290" ry="200" fill="url(#ehGlow)" />
 
       {/* líneas de luz */}
       <g stroke="#40BFC0" strokeWidth="1.4">

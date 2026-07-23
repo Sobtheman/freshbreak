@@ -16,6 +16,32 @@ import { useApp } from "@/components/providers";
 import { PREGUNTAS } from "@/lib/cvsq";
 import { DIAS, DIAS_CORTO, pausasDelDia } from "@/lib/schedule";
 
+/* Campo de estrellas determinista: partículas teal que dan profundidad */
+function Starfield({ n = 70 }: { n?: number }) {
+  const stars = useMemo(
+    () =>
+      Array.from({ length: n }, (_, i) => ({
+        x: ((i * 137.5) % 100).toFixed(2),
+        y: ((i * 61.8 + 13) % 100).toFixed(2),
+        r: 0.6 + ((i * 7) % 5) * 0.28,
+        o: 0.12 + ((i * 11) % 7) * 0.055,
+      })),
+    [n]
+  );
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 hidden h-full w-full dark:block"
+      preserveAspectRatio="none"
+      viewBox="0 0 100 100"
+      aria-hidden
+    >
+      {stars.map((s, i) => (
+        <circle key={i} cx={s.x} cy={s.y} r={s.r * 0.14} fill="#7FE7DC" opacity={s.o} />
+      ))}
+    </svg>
+  );
+}
+
 const DOT_STYLE: React.CSSProperties = {
   width: 22,
   height: 22,
@@ -83,6 +109,19 @@ function DemoOcho() {
     return pts.join(" ");
   }, []);
 
+  // Flechas de sentido a lo largo del ∞, como en el arte de referencia
+  const flechas = useMemo(() => {
+    return Array.from({ length: 8 }, (_, i) => {
+      const t = (i / 8) * Math.PI * 2 + 0.35;
+      const x = 50 + 42 * Math.sin(t);
+      const y = 30 + 21.6 * Math.sin(2 * t);
+      const dx = 42 * Math.cos(t);
+      const dy = 43.2 * Math.cos(2 * t);
+      const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
+      return { x, y, ang };
+    });
+  }, []);
+
   return (
     <div ref={boxRef} className="relative h-52 w-full sm:h-64">
       <svg
@@ -101,6 +140,15 @@ function DemoOcho() {
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
         />
+        {flechas.map((f, i) => (
+          <path
+            key={i}
+            d="M -1.4 -1 L 1 0 L -1.4 1 Z"
+            fill="currentColor"
+            fillOpacity="0.7"
+            transform={`translate(${f.x} ${f.y}) rotate(${f.ang}) scale(0.9)`}
+          />
+        ))}
       </svg>
       <div ref={dotRef} className="absolute left-0 top-0" style={{ ...DOT_STYLE, width: 22, height: 22 }} />
     </div>
@@ -393,13 +441,15 @@ export default function LandingPage() {
         id="inicio"
         className="grain relative overflow-hidden bg-mist-bg dark:bg-marine-bg"
       >
+        <Starfield n={80} />
+        <div className="vignette pointer-events-none absolute inset-0 hidden dark:block" />
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-6 px-4 pb-16 pt-10 lg:grid-cols-[1fr_1.1fr] lg:gap-2 lg:pt-6">
           <div className="order-2 lg:order-1">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-5xl font-bold tracking-[0.04em] text-ink dark:text-white sm:text-6xl lg:text-7xl"
+              className="glow-word text-5xl font-bold tracking-[0.04em] text-ink dark:text-white sm:text-6xl lg:text-7xl"
             >
               FRESHBREAK
             </motion.h1>
@@ -459,19 +509,27 @@ export default function LandingPage() {
       </section>
 
       {/* ============ SIGUE EL PUNTO ============ */}
-      <section className="grain bg-mist-tint dark:bg-[#04211F]">
-        <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-14 lg:grid-cols-[1fr_2fr]">
-          <div>
-            <h2 className="flex items-center gap-2 text-2xl font-bold text-ink dark:text-white">
-              <IconOjo className="h-6 w-6 text-brand-tealDark dark:text-marine-line" />
-              Sigue el punto
-            </h2>
-            <p className="mt-2 text-sm text-ink/65 dark:text-mist-tint/65">
-              Relaja tus ojos siguiendo el punto naranja con un movimiento
-              suave, sin mover la cabeza. Acabas de hacer tu primer ejercicio.
-            </p>
-          </div>
-          <DemoOcho />
+      <section className="grain seam relative bg-mist-tint dark:bg-[#04211F]">
+        <Starfield n={40} />
+        <div className="mx-auto max-w-6xl px-4 py-14">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            className="grid items-center gap-8 rounded-3xl border border-brand-tealDark/25 bg-white/40 p-6 dark:border-marine-line/25 dark:bg-marine-deep/25 dark:shadow-glowTeal lg:grid-cols-[1fr_2fr] lg:p-10"
+          >
+            <div>
+              <h2 className="flex items-center gap-2 text-2xl font-bold text-ink dark:text-white">
+                <IconOjo className="h-6 w-6 text-brand-tealDark dark:text-marine-line" />
+                Sigue el punto
+              </h2>
+              <p className="mt-2 text-sm text-ink/65 dark:text-mist-tint/65">
+                Relaja tus ojos siguiendo el punto naranja con un movimiento
+                suave, sin mover la cabeza. Acabas de hacer tu primer ejercicio.
+              </p>
+            </div>
+            <DemoOcho />
+          </motion.div>
         </div>
       </section>
 
@@ -516,7 +574,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============ CIENCIA ============ */}
-      <section id="ciencia" className="grain bg-mist-tint dark:bg-[#04211F]">
+      <section id="ciencia" className="grain seam bg-mist-tint dark:bg-[#04211F]">
         <div className="mx-auto max-w-5xl px-4 py-14">
           <h2 className="text-center text-2xl font-bold text-ink dark:text-white">
             La ciencia detrás
@@ -574,7 +632,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============ FAQ ============ */}
-      <section id="faq" className="grain bg-mist-tint dark:bg-[#04211F]">
+      <section id="faq" className="grain seam bg-mist-tint dark:bg-[#04211F]">
         <div className="mx-auto max-w-3xl px-4 py-14">
           <h2 className="text-center text-2xl font-bold text-ink dark:text-white">
             Preguntas frecuentes
@@ -612,7 +670,18 @@ export default function LandingPage() {
 
       {/* ============ CTA FINAL ============ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-mist-tint via-[#AEEBEA] to-[#40BFC0] dark:from-[#04211F] dark:via-[#0A3F40] dark:to-[#177E7C]">
-        <div className="mx-auto max-w-3xl px-4 py-16 text-center">
+        {/* ondas de luz ascendiendo, como el cierre del arte de referencia */}
+        <svg
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full opacity-40 dark:opacity-60"
+          viewBox="0 0 400 100"
+          preserveAspectRatio="none"
+          aria-hidden
+        >
+          <path d="M0 78 Q100 58 200 74 T400 66 V100 H0 Z" fill="#7FE7DC" opacity="0.25" />
+          <path d="M0 88 Q120 70 240 84 T400 80 V100 H0 Z" fill="#B9F5EE" opacity="0.3" />
+          <path d="M0 70 Q90 92 210 78 T400 88" fill="none" stroke="#DFFDF9" strokeWidth="1.2" opacity="0.5" />
+        </svg>
+        <div className="relative mx-auto max-w-3xl px-4 py-16 text-center">
           <EyeMark className="mx-auto w-14 text-ink dark:text-white" />
           <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-ink/70 dark:text-white/70">
             Tus ojos trabajan duro por ti

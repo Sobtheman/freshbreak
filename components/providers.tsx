@@ -61,6 +61,9 @@ type AppState = {
   programadasHoy: string[];
   registrarCumplimiento: (id: string) => void;
 
+  // estado del envío real por Resend
+  correoEstado: "enviando" | "enviado" | "error" | null;
+
   dark: boolean;
   toggleDark: () => void;
   showToast: (msg: string) => void;
@@ -95,6 +98,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [nextPauseAt, setNextPauseAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [pausaActual, setPausaActual] = useState<Ejercicio | null>(null);
+  const [correoEstado, setCorreoEstado] = useState<
+    "enviando" | "enviado" | "error" | null
+  >(null);
 
   const [completions, setCompletions] = useState<Record<string, number>>(SEED_COMPLETIONS);
   const [cumplidasHoy, setCumplidasHoy] = useState(2);
@@ -138,6 +144,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }, 1000);
     return () => window.clearInterval(iv);
   }, []);
+
+  // Cuando llega una pausa, el recordatorio también se envía de verdad por
+  // correo (Resend) a la dirección registrada.
+  useEffect(() => {
+    if (!pausaActual || !user) {
+      setCorreoEstado(null);
+      return;
+    }
+    setCorreoEstado("enviando");
+    fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        correo: user.correo,
+        nombre: user.nombre,
+        ejercicioId: pausaActual.id,
+        intervaloMin,
+      }),
+    })
+      .then((r) => r.json())
+      .then((d) => setCorreoEstado(d.ok ? "enviado" : "error"))
+      .catch(() => setCorreoEstado("error"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pausaActual]);
 
   const iniciarJornada = useCallback(
     (delaySeg?: number) => {
@@ -219,6 +249,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         cumplidasHoy,
         programadasHoy,
         registrarCumplimiento,
+        correoEstado,
         dark,
         toggleDark: () => setDark((d) => !d),
         showToast,

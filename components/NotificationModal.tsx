@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Ejercicio } from "@/lib/exercises";
 import EmailPreview from "./EmailPreview";
+import { useApp } from "./providers";
 
 export default function NotificationModal({
   ejercicio,
@@ -16,10 +17,19 @@ export default function NotificationModal({
   onPosponer: () => void;
 }) {
   const [verCorreo, setVerCorreo] = useState(false);
+  const { correoEstado, user } = useApp();
   const hora = new Date().toLocaleTimeString("es-CO", {
     hour: "2-digit",
     minute: "2-digit",
   });
+  const lineaCorreo =
+    correoEstado === "enviado"
+      ? `📧 Correo real enviado a ${user?.correo}`
+      : correoEstado === "enviando"
+        ? "📧 Enviando el correo a tu bandeja…"
+        : correoEstado === "error"
+          ? "📧 El correo no pudo enviarse (modo sandbox de Resend: solo entrega al dueño de la cuenta)"
+          : null;
 
   return (
     <>
@@ -47,8 +57,17 @@ export default function NotificationModal({
             ¡Hora de tu pausa visual!
           </h2>
           <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-black/40">
-            Recordatorio de las {hora} · también enviado a tu correo
+            Recordatorio de las {hora}
           </p>
+          {lineaCorreo && (
+            <p
+              className={`mx-auto mt-2 max-w-xs text-xs font-semibold ${
+                correoEstado === "error" ? "text-[#C05E14]" : "text-brand-tealDark"
+              }`}
+            >
+              {lineaCorreo}
+            </p>
+          )}
           <p className="mt-2 text-black/70">
             Tu ejercicio de esta pausa, elegido al azar:
           </p>

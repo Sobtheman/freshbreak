@@ -16,14 +16,27 @@ import {
 import { useApp } from "@/components/providers";
 import Gauge from "@/components/Gauge";
 
-const inicial = (): Respuesta[] =>
-  PREGUNTAS.map(() => ({ frecuencia: null, intensidad: 1 }));
+// El mini CVS-Q de la landing precarga estas preguntas (índice → respuesta)
+const MAPA_TEASER: [number, number][] = [
+  [0, 0],
+  [1, 1],
+  [3, 2],
+];
 
 export default function EncuestaPage() {
   const router = useRouter();
-  const { user, setScore } = useApp();
-  const [respuestas, setRespuestas] = useState<Respuesta[]>(inicial);
+  const { user, setScore, teaser } = useApp();
+  const [respuestas, setRespuestas] = useState<Respuesta[]>(() =>
+    PREGUNTAS.map((_, i) => {
+      const slot = MAPA_TEASER.find(([qi]) => qi === i);
+      return {
+        frecuencia: slot ? teaser[slot[1]] : null,
+        intensidad: 1,
+      };
+    })
+  );
   const [enviada, setEnviada] = useState(false);
+  const precargadas = teaser.filter((t) => t !== null).length;
 
   useEffect(() => {
     if (!user) router.replace("/");
@@ -71,7 +84,7 @@ export default function EncuestaPage() {
         className="mx-auto max-w-xl text-center"
       >
         <div className="card py-10">
-          <h1 className="mb-6 text-2xl font-bold text-brand-accent dark:text-sky-200">
+          <h1 className="mb-6 text-2xl font-bold text-ink">
             Resultado del cuestionario CVS-Q
           </h1>
           <Gauge score={puntaje} visualMax={16} danger={tieneSintomas} />
@@ -93,7 +106,7 @@ export default function EncuestaPage() {
               </>
             )}
           </motion.p>
-          <p className="mt-3 text-sm text-black/50 dark:text-slate-400">
+          <p className="mt-3 text-sm text-ink/50">
             Puntaje: {puntaje} de {PUNTAJE_MAXIMO} · Umbral de síntomas: {UMBRAL}
           </p>
           <motion.div
@@ -102,10 +115,10 @@ export default function EncuestaPage() {
             transition={{ delay: 1.4 }}
             className="mt-8"
           >
-            <Link href="/horario" className="btn-cta">
+            <Link href="/horario" className="btn-primary">
               Continuar: mi horario →
             </Link>
-            <p className="mt-3 text-xs text-black/50 dark:text-slate-400">
+            <p className="mt-3 text-xs text-ink/50">
               Último paso: registra tus bloques de estudio para programar tus pausas.
             </p>
           </motion.div>
@@ -121,28 +134,34 @@ export default function EncuestaPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <p className="text-xs font-bold uppercase tracking-widest text-black/40 dark:text-slate-500">
+        <p className="text-xs font-bold uppercase tracking-widest text-ink/50 dark:text-mist-tint/50">
           Paso 2 de 3
         </p>
-        <h1 className="mt-1 text-2xl font-bold text-brand-accent dark:text-sky-200 sm:text-3xl">
+        <h1 className="mt-1 text-2xl font-bold text-ink dark:text-white sm:text-3xl">
           Cuestionario CVS-Q
         </h1>
-        <p className="mt-2 text-black/70 dark:text-slate-300">
+        <p className="mt-2 text-ink/70 dark:text-mist-tint/70">
           Responde las 16 preguntas del cuestionario. Cuando un síntoma se
           presenta, indica también su intensidad.
         </p>
-        <button onClick={autollenar} className="btn-ghost mt-4 text-sm">
+        <button onClick={autollenar} className="btn-ghost-page mt-4 text-sm">
           ⚡ Rellenar con ejemplo (demo)
         </button>
+        {precargadas > 0 && (
+          <p className="mt-3 text-xs font-semibold text-brand-tealDark dark:text-marine-line">
+            ✓ {precargadas} respuesta{precargadas > 1 ? "s" : ""} precargada
+            {precargadas > 1 ? "s" : ""} de tu avance en la página de inicio
+          </p>
+        )}
       </motion.div>
 
       {/* Barra de progreso pegajosa */}
-      <div className="sticky top-16 z-30 -mx-4 mb-6 bg-brand-bg/90 px-4 py-3 backdrop-blur dark:bg-brand-dark/90">
-        <div className="mb-1.5 flex justify-between text-xs font-semibold text-brand-accent dark:text-sky-200">
+      <div className="sticky top-16 z-30 -mx-4 mb-6 bg-mist-bg/90 px-4 py-3 backdrop-blur dark:bg-marine-bg/90">
+        <div className="mb-1.5 flex justify-between text-xs font-semibold text-ink dark:text-mist-tint">
           <span>{contestadas} de {PREGUNTAS.length} respondidas</span>
           <span>{Math.round((contestadas / PREGUNTAS.length) * 100)} %</span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-brand-accent/15 dark:bg-white/10">
+        <div className="h-2 overflow-hidden rounded-full bg-ink/15 dark:bg-white/15">
           <motion.div
             className="h-full rounded-full bg-brand-teal"
             animate={{ width: `${(contestadas / PREGUNTAS.length) * 100}%` }}
@@ -163,7 +182,7 @@ export default function EncuestaPage() {
               className="card"
             >
               <p className="mb-3 font-semibold">
-                <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-teal/15 text-sm font-bold text-brand-tealDark dark:bg-brand-teal/20 dark:text-brand-teal">
+                <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-tealDark/15 text-sm font-bold text-brand-tealDark">
                   {p.num}
                 </span>
                 {p.texto}
@@ -177,8 +196,8 @@ export default function EncuestaPage() {
                     aria-pressed={r.frecuencia === fi}
                     className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition ${
                       r.frecuencia === fi
-                        ? "border-brand-accent bg-brand-accent text-white dark:border-sky-400 dark:bg-sky-400 dark:text-brand-dark"
-                        : "border-brand-accent/15 bg-white text-black/80 hover:border-brand-accent/40 dark:border-white/10 dark:bg-brand-dark dark:text-slate-200"
+                        ? "border-ink bg-ink text-white"
+                        : "border-ink/15 bg-mist-bg text-ink/80 hover:border-ink/40"
                     }`}
                   >
                     {f}
@@ -194,9 +213,9 @@ export default function EncuestaPage() {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="mt-3 border-t border-brand-accent/10 pt-3 dark:border-white/10">
+                    <div className="mt-3 border-t border-ink/10 pt-3">
                       <p className="mb-2 text-sm font-semibold">
-                        <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-orange/20 text-xs font-bold text-brand-orangeDark dark:text-brand-orange">
+                        <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-orange/20 text-xs font-bold text-[#C05E14]">
                           {p.intensidad.num}
                         </span>
                         {p.intensidad.texto}
@@ -211,7 +230,7 @@ export default function EncuestaPage() {
                             className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
                               r.intensidad === si + 1
                                 ? "border-brand-orangeDark bg-brand-orange text-[#0E2A47]"
-                                : "border-brand-accent/15 bg-white text-black/80 hover:border-brand-orange/60 dark:border-white/10 dark:bg-brand-dark dark:text-slate-200"
+                                : "border-brand-accent/15 bg-white text-black/80 hover:border-brand-orange/60"
                             }`}
                           >
                             {s}

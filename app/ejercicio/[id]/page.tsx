@@ -53,7 +53,7 @@ export default function EjercicioPage() {
     <div className="mx-auto max-w-4xl">
       <Link
         href="/panel"
-        className="mb-4 inline-block text-sm font-semibold text-brand-accent hover:underline dark:text-sky-300"
+        className="mb-4 inline-block text-sm font-semibold text-brand-tealDark hover:underline dark:text-marine-line"
       >
         ← Volver al panel
       </Link>
@@ -66,8 +66,8 @@ export default function EjercicioPage() {
         <h1 className="text-2xl font-bold sm:text-3xl">
           {ejercicio.emoji} {ejercicio.nombre}
         </h1>
-        <p className="mt-2 text-black/70 dark:text-slate-300">
-          <span className="font-semibold text-brand-accent dark:text-sky-300">
+        <p className="mt-2 text-ink/70 dark:text-mist-tint/70">
+          <span className="font-semibold text-brand-tealDark dark:text-marine-line">
             Objetivo:
           </span>{" "}
           {ejercicio.objetivo}
@@ -83,13 +83,13 @@ export default function EjercicioPage() {
           className="space-y-4 lg:col-span-2"
         >
           <div className="card">
-            <h2 className="mb-3 font-bold text-brand-accent dark:text-sky-200">
+            <h2 className="mb-3 font-bold text-ink">
               Instrucciones
             </h2>
             <ol className="space-y-3">
               {ejercicio.pasos.map((paso, i) => (
                 <li key={paso} className="flex gap-3 text-sm">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-accent text-xs font-bold text-white dark:bg-sky-400 dark:text-brand-dark">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">
                     {i + 1}
                   </span>
                   <span className="pt-0.5">{paso}</span>
@@ -98,10 +98,10 @@ export default function EjercicioPage() {
             </ol>
           </div>
           <div className="card border-l-4 !border-l-brand-teal">
-            <h2 className="mb-1 font-bold text-brand-accent dark:text-sky-200">
+            <h2 className="mb-1 font-bold text-ink">
               ¿Por qué es importante?
             </h2>
-            <p className="text-sm text-black/70 dark:text-slate-300">
+            <p className="text-sm text-ink/70">
               {ejercicio.porQue}
             </p>
           </div>
@@ -116,13 +116,13 @@ export default function EjercicioPage() {
         >
           <div className="card flex flex-col items-center gap-5">
             <div className="flex w-full justify-center py-1">{Anim && <Anim />}</div>
-            <p className="w-full rounded-xl bg-brand-teal/10 px-4 py-2.5 text-center text-xs font-medium text-brand-tealDeep dark:bg-brand-teal/15 dark:text-brand-teal">
+            <p className="w-full rounded-xl bg-brand-tealDark/10 px-4 py-2.5 text-center text-xs font-medium text-brand-tealDeep">
               💡 {ejercicio.guia}
             </p>
 
             <div className="w-full">
               <div className="mb-1.5 flex items-baseline justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
+                <span className="text-xs font-semibold uppercase tracking-wide text-ink/50">
                   Tiempo restante
                 </span>
                 <span
@@ -133,16 +133,16 @@ export default function EjercicioPage() {
                   {terminado ? "¡Listo!" : fmt(restante)}
                 </span>
               </div>
-              <div className="h-2.5 overflow-hidden rounded-full bg-brand-accent/15 dark:bg-white/10">
+              <div className="h-2.5 overflow-hidden rounded-full bg-ink/15">
                 <motion.div
                   className={`h-full rounded-full ${
-                    terminado ? "bg-green-500" : "bg-brand-accent dark:bg-sky-400"
+                    terminado ? "bg-green-500" : "bg-ink"
                   }`}
                   animate={{ width: `${progreso * 100}%` }}
                   transition={{ ease: "linear", duration: 1 }}
                 />
               </div>
-              <p className="mt-1.5 text-right text-xs text-black/50 dark:text-slate-400">
+              <p className="mt-1.5 text-right text-xs text-ink/50">
                 Duración total: {ejercicio.duracionLabel}
               </p>
             </div>

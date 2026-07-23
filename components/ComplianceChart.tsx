@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useApp } from "./providers";
 
 // Días pasados simulados; la barra de "Hoy" es real y se actualiza al
 // completar ejercicios en la sesión.
@@ -28,11 +27,10 @@ const MARK_LIGHT = "#17A398";
 const MARK_DARK = "#14A292";
 
 export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
-  const { dark } = useApp();
   const DATA = [...PASADOS, { dia: "Hoy", pct: hoyPct }];
-  const mark = dark ? MARK_DARK : MARK_LIGHT;
+  const mark = MARK_LIGHT;
   const hoyMark = "#D9711C";
-  const ink = dark ? "#94A3B8" : "#00000080";
+  const ink = "#0E3B3B99";
 
   return (
     <div className="h-40 w-full" role="img" aria-label="Cumplimiento por día de la semana">
@@ -52,7 +50,7 @@ export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
             tick={{ fill: ink, fontSize: 11 }}
           />
           <Tooltip
-            cursor={{ fill: dark ? "#ffffff14" : "#00336614" }}
+            cursor={{ fill: "#0E3B3B14" }}
             formatter={(v: number) => [`${v} %`, "Cumplimiento"]}
             labelFormatter={(l: string) =>
               ({ L: "Lunes", M: "Martes", X: "Miércoles", J: "Jueves", V: "Viernes", S: "Sábado" }[l] ?? l)
@@ -61,8 +59,8 @@ export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
               borderRadius: 12,
               border: "none",
               boxShadow: "0 8px 24px rgba(0,0,0,.18)",
-              background: dark ? "#0B1B2E" : "#ffffff",
-              color: dark ? "#E2E8F0" : "#000000",
+              background: "#ffffff",
+              color: "#0E3B3B",
               fontSize: 12,
               fontFamily: "inherit",
             }}

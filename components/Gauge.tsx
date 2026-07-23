@@ -48,7 +48,7 @@ export default function Gauge({
         >
           {score}
         </motion.div>
-        <div className="text-xs font-semibold uppercase tracking-wider text-black/50 dark:text-slate-400">
+        <div className="text-xs font-semibold uppercase tracking-wider text-black/50">
           puntos CVS-Q
         </div>
       </div>

@@ -54,10 +54,10 @@ export function ParpadeoAnim() {
         {/* globo ocular */}
         <path
           d="M20 70 Q110 -14 200 70 Q110 154 20 70 Z"
-          className="fill-white dark:fill-slate-200"
+          fill="#FFFFFF"
         />
         <g clipPath="url(#ojoClip)">
-          <circle cx="110" cy="70" r="34" className="fill-brand-tealDark dark:fill-brand-teal" />
+          <circle cx="110" cy="70" r="34" className="fill-brand-tealDark" />
           <circle cx="110" cy="70" r="15" fill="#071A2B" />
           <ellipse cx="99" cy="57" rx="9" ry="7" fill="#fff" opacity="0.95" />
           {/* párpado: tapa que baja de verdad (2 s cerrado / 2 s abierto) */}
@@ -67,10 +67,10 @@ export function ParpadeoAnim() {
           >
             <path
               d="M-10 -90 H230 V64 Q110 118 -10 64 Z"
-              className="fill-brand-tealDeep dark:fill-[#0a3f3a]"
+              className="fill-brand-tealDeep"
             />
             {/* pestañas de la tapa */}
-            <g className="stroke-brand-tealDeep dark:stroke-[#0a3f3a]" strokeWidth="4" strokeLinecap="round">
+            <g className="stroke-brand-tealDeep" strokeWidth="4" strokeLinecap="round">
               <path d="M60 84 L52 98 M110 92 L110 108 M160 84 L168 98" />
             </g>
           </motion.g>
@@ -79,7 +79,7 @@ export function ParpadeoAnim() {
         <path
           d="M20 70 Q110 -14 200 70 Q110 154 20 70 Z"
           fill="none"
-          className="stroke-[#0E2A47] dark:stroke-slate-300"
+          className="stroke-[#0E2A47]"
           strokeWidth="6"
         />
       </svg>
@@ -90,20 +90,20 @@ export function ParpadeoAnim() {
             <motion.div key="b" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <p className="text-2xl font-bold tabular-nums">
                 Parpadeo {rep} / 10 ·{" "}
-                <span className={cerrado ? "text-brand-tealDark dark:text-brand-teal" : "text-brand-orangeDark dark:text-brand-orange"}>
+                <span className={cerrado ? "text-brand-tealDark" : "text-[#C05E14]"}>
                   {cerrado ? "cierra…" : "abre"}
                 </span>
               </p>
-              <p className="text-sm text-black/60 dark:text-slate-400">
+              <p className="text-sm text-ink/60">
                 Ronda {ronda} · 2 segundos cerrado, 2 segundos abierto
               </p>
             </motion.div>
           ) : (
             <motion.div key="r" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <p className="text-2xl font-bold text-brand-orangeDark dark:text-brand-orange">
+              <p className="text-2xl font-bold text-[#C05E14]">
                 Descansa… {50 - enRonda} s
               </p>
-              <p className="text-sm text-black/60 dark:text-slate-400">
+              <p className="text-sm text-ink/60">
                 Ojos abiertos y relajados antes de la siguiente ronda
               </p>
             </motion.div>
@@ -132,7 +132,7 @@ export function Regla202020Anim() {
         style={{ background: "linear-gradient(180deg,#1B2A4A,#27436B 60%,#101C33)" }}
       />
       <motion.div
-        className="absolute inset-0 bg-brand-bg dark:bg-brand-dark"
+        className="absolute inset-0 bg-mist-tint"
         animate={{ opacity: fase === "lejos" ? 0 : 1 }}
         transition={{ duration: 1.2 }}
       />
@@ -161,10 +161,10 @@ export function Regla202020Anim() {
             className="text-center"
           >
             <p className="text-lg font-bold">🔭 Busca tu objeto lejano</p>
-            <p className="mt-1 text-sm text-black/60 dark:text-slate-400">
+            <p className="mt-1 text-sm text-ink/60">
               Una ventana o el punto más lejano de la habitación (6 m), bien iluminado.
             </p>
-            <p className="mt-4 text-6xl font-bold tabular-nums text-brand-tealDark dark:text-brand-teal">
+            <p className="mt-4 text-6xl font-bold tabular-nums text-brand-tealDark">
               {5 - t}
             </p>
           </motion.div>
@@ -205,7 +205,7 @@ export function Regla202020Anim() {
           >
             <p className="text-4xl">✅</p>
             <p className="mt-2 text-lg font-bold">¡Listo! Parpadea suavemente</p>
-            <p className="mt-1 text-sm text-black/60 dark:text-slate-400">
+            <p className="mt-1 text-sm text-ink/60">
               Marca la pausa como cumplida.
             </p>
           </motion.div>
@@ -303,7 +303,7 @@ export function OchoAnim() {
     <div className="flex w-full flex-col items-center gap-4">
       <div
         ref={boxRef}
-        className="relative h-64 w-full overflow-hidden rounded-2xl bg-brand-bg dark:bg-brand-dark"
+        className="relative h-64 w-full overflow-hidden rounded-2xl bg-mist-tint"
       >
         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden>
           <polyline
@@ -371,8 +371,8 @@ export function EnfoqueAnim() {
         <p
           className={`font-mono text-8xl font-bold tabular-nums ${
             cerca
-              ? "text-brand-orangeDark dark:text-brand-orange"
-              : "text-brand-tealDark dark:text-brand-teal"
+              ? "text-[#C05E14]"
+              : "text-brand-tealDark"
           }`}
         >
           {restante}
@@ -388,7 +388,7 @@ export function EnfoqueAnim() {
           }}
         />
       </motion.div>
-      <p className="text-sm text-black/60 dark:text-slate-400">
+      <p className="text-sm text-ink/60">
         Ciclo {ciclo} / 10 · no mires fijo la pantalla: el conteo es tu metrónomo
       </p>
     </div>
@@ -401,7 +401,7 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
     <svg width="240" height="150" viewBox="0 0 240 150" aria-hidden>
       {/* ojos cerrados */}
       <g
-        className="stroke-[#0E2A47] dark:stroke-slate-300"
+        className="stroke-[#0E2A47]"
         strokeWidth="5"
         strokeLinecap="round"
         fill="none"
@@ -422,7 +422,7 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
             : { duration: 1.4, ease: "easeInOut" }
         }
       >
-        <rect x="52" y="0" width="56" height="76" rx="26" fill="#F7C08A" className="dark:opacity-90" stroke="#C05E14" strokeWidth="3.5" />
+        <rect x="52" y="0" width="56" height="76" rx="26" fill="#F7C08A" stroke="#C05E14" strokeWidth="3.5" />
       </motion.g>
       <motion.g
         animate={
@@ -436,7 +436,7 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
             : { duration: 1.4, ease: "easeInOut" }
         }
       >
-        <rect x="132" y="0" width="56" height="76" rx="26" fill="#F7C08A" className="dark:opacity-90" stroke="#C05E14" strokeWidth="3.5" />
+        <rect x="132" y="0" width="56" height="76" rx="26" fill="#F7C08A" stroke="#C05E14" strokeWidth="3.5" />
       </motion.g>
       {/* calor al frotar */}
       {fase === "frotar" && (
@@ -468,7 +468,7 @@ export function MasajeAnim() {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="flex h-52 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 dark:from-[#2a1c0a] dark:to-[#3a2810]">
+      <div className="flex h-52 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100">
         <motion.div
           animate={fase === "colocar" ? { scale: [1, 1.08, 1] } : { scale: 1 }}
           transition={fase === "colocar" ? { duration: 8, repeat: Infinity, ease: "easeInOut" } : {}}
@@ -522,7 +522,7 @@ export function PalmingAnim() {
           <p className="text-lg font-bold">
             Cubre tus ojos con las palmas… {5 - t} s
           </p>
-          <p className="text-sm text-black/60 dark:text-slate-400">
+          <p className="text-sm text-ink/60">
             Sin presionar los globos oculares; bloquea toda la luz.
           </p>
         </>
@@ -594,7 +594,7 @@ export function PencilAnim() {
     <div className="flex w-full flex-col items-center gap-4">
       <div
         ref={boxRef}
-        className="relative h-64 w-full overflow-hidden rounded-2xl bg-brand-bg dark:bg-brand-dark"
+        className="relative h-64 w-full overflow-hidden rounded-2xl bg-mist-tint"
       >
         <div ref={dotRef} className="absolute left-0 top-0" style={DOT_STYLE} />
       </div>

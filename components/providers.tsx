@@ -42,6 +42,10 @@ type AppState = {
   onboarded: boolean;
   setOnboarded: (b: boolean) => void;
   seedDemo: () => void;
+  teaser: (0 | 1 | 2 | null)[];
+  setTeaser: (t: (0 | 1 | 2 | null)[]) => void;
+  teaserDias: number[];
+  setTeaserDias: (d: number[]) => void;
 
   // motor de pausas
   nextPauseAt: number | null;
@@ -95,16 +99,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [completions, setCompletions] = useState<Record<string, number>>(SEED_COMPLETIONS);
   const [cumplidasHoy, setCumplidasHoy] = useState(2);
 
-  const [dark, setDark] = useState(false);
+  // Respuestas del mini CVS-Q y días marcados en la landing: precargan
+  // la encuesta y el horario para no pedir nada dos veces.
+  const [teaser, setTeaser] = useState<(0 | 1 | 2 | null)[]>([null, null, null]);
+  const [teaserDias, setTeaserDias] = useState<number[]>([]);
+
+  // El mundo marino oscuro es el tema por defecto; claro queda en el toggle.
+  const [dark, setDark] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | null>(null);
 
   useEffect(() => {
-    if (localStorage.getItem("pv-dark") === "1") setDark(true);
+    if (localStorage.getItem("pv-theme") === "light") setDark(false);
   }, []);
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("pv-dark", dark ? "1" : "0");
+    localStorage.setItem("pv-theme", dark ? "dark" : "light");
   }, [dark]);
 
   const showToast = useCallback((msg: string) => {
@@ -195,6 +205,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         onboarded,
         setOnboarded,
         seedDemo,
+        teaser,
+        setTeaser,
+        teaserDias,
+        setTeaserDias,
         nextPauseAt,
         jornadaActiva: nextPauseAt !== null,
         segundosRestantes,
@@ -231,7 +245,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-white shadow-2xl dark:bg-sky-400 dark:text-brand-dark"
+              className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white shadow-2xl dark:bg-marine-line dark:text-marine-bg"
             >
               {toast}
             </motion.div>

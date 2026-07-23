@@ -65,19 +65,19 @@ export default function PanelPage() {
           <div>
             <h1 className="text-2xl font-bold sm:text-3xl">
               ¡Hola de nuevo,{" "}
-              <span className="text-brand-tealDark dark:text-brand-teal">
+              <span className="text-brand-tealDark dark:text-marine-line">
                 {user.nombre.split(" ")[0]}
               </span>
               ! 👋
             </h1>
-            <p className="mt-1 text-black/60 dark:text-slate-400">
+            <p className="mt-1 text-ink/60 dark:text-mist-tint/60">
               {DIAS[hoyIndice()]} · pausas cada {intervaloMin} min según tu
               horario{score !== null && ` · CVS-Q: ${score} puntos`}
             </p>
           </div>
           <button
             onClick={() => setEditandoPerfil(true)}
-            className="btn-ghost gap-2 text-sm"
+            className="btn-ghost-page gap-2 text-sm"
           >
             <IconPerfil className="h-5 w-5" /> Editar perfil
           </button>
@@ -92,7 +92,7 @@ export default function PanelPage() {
         className="grid gap-4 lg:grid-cols-5"
       >
         <div className="card !p-0 lg:col-span-3">
-          <div className="rounded-t-[17px] bg-gradient-to-br from-brand-tealDeep to-brand-tealDark p-6 text-center text-white dark:from-brand-card dark:to-[#0a4540]">
+          <div className="rounded-t-[17px] bg-gradient-to-br from-brand-tealDeep to-brand-tealDark p-6 text-center text-white">
             <p className="text-xs font-bold uppercase tracking-widest text-white/65">
               {jornadaActiva ? "Próxima pausa en" : "Recordatorios en espera"}
             </p>
@@ -132,8 +132,8 @@ export default function PanelPage() {
               <span className="opacity-70">· recomendado: según tu CVS-Q</span>
             </label>
           </div>
-          <div className="flex items-start gap-3 px-6 py-4 text-sm text-black/60 dark:text-slate-400">
-            <span className="mt-0.5 text-brand-tealDark dark:text-brand-teal">
+          <div className="flex items-start gap-3 px-6 py-4 text-sm text-ink/60">
+            <span className="mt-0.5 text-brand-tealDark dark:text-marine-line">
               <IconCorreo className="h-5 w-5" />
             </span>
             <p className="m-0">
@@ -145,12 +145,12 @@ export default function PanelPage() {
 
         <div className="card lg:col-span-2">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="m-0 flex items-center gap-2 text-lg font-bold text-brand-accent dark:text-sky-200">
+            <h2 className="m-0 flex items-center gap-2 text-lg font-bold text-ink">
               <IconCampana className="h-5 w-5" /> Agenda de hoy
             </h2>
             <Link
               href="/horario"
-              className="text-xs font-bold text-brand-tealDark underline underline-offset-4 dark:text-brand-teal"
+              className="text-xs font-bold text-brand-tealDark underline underline-offset-4"
             >
               Editar horario
             </Link>
@@ -165,10 +165,10 @@ export default function PanelPage() {
                     key={h}
                     className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-semibold ${
                       cumplida
-                        ? "bg-brand-teal/10 text-brand-tealDark dark:text-brand-teal"
+                        ? "bg-brand-tealDark/10 text-brand-tealDark"
                         : pasada
-                          ? "bg-black/5 text-black/45 dark:bg-white/5 dark:text-slate-500"
-                          : "bg-brand-bg dark:bg-brand-dark"
+                          ? "bg-ink/5 text-ink/45"
+                          : "bg-mist-tint"
                     }`}
                   >
                     <span className="font-mono tabular-nums">{h}</span>
@@ -180,7 +180,7 @@ export default function PanelPage() {
               })}
             </ul>
           ) : (
-            <p className="mt-4 text-sm text-black/55 dark:text-slate-400">
+            <p className="mt-4 text-sm text-ink/55">
               Hoy no tienes bloques de estudio en tu horario. Usa «Iniciar
               jornada de estudio» para una sesión libre.
             </p>
@@ -197,12 +197,12 @@ export default function PanelPage() {
       >
         <div className="card">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="m-0 text-lg font-bold text-brand-accent dark:text-sky-200">
+            <h2 className="m-0 text-lg font-bold text-ink">
               Cumplimiento semanal
             </h2>
             <p className="m-0 text-3xl font-bold tabular-nums">{cumplimientoHoy} %</p>
           </div>
-          <p className="mb-3 mt-1 text-sm text-black/60 dark:text-slate-400">
+          <p className="mb-3 mt-1 text-sm text-ink/60">
             Hoy: {cumplidasHoy} de {programadasHoy.length || "—"} pausas · la
             barra de hoy se actualiza al completar ejercicios
           </p>
@@ -210,43 +210,43 @@ export default function PanelPage() {
         </div>
         <div className="card">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="m-0 text-lg font-bold text-brand-accent dark:text-sky-200">
+            <h2 className="m-0 text-lg font-bold text-ink">
               Reducción de síntomas
             </h2>
-            <p className="m-0 text-3xl font-bold text-brand-orangeDark dark:text-brand-orange">
+            <p className="m-0 text-3xl font-bold text-[#C05E14]">
               −61 %
             </p>
           </div>
-          <p className="mb-3 mt-1 text-sm text-black/60 dark:text-slate-400">
+          <p className="mb-3 mt-1 text-sm text-ink/60">
             Puntaje CVS-Q reportado por semana (datos simulados)
           </p>
           <SymptomChart />
         </div>
         <div className="card lg:col-span-2">
-          <h2 className="text-lg font-bold text-brand-accent dark:text-sky-200">
+          <h2 className="text-lg font-bold text-ink">
             Tus ejercicios
           </h2>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
-            <div className="flex items-center gap-4 rounded-2xl bg-brand-teal/10 p-4 dark:bg-brand-teal/15">
+            <div className="flex items-center gap-4 rounded-2xl bg-brand-tealDark/10 p-4">
               <span className="text-4xl">{masRealizado.emoji}</span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">
                   Más realizado
                 </p>
                 <p className="font-bold">{masRealizado.nombre}</p>
-                <p className="text-sm text-black/60 dark:text-slate-400">
+                <p className="text-sm text-ink/60">
                   {completions[masRealizado.id] ?? 0} veces
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4 rounded-2xl bg-brand-orange/10 p-4 dark:bg-brand-orange/15">
+            <div className="flex items-center gap-4 rounded-2xl bg-brand-orange/10 p-4">
               <span className="text-4xl">{menosRealizado.emoji}</span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">
                   Menos realizado
                 </p>
                 <p className="font-bold">{menosRealizado.nombre}</p>
-                <p className="text-sm text-black/60 dark:text-slate-400">
+                <p className="text-sm text-ink/60">
                   {completions[menosRealizado.id] ?? 0} veces · ¡dale una oportunidad!
                 </p>
               </div>
@@ -262,12 +262,12 @@ export default function PanelPage() {
         transition={{ delay: 0.32 }}
       >
         <div className="flex items-center gap-2">
-          <IconReloj className="h-5 w-5 text-brand-tealDark dark:text-brand-teal" />
-          <h2 className="m-0 text-xl font-bold text-brand-accent dark:text-sky-200">
+          <IconReloj className="h-5 w-5 text-brand-tealDark dark:text-marine-line" />
+          <h2 className="m-0 text-xl font-bold text-ink dark:text-white">
             Biblioteca de ejercicios
           </h2>
         </div>
-        <p className="mt-1 text-sm text-black/55 dark:text-slate-400">
+        <p className="mt-1 text-sm text-ink/55">
           Los ejercicios te llegan al azar con cada pausa — esta biblioteca es
           solo para conocerlos de antemano.
         </p>
@@ -283,7 +283,7 @@ export default function PanelPage() {
               </span>
               <span>
                 <span className="block text-sm font-bold">{e.nombre}</span>
-                <span className="block text-xs font-semibold uppercase tracking-wide text-brand-tealDark dark:text-brand-teal">
+                <span className="block text-xs font-semibold uppercase tracking-wide text-brand-tealDark dark:text-marine-line">
                   ⏱ {e.duracionLabel}
                 </span>
               </span>

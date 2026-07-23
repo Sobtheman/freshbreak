@@ -29,8 +29,14 @@ export default function HorarioPage() {
     setOnboarded,
     iniciarJornada,
     showToast,
+    teaserDias,
   } = useApp();
-  const [lista, setLista] = useState<Bloque[]>(bloques.length ? bloques : []);
+  // Los días marcados en la página de inicio precargan bloques de 8 a 12
+  const [lista, setLista] = useState<Bloque[]>(() =>
+    bloques.length
+      ? bloques
+      : [...teaserDias].sort().map((d) => ({ dia: d, inicio: 8, fin: 12 }))
+  );
   const [confirmado, setConfirmado] = useState(false);
 
   useEffect(() => {
@@ -75,42 +81,42 @@ export default function HorarioPage() {
         className="mx-auto max-w-xl"
       >
         <div className="card text-center">
-          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-teal/15 text-3xl">
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-tealDark/15 text-3xl">
             🔔
           </div>
-          <h1 className="text-2xl font-bold text-brand-accent dark:text-sky-200">
+          <h1 className="text-2xl font-bold text-ink">
             Tu plan de pausas personalizado
           </h1>
-          <p className="mt-4 text-black/70 dark:text-slate-300">
+          <p className="mt-4 text-ink/70">
             Según tu puntaje CVS-Q ({score ?? 0} puntos), tus {horasPantalla} h
             diarias de pantalla y tu horario, te recomendamos:
           </p>
-          <p className="mt-4 text-5xl font-bold text-brand-tealDark dark:text-brand-teal">
+          <p className="mt-4 text-5xl font-bold text-brand-tealDark">
             cada {recomendado} min
           </p>
-          <p className="mx-auto mt-3 max-w-md text-sm text-black/60 dark:text-slate-400">
+          <p className="mx-auto mt-3 max-w-md text-sm text-ink/60">
             {razonIntervalo(score, horasPantalla)}
           </p>
           {pausasHoy.length > 0 ? (
-            <div className="mt-6 rounded-2xl bg-brand-bg p-4 text-sm dark:bg-brand-dark">
-              <p className="font-semibold text-brand-accent dark:text-sky-200">
+            <div className="mt-6 rounded-2xl bg-mist-tint p-4 text-sm">
+              <p className="font-semibold text-ink">
                 Recordatorios programados para hoy ({DIAS[hoyIndice()]}):
               </p>
-              <p className="mt-2 font-mono text-black/70 dark:text-slate-300">
+              <p className="mt-2 font-mono text-ink/70">
                 {pausasHoy.join(" · ")}
               </p>
-              <p className="mt-2 text-xs text-black/50 dark:text-slate-400">
+              <p className="mt-2 text-xs text-ink/50">
                 Cada uno llega como notificación en la app y correo a {user.correo}
               </p>
             </div>
           ) : (
-            <p className="mt-6 text-sm text-black/60 dark:text-slate-400">
+            <p className="mt-6 text-sm text-ink/60">
               Hoy no tienes bloques de estudio registrados: puedes iniciar una
               jornada libre desde tu panel cuando estudies.
             </p>
           )}
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-            <button onClick={activar} className="btn-cta">
+            <button onClick={activar} className="btn-primary">
               Activar recordatorios →
             </button>
             <button onClick={() => setConfirmado(false)} className="btn-ghost">
@@ -125,13 +131,13 @@ export default function HorarioPage() {
   return (
     <div className="mx-auto max-w-2xl">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-        <p className="eyebrow text-xs font-bold uppercase tracking-widest text-black/40 dark:text-slate-500">
+        <p className="text-xs font-bold uppercase tracking-widest text-ink/50 dark:text-mist-tint/50">
           Paso 3 de 3
         </p>
-        <h1 className="mt-1 text-2xl font-bold text-brand-accent dark:text-sky-200 sm:text-3xl">
+        <h1 className="mt-1 text-2xl font-bold text-ink dark:text-white sm:text-3xl">
           Tu horario académico
         </h1>
-        <p className="mt-2 max-w-xl text-black/70 dark:text-slate-300">
+        <p className="mt-2 max-w-xl text-ink/70 dark:text-mist-tint/70">
           FreshBreak programa tus recordatorios <b>dentro de tus bloques de
           estudio</b> — nunca a mitad de la noche ni fuera de clase. Registra
           tus bloques y cuántas horas pasas frente a pantallas.
@@ -140,7 +146,7 @@ export default function HorarioPage() {
 
       <div className="card mt-6">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="m-0 text-lg font-bold text-brand-accent dark:text-sky-200">
+          <h2 className="m-0 text-lg font-bold text-ink">
             Bloques de estudio
           </h2>
           <button
@@ -161,7 +167,7 @@ export default function HorarioPage() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="flex flex-wrap items-center gap-2 rounded-xl bg-brand-bg p-3 dark:bg-brand-dark">
+                <div className="flex flex-wrap items-center gap-2 rounded-xl bg-mist-tint p-3">
                   <select
                     value={b.dia}
                     onChange={(e) => actualizar(i, "dia", Number(e.target.value))}
@@ -182,7 +188,7 @@ export default function HorarioPage() {
                       <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
                     ))}
                   </select>
-                  <span className="text-sm text-black/50 dark:text-slate-400">a</span>
+                  <span className="text-sm text-ink/50">a</span>
                   <select
                     value={b.fin}
                     onChange={(e) => actualizar(i, "fin", Number(e.target.value))}
@@ -196,7 +202,7 @@ export default function HorarioPage() {
                   <button
                     onClick={() => quitar(i)}
                     aria-label="Quitar bloque"
-                    className="ml-auto rounded-lg px-2.5 py-1.5 text-lg text-black/40 transition hover:bg-black/5 hover:text-black dark:text-slate-500 dark:hover:bg-white/10 dark:hover:text-white"
+                    className="ml-auto rounded-lg px-2.5 py-1.5 text-lg text-ink/40 transition hover:bg-ink/5 hover:text-ink"
                   >
                     ×
                   </button>
@@ -205,7 +211,7 @@ export default function HorarioPage() {
             ))}
           </AnimatePresence>
           {lista.length === 0 && (
-            <p className="rounded-xl border border-dashed border-brand-accent/25 p-5 text-center text-sm text-black/50 dark:border-white/15 dark:text-slate-400">
+            <p className="rounded-xl border border-dashed border-ink/25 p-5 text-center text-sm text-ink/50">
               Aún no tienes bloques. Agrega tus horas de clase y estudio, o
               carga el ejemplo.
             </p>
@@ -217,7 +223,7 @@ export default function HorarioPage() {
       </div>
 
       <div className="card mt-4">
-        <h2 className="text-lg font-bold text-brand-accent dark:text-sky-200">
+        <h2 className="text-lg font-bold text-ink">
           Horas de pantalla al día
         </h2>
         <div className="mt-3 flex items-center gap-4">
@@ -227,14 +233,14 @@ export default function HorarioPage() {
             max={14}
             value={horasPantalla}
             onChange={(e) => setHorasPantalla(Number(e.target.value))}
-            className="w-full accent-brand-accent dark:accent-sky-400"
+            className="w-full accent-brand-tealDark"
             aria-label="Horas de pantalla al día"
           />
           <span className="w-16 text-right text-2xl font-bold tabular-nums">
             {horasPantalla} h
           </span>
         </div>
-        <p className="mt-2 text-xs text-black/50 dark:text-slate-400">
+        <p className="mt-2 text-xs text-ink/50">
           La carga visual diaria ajusta la frecuencia recomendada de tus pausas.
         </p>
       </div>

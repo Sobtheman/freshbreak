@@ -35,14 +35,14 @@ export default function PerfilModal({ onClose }: { onClose: () => void }) {
         className="card w-full max-w-md space-y-4"
       >
         <div className="flex items-center justify-between">
-          <h2 className="m-0 text-lg font-bold text-brand-accent dark:text-sky-200">
+          <h2 className="m-0 text-lg font-bold text-brand-accent">
             Editar perfil
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="rounded-md px-2 text-xl text-black/50 hover:text-black dark:text-slate-400 dark:hover:text-white"
+            className="rounded-md px-2 text-xl text-black/50 hover:text-ink"
           >
             ×
           </button>
@@ -105,8 +105,8 @@ export default function PerfilModal({ onClose }: { onClose: () => void }) {
                 aria-pressed={form.correccion === op}
                 className={`rounded-xl border px-4 py-2.5 font-semibold transition ${
                   form.correccion === op
-                    ? "border-brand-accent bg-brand-accent text-white dark:border-sky-400 dark:bg-sky-400 dark:text-brand-dark"
-                    : "border-brand-accent/20 bg-white text-brand-accent dark:border-white/15 dark:bg-brand-dark dark:text-slate-200"
+                    ? "border-brand-accent bg-brand-accent text-white"
+                    : "border-brand-accent/20 bg-white text-brand-accent"
                 }`}
               >
                 {op}

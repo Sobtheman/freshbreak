@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useApp } from "@/components/providers";
-import { EyeBadge } from "@/components/Logo";
+import { EyeMark } from "@/components/Logo";
 
 export default function RegistroPage() {
   const router = useRouter();
@@ -30,15 +30,15 @@ export default function RegistroPage() {
         className="mb-8 text-center"
       >
         <div className="mx-auto mb-4 w-24">
-          <EyeBadge className="w-full rounded-3xl shadow-lg shadow-brand-tealDeep/20" />
+          <EyeMark className="w-full text-ink" />
         </div>
-        <p className="text-xs font-bold uppercase tracking-widest text-black/40 dark:text-slate-500">
+        <p className="text-xs font-bold uppercase tracking-widest text-ink/50 dark:text-mist-tint/50">
           Paso 1 de 3
         </p>
-        <h1 className="mt-1 text-3xl font-bold text-brand-accent dark:text-sky-200">
+        <h1 className="mt-1 text-3xl font-bold text-ink dark:text-white">
           Crea tu cuenta en FreshBreak
         </h1>
-        <p className="mt-2 text-black/70 dark:text-slate-300">
+        <p className="mt-2 text-ink/70 dark:text-mist-tint/70">
           Tu aliado contra la fatiga visual digital. Regístrate para comenzar.
         </p>
       </motion.div>
@@ -124,8 +124,8 @@ export default function RegistroPage() {
                 aria-pressed={correccion === op}
                 className={`rounded-xl border px-4 py-3 font-semibold transition ${
                   correccion === op
-                    ? "border-brand-accent bg-brand-accent text-white dark:border-sky-400 dark:bg-sky-400 dark:text-brand-dark"
-                    : "border-brand-accent/20 bg-white text-brand-accent hover:border-brand-accent/50 dark:border-white/15 dark:bg-brand-dark dark:text-slate-200"
+                    ? "border-ink bg-ink text-white"
+                    : "border-ink/20 bg-mist-bg text-ink hover:border-ink/50"
                 }`}
               >
                 {op === "Sí" ? "👓 Sí" : "✨ No"}
@@ -141,7 +141,7 @@ export default function RegistroPage() {
         >
           Continuar →
         </motion.button>
-        <p className="text-center text-xs text-black/50 dark:text-slate-400">
+        <p className="text-center text-xs text-ink/50">
           Demo académica · Los datos solo viven en tu navegador.
         </p>
       </motion.form>

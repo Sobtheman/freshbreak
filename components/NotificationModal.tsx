@@ -34,32 +34,32 @@ export default function NotificationModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: "spring", stiffness: 280, damping: 22 }}
-          className="w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl dark:bg-brand-card"
+          className="w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl"
         >
           <motion.div
-            className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-brand-bg text-5xl dark:bg-brand-dark"
+            className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-brand-bg text-5xl"
             animate={{ rotate: [0, -14, 14, -10, 10, 0] }}
             transition={{ duration: 1.1, repeat: Infinity, repeatDelay: 1.2 }}
           >
             🔔
           </motion.div>
-          <h2 className="text-2xl font-bold text-brand-accent dark:text-sky-200">
+          <h2 className="text-2xl font-bold text-brand-accent">
             ¡Hora de tu pausa visual!
           </h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-black/40 dark:text-slate-500">
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-black/40">
             Recordatorio de las {hora} · también enviado a tu correo
           </p>
-          <p className="mt-2 text-black/70 dark:text-slate-300">
+          <p className="mt-2 text-black/70">
             Tu ejercicio de esta pausa, elegido al azar:
           </p>
 
-          <div className="mt-4 rounded-2xl bg-brand-bg p-5 dark:bg-brand-dark">
+          <div className="mt-4 rounded-2xl bg-brand-bg p-5">
             <div className="text-4xl">{ejercicio.emoji}</div>
             <p className="mt-1 text-lg font-bold">{ejercicio.nombre}</p>
-            <p className="mt-1 text-sm text-black/60 dark:text-slate-400">
+            <p className="mt-1 text-sm text-black/60">
               {ejercicio.objetivo}
             </p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-tealDark dark:text-brand-teal">
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-tealDark">
               ⏱ {ejercicio.duracionLabel}
             </p>
           </div>
@@ -68,7 +68,7 @@ export default function NotificationModal({
             <Link
               href={`/ejercicio/${ejercicio.id}`}
               onClick={onRealizar}
-              className="btn-cta w-full text-base"
+              className="btn-primary w-full text-base"
             >
               Realizar ejercicio
             </Link>
@@ -77,7 +77,7 @@ export default function NotificationModal({
             </button>
             <button
               onClick={() => setVerCorreo(true)}
-              className="mx-auto block text-sm font-semibold text-brand-accent underline underline-offset-4 hover:opacity-75 dark:text-sky-300"
+              className="mx-auto block text-sm font-semibold text-brand-accent underline underline-offset-4 hover:opacity-75"
             >
               📧 Vista previa del correo
             </button>

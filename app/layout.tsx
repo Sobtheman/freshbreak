@@ -20,7 +20,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={montserrat.variable}>
-      <body className="min-h-screen bg-brand-bg font-sans text-black transition-colors duration-300 dark:bg-brand-dark dark:text-slate-100">
+      <body className="min-h-screen bg-mist-bg font-sans text-ink transition-colors duration-300 dark:bg-marine-bg dark:text-mist-tint">
         <AppProvider>
           <Header />
           <main className="mx-auto w-full max-w-5xl px-4 pb-20 pt-8">

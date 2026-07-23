@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useApp } from "./providers";
 
 // Datos simulados: puntaje CVS-Q reportado por semana (tendencia a la baja).
 const DATA = [
@@ -25,10 +24,9 @@ const MARK_LIGHT = "#D9711C";
 const MARK_DARK = "#D9711C";
 
 export default function SymptomChart() {
-  const { dark } = useApp();
-  const mark = dark ? MARK_DARK : MARK_LIGHT;
-  const ink = dark ? "#94A3B8" : "#00000080";
-  const grid = dark ? "#ffffff14" : "#00336614";
+  const mark = MARK_LIGHT;
+  const ink = "#0E3B3B99";
+  const grid = "#0E3B3B14";
 
   return (
     <div className="h-40 w-full" role="img" aria-label="Puntaje CVS-Q reportado por semana">
@@ -54,8 +52,8 @@ export default function SymptomChart() {
               borderRadius: 12,
               border: "none",
               boxShadow: "0 8px 24px rgba(0,0,0,.18)",
-              background: dark ? "#0B1B2E" : "#ffffff",
-              color: dark ? "#E2E8F0" : "#000000",
+              background: "#ffffff",
+              color: "#0E3B3B",
               fontSize: 12,
               fontFamily: "inherit",
             }}

@@ -32,33 +32,33 @@ export default function EmailPreview({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 30, scale: 0.95 }}
         transition={{ type: "spring", stiffness: 300, damping: 26 }}
-        className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-brand-card"
+        className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2 border-b border-black/10 bg-slate-100 px-4 py-3 dark:border-white/10 dark:bg-brand-dark">
+        <div className="flex items-center gap-2 border-b border-black/10 bg-mist-tint px-4 py-3">
           <span className="h-3 w-3 rounded-full bg-red-400" />
           <span className="h-3 w-3 rounded-full bg-amber-400" />
           <span className="h-3 w-3 rounded-full bg-green-400" />
-          <span className="ml-2 text-xs font-semibold text-black/50 dark:text-slate-400">
+          <span className="ml-2 text-xs font-semibold text-black/50">
             Vista previa del correo (mock)
           </span>
           <button
             onClick={onClose}
             aria-label="Cerrar vista previa"
-            className="ml-auto rounded-md px-2 text-lg text-black/50 hover:text-black dark:text-slate-400 dark:hover:text-white"
+            className="ml-auto rounded-md px-2 text-lg text-black/50 hover:text-ink"
           >
             ×
           </button>
         </div>
 
         <div className="max-h-[70vh] overflow-y-auto">
-          <div className="space-y-1 border-b border-black/10 px-5 py-4 text-sm dark:border-white/10">
+          <div className="space-y-1 border-b border-black/10 px-5 py-4 text-sm">
             <p>
-              <span className="font-semibold text-black/50 dark:text-slate-400">De: </span>
+              <span className="font-semibold text-black/50">De: </span>
               FreshBreak &lt;notificaciones@freshbreak.app&gt;
             </p>
             <p>
-              <span className="font-semibold text-black/50 dark:text-slate-400">Para: </span>
+              <span className="font-semibold text-black/50">Para: </span>
               {correo}
             </p>
             <p className="pt-1 text-base font-bold">
@@ -67,8 +67,8 @@ export default function EmailPreview({
           </div>
 
           <div className="px-5 py-5">
-            <div className="rounded-xl bg-brand-bg p-5 dark:bg-brand-dark">
-              <p className="text-lg font-bold text-brand-accent dark:text-sky-200">
+            <div className="rounded-xl bg-brand-bg p-5">
+              <p className="text-lg font-bold text-brand-accent">
                 Hola, {nombre} 👋
               </p>
               <p className="mt-2 text-sm">
@@ -76,16 +76,16 @@ export default function EmailPreview({
                 dentro de tu bloque de estudio (cada {intervaloMin}{" "}
                 {intervaloMin === 1 ? "minuto" : "minutos"}). Te recomendamos:
               </p>
-              <div className="mt-4 rounded-xl bg-white p-4 shadow-sm dark:bg-brand-card">
+              <div className="mt-4 rounded-xl bg-white p-4 shadow-sm">
                 <p className="font-bold">
                   {ejercicio.emoji} {ejercicio.nombre}
                 </p>
-                <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-black/75 dark:text-slate-300">
+                <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-black/75">
                   {ejercicio.pasos.slice(0, 3).map((p) => (
                     <li key={p}>{p}</li>
                   ))}
                 </ol>
-                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-black/50">
                   ⏱ Duración: {ejercicio.duracionLabel}
                 </p>
               </div>
@@ -96,18 +96,18 @@ export default function EmailPreview({
                     onClose();
                     onIr?.();
                   }}
-                  className="btn-cta text-sm"
+                  className="btn-primary text-sm"
                 >
                   Realizar ejercicio ahora
                 </Link>
               </div>
               {proximas.length > 0 && (
-                <p className="mt-4 text-center text-xs text-black/50 dark:text-slate-400">
+                <p className="mt-4 text-center text-xs text-black/50">
                   Próximos recordatorios de hoy: {proximas.join(" · ")}
                 </p>
               )}
             </div>
-            <p className="mt-4 text-center text-[11px] text-black/40 dark:text-slate-500">
+            <p className="mt-4 text-center text-[11px] text-black/40">
               Recibes este correo porque activaste los recordatorios de
               FreshBreak según tu horario académico · Demo académica
             </p>

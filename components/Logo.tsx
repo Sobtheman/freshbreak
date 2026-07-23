@@ -89,10 +89,18 @@ export function EyeHero({
           <stop offset="100%" stopColor="#053A44" />
         </radialGradient>
         <linearGradient id="ehSclera" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#B9D9D6" />
-          <stop offset="35%" stopColor="#EFF9F7" />
-          <stop offset="100%" stopColor="#CBE5E1" />
+          <stop offset="0%" stopColor="#5E7F7D" />
+          <stop offset="40%" stopColor="#C4DCD8" />
+          <stop offset="100%" stopColor="#7FA09C" />
         </linearGradient>
+        <radialGradient id="ehFade" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fff" />
+          <stop offset="62%" stopColor="#fff" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+        <mask id="ehMask">
+          <ellipse cx="470" cy="290" rx="430" ry="300" fill="url(#ehFade)" />
+        </mask>
         <clipPath id="ehClip">
           <path d="M150 300 Q460 140 790 300 Q460 440 150 300 Z" />
         </clipPath>
@@ -109,6 +117,8 @@ export function EyeHero({
         ))}
       </g>
 
+      {/* el ojo entero se funde con la oscuridad hacia los bordes */}
+      <g mask="url(#ehMask)">
       {/* globo ocular */}
       <path
         d="M150 300 Q460 140 790 300 Q460 440 150 300 Z"
@@ -117,7 +127,9 @@ export function EyeHero({
       <g clipPath="url(#ehClip)">
         {/* sombra del párpado sobre la esclera */}
         <path d="M150 300 Q460 140 790 300 Q460 205 150 300 Z" fill="#0E3B3B" opacity="0.18" />
-        {/* iris */}
+        {/* iris: doble halo de floración + fibras */}
+        <circle cx="470" cy="300" r="118" fill="#40E0D0" opacity="0.14" />
+        <circle cx="470" cy="300" r="104" fill="#40E0D0" opacity="0.12" />
         <circle cx="470" cy="300" r="95" fill="url(#ehIris)" />
         <g strokeWidth="2">
           {spokes.map((s, i) => (
@@ -128,7 +140,21 @@ export function EyeHero({
               x2={s.x2}
               y2={s.y2}
               stroke={s.light ? "#8FF3E6" : "#065B5C"}
-              strokeOpacity={s.light ? 0.5 : 0.55}
+              strokeOpacity={s.light ? 0.55 : 0.55}
+            />
+          ))}
+        </g>
+        <g strokeWidth="1">
+          {spokes.map((s, i) => (
+            <line
+              key={`f${i}`}
+              x1={(s.x1 + s.x2) / 2}
+              y1={(s.y1 + s.y2) / 2}
+              x2={s.x2}
+              y2={s.y2}
+              stroke="#BFFBF2"
+              strokeOpacity={0.3}
+              transform="rotate(5 470 300)"
             />
           ))}
         </g>
@@ -161,6 +187,7 @@ export function EyeHero({
         </motion.g>
       </g>
 
+      </g>
       {/* pliegue del párpado */}
       <path
         d="M190 252 Q460 96 760 250"

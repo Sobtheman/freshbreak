@@ -49,7 +49,10 @@ export default function Header() {
 
         <nav className="flex items-center gap-2">
           {enLanding ? (
-            <Link href="/registro" className="btn-primary px-4 py-2 text-sm dark:bg-marine-line dark:text-marine-bg dark:hover:bg-[#5FD9D2]">
+            <Link
+              href="/registro"
+              className="btn-primary hidden px-4 py-2 text-sm dark:bg-marine-line dark:text-marine-bg dark:hover:bg-[#5FD9D2] sm:inline-flex"
+            >
               Crear mi plan
             </Link>
           ) : (

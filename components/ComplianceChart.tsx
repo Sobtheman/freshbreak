@@ -11,15 +11,15 @@ import {
 } from "recharts";
 import { useApp } from "./providers";
 
-// Datos simulados de cumplimiento semanal (promedio 71 %).
-const DATA = [
+// Días pasados simulados; la barra de "Hoy" es real y se actualiza al
+// completar ejercicios en la sesión.
+const PASADOS = [
   { dia: "L", pct: 80 },
   { dia: "M", pct: 60 },
   { dia: "X", pct: 90 },
   { dia: "J", pct: 55 },
   { dia: "V", pct: 75 },
   { dia: "S", pct: 40 },
-  { dia: "D", pct: 97 },
 ];
 
 // Teales de marca ajustados a la banda de luminosidad de marcas de datos
@@ -27,9 +27,11 @@ const DATA = [
 const MARK_LIGHT = "#17A398";
 const MARK_DARK = "#14A292";
 
-export default function ComplianceChart() {
+export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
   const { dark } = useApp();
+  const DATA = [...PASADOS, { dia: "Hoy", pct: hoyPct }];
   const mark = dark ? MARK_DARK : MARK_LIGHT;
+  const hoyMark = "#D9711C";
   const ink = dark ? "#94A3B8" : "#00000080";
 
   return (
@@ -53,7 +55,7 @@ export default function ComplianceChart() {
             cursor={{ fill: dark ? "#ffffff14" : "#00336614" }}
             formatter={(v: number) => [`${v} %`, "Cumplimiento"]}
             labelFormatter={(l: string) =>
-              ({ L: "Lunes", M: "Martes", X: "Miércoles", J: "Jueves", V: "Viernes", S: "Sábado", D: "Domingo" }[l] ?? l)
+              ({ L: "Lunes", M: "Martes", X: "Miércoles", J: "Jueves", V: "Viernes", S: "Sábado" }[l] ?? l)
             }
             contentStyle={{
               borderRadius: 12,
@@ -67,7 +69,7 @@ export default function ComplianceChart() {
           />
           <Bar dataKey="pct" radius={[4, 4, 0, 0]}>
             {DATA.map((d) => (
-              <Cell key={d.dia} fill={mark} />
+              <Cell key={d.dia} fill={d.dia === "Hoy" ? hoyMark : mark} />
             ))}
           </Bar>
         </BarChart>

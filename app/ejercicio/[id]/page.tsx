@@ -17,7 +17,7 @@ function fmt(s: number) {
 export default function EjercicioPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { showToast } = useApp();
+  const { registrarCumplimiento } = useApp();
   const ejercicio = getEjercicio(params.id);
   const [restante, setRestante] = useState(ejercicio?.duracion ?? 0);
 
@@ -45,7 +45,7 @@ export default function EjercicioPage() {
   const terminado = restante === 0;
 
   function completar() {
-    showToast("✓ ¡Ejercicio completado! Tus ojos te lo agradecen 🎉");
+    registrarCumplimiento(ejercicio!.id);
     router.push("/panel");
   }
 
@@ -75,7 +75,7 @@ export default function EjercicioPage() {
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* Instrucciones */}
+        {/* Instrucciones (texto de la propuesta) */}
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
@@ -84,7 +84,7 @@ export default function EjercicioPage() {
         >
           <div className="card">
             <h2 className="mb-3 font-bold text-brand-accent dark:text-sky-200">
-              Paso a paso
+              Instrucciones
             </h2>
             <ol className="space-y-3">
               {ejercicio.pasos.map((paso, i) => (
@@ -97,7 +97,7 @@ export default function EjercicioPage() {
               ))}
             </ol>
           </div>
-          <div className="card border-l-4 !border-l-brand-accent dark:!border-l-sky-400">
+          <div className="card border-l-4 !border-l-brand-teal">
             <h2 className="mb-1 font-bold text-brand-accent dark:text-sky-200">
               ¿Por qué es importante?
             </h2>
@@ -114,8 +114,11 @@ export default function EjercicioPage() {
           transition={{ delay: 0.15 }}
           className="lg:col-span-3"
         >
-          <div className="card flex flex-col items-center gap-6">
-            <div className="flex w-full justify-center py-2">{Anim && <Anim />}</div>
+          <div className="card flex flex-col items-center gap-5">
+            <div className="flex w-full justify-center py-1">{Anim && <Anim />}</div>
+            <p className="w-full rounded-xl bg-brand-teal/10 px-4 py-2.5 text-center text-xs font-medium text-brand-tealDeep dark:bg-brand-teal/15 dark:text-brand-teal">
+              💡 {ejercicio.guia}
+            </p>
 
             <div className="w-full">
               <div className="mb-1.5 flex items-baseline justify-between">
@@ -133,9 +136,7 @@ export default function EjercicioPage() {
               <div className="h-2.5 overflow-hidden rounded-full bg-brand-accent/15 dark:bg-white/10">
                 <motion.div
                   className={`h-full rounded-full ${
-                    terminado
-                      ? "bg-green-500"
-                      : "bg-brand-accent dark:bg-sky-400"
+                    terminado ? "bg-green-500" : "bg-brand-accent dark:bg-sky-400"
                   }`}
                   animate={{ width: `${progreso * 100}%` }}
                   transition={{ ease: "linear", duration: 1 }}
@@ -150,9 +151,7 @@ export default function EjercicioPage() {
               onClick={completar}
               whileTap={{ scale: 0.97 }}
               animate={terminado ? { scale: [1, 1.04, 1] } : {}}
-              transition={
-                terminado ? { duration: 1.2, repeat: Infinity } : undefined
-              }
+              transition={terminado ? { duration: 1.2, repeat: Infinity } : undefined}
               className="btn-primary w-full text-base"
             >
               Marcar como cumplido ✓

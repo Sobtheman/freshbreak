@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   FRECUENCIAS,
@@ -19,13 +20,20 @@ const inicial = (): Respuesta[] =>
   PREGUNTAS.map(() => ({ frecuencia: null, intensidad: 1 }));
 
 export default function EncuestaPage() {
+  const router = useRouter();
   const { user, setScore } = useApp();
   const [respuestas, setRespuestas] = useState<Respuesta[]>(inicial);
   const [enviada, setEnviada] = useState(false);
 
+  useEffect(() => {
+    if (!user) router.replace("/");
+  }, [user, router]);
+
   const contestadas = respuestas.filter((r) => r.frecuencia !== null).length;
   const puntaje = useMemo(() => calcularPuntaje(respuestas), [respuestas]);
   const tieneSintomas = puntaje >= UMBRAL;
+
+  if (!user) return null;
 
   function setFrecuencia(i: number, f: 0 | 1 | 2) {
     setRespuestas((rs) =>
@@ -94,9 +102,12 @@ export default function EncuestaPage() {
             transition={{ delay: 1.4 }}
             className="mt-8"
           >
-            <Link href="/panel" className="btn-cta">
-              Ir a mi panel →
+            <Link href="/horario" className="btn-cta">
+              Continuar: mi horario →
             </Link>
+            <p className="mt-3 text-xs text-black/50 dark:text-slate-400">
+              Último paso: registra tus bloques de estudio para programar tus pausas.
+            </p>
           </motion.div>
         </div>
       </motion.div>
@@ -110,7 +121,10 @@ export default function EncuestaPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-2xl font-bold text-brand-accent dark:text-sky-200 sm:text-3xl">
+        <p className="text-xs font-bold uppercase tracking-widest text-black/40 dark:text-slate-500">
+          Paso 2 de 3
+        </p>
+        <h1 className="mt-1 text-2xl font-bold text-brand-accent dark:text-sky-200 sm:text-3xl">
           Cuestionario CVS-Q
         </h1>
         <p className="mt-2 text-black/70 dark:text-slate-300">

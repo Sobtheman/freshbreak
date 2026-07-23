@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useApp } from "./providers";
-import { EyeMark } from "./Logo";
+import { EyeBadge } from "./Logo";
 
 export default function Header() {
   const { dark, toggleDark } = useApp();
@@ -12,7 +12,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 border-b border-brand-accent/10 bg-white/75 backdrop-blur-md dark:border-white/10 dark:bg-brand-dark/80">
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2.5">
-          <EyeMark className="w-11" />
+          <EyeBadge className="w-10 rounded-xl" />
           <span className="flex flex-col leading-tight">
             <span className="text-base font-bold tracking-[0.05em] text-[#0E2A47] dark:text-slate-100">
               FRESHBREAK

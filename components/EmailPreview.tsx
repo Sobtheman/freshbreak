@@ -8,11 +8,16 @@ import { useApp } from "./providers";
 export default function EmailPreview({
   ejercicio,
   onClose,
+  onIr,
 }: {
   ejercicio: Ejercicio;
   onClose: () => void;
+  onIr?: () => void;
 }) {
-  const { user } = useApp();
+  const { user, programadasHoy, intervaloMin } = useApp();
+  const nombre = user?.nombre.split(" ")[0] ?? "Estudiante";
+  const correo = user?.correo ?? "estudiante@universidad.edu.co";
+  const proximas = programadasHoy.slice(0, 3);
 
   return (
     <motion.div
@@ -30,7 +35,6 @@ export default function EmailPreview({
         className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-brand-card"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Barra tipo cliente de correo */}
         <div className="flex items-center gap-2 border-b border-black/10 bg-slate-100 px-4 py-3 dark:border-white/10 dark:bg-brand-dark">
           <span className="h-3 w-3 rounded-full bg-red-400" />
           <span className="h-3 w-3 rounded-full bg-amber-400" />
@@ -55,7 +59,7 @@ export default function EmailPreview({
             </p>
             <p>
               <span className="font-semibold text-black/50 dark:text-slate-400">Para: </span>
-              {user.correo}
+              {correo}
             </p>
             <p className="pt-1 text-base font-bold">
               Asunto: ¡Hora de tu pausa visual! 👁️
@@ -65,11 +69,12 @@ export default function EmailPreview({
           <div className="px-5 py-5">
             <div className="rounded-xl bg-brand-bg p-5 dark:bg-brand-dark">
               <p className="text-lg font-bold text-brand-accent dark:text-sky-200">
-                ¡Hola, {user.nombre.split(" ")[0]}! 👋
+                Hola, {nombre} 👋
               </p>
               <p className="mt-2 text-sm">
-                Llevas un buen rato frente a la pantalla. Es momento de darle un
-                respiro a tus ojos con este ejercicio:
+                Tu vista necesita un descanso. Este recordatorio está programado
+                dentro de tu bloque de estudio (cada {intervaloMin}{" "}
+                {intervaloMin === 1 ? "minuto" : "minutos"}). Te recomendamos:
               </p>
               <div className="mt-4 rounded-xl bg-white p-4 shadow-sm dark:bg-brand-card">
                 <p className="font-bold">
@@ -87,16 +92,24 @@ export default function EmailPreview({
               <div className="mt-5 text-center">
                 <Link
                   href={`/ejercicio/${ejercicio.id}`}
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    onIr?.();
+                  }}
                   className="btn-cta text-sm"
                 >
                   Realizar ejercicio ahora
                 </Link>
               </div>
+              {proximas.length > 0 && (
+                <p className="mt-4 text-center text-xs text-black/50 dark:text-slate-400">
+                  Próximos recordatorios de hoy: {proximas.join(" · ")}
+                </p>
+              )}
             </div>
             <p className="mt-4 text-center text-[11px] text-black/40 dark:text-slate-500">
               Recibes este correo porque activaste los recordatorios de
-              FreshBreak · Demo académica
+              FreshBreak según tu horario académico · Demo académica
             </p>
           </div>
         </div>

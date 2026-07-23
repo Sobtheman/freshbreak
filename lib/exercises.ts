@@ -6,121 +6,127 @@ export type Ejercicio = {
   porQue: string;
   duracion: number; // segundos
   duracionLabel: string;
-  pasos: string[];
+  pasos: string[]; // instrucciones textuales de la propuesta (acción real del usuario)
+  guia: string; // qué hace la guía animada en pantalla
 };
 
+// Instrucciones y objetivos tomados textualmente de la propuesta.
 export const EJERCICIOS: Ejercicio[] = [
   {
     id: "parpadeo-consciente",
     nombre: "Parpadeo consciente",
     emoji: "👁️",
-    objetivo: "Restablecer la película lagrimal y aliviar la sequedad ocular.",
+    objetivo: "Lubricar naturalmente la superficie ocular.",
     porQue:
       "Frente a pantallas parpadeamos hasta un 60 % menos, lo que reseca la superficie del ojo.",
     duracion: 120,
-    duracionLabel: "2 min · rondas de 10 parpadeos",
+    duracionLabel: "2 min",
     pasos: [
-      "Siéntate recto, relaja los hombros.",
-      "Cierra los ojos suavemente por 2 segundos y ábrelos, siguiendo el ojo animado.",
-      "Completa 10 parpadeos lentos por ronda.",
-      "Descansa 10 segundos entre rondas y continúa durante 2 minutos.",
+      "Siéntate recto y relájate.",
+      "Cierra los ojos suavemente por 2 segundos y ábrelos.",
+      "Repite este proceso 10 veces lentamente.",
+      "Descansa 10 segundos.",
+      "Hazlo durante 2 minutos.",
     ],
+    guia: "El ojo en pantalla marca el ritmo: se cierra 2 segundos y se abre contigo.",
   },
   {
     id: "regla-20-20-20",
     nombre: "Regla 20-20-20",
     emoji: "⏱️",
-    objetivo: "Relajar el músculo ciliar tras el enfoque sostenido de cerca.",
+    objetivo: "Relajar la acomodación ocular.",
     porQue:
       "Cada 20 minutos de pantalla, mirar 20 segundos a 20 pies (6 m) reduce la fatiga acomodativa.",
-    duracion: 60,
-    duracionLabel: "1 min · 3 rondas de 20 s",
+    duracion: 25,
+    duracionLabel: "25 s · 5 s de preparación + 20 s",
     pasos: [
-      "Aparta la mirada de la pantalla: se atenuará para recordártelo.",
-      "Busca un objeto bien iluminado a unos 6 metros (20 pies); una ventana ayuda.",
-      "Manténlo enfocado mientras el anillo completa los 20 segundos.",
-      "Repite 3 rondas.",
+      "Cada 60 minutos, mira un objeto a 20 pies (6 metros) durante 20 segundos.",
+      "Asegúrate de que el objeto esté bien iluminado.",
+      "Puedes mirar por la ventana o enfocar un punto lejano en la habitación.",
     ],
+    guia: "La pantalla se atenúa 20 segundos con un horizonte lejano: es tu señal para apartar la vista.",
   },
   {
     id: "ocho-horizontal",
-    nombre: "Ocho horizontal",
+    nombre: "Movimiento ocular en forma de ocho",
     emoji: "♾️",
-    objetivo: "Ejercitar los músculos extraoculares con movimientos suaves y amplios.",
+    objetivo: "Estimular movilidad ocular.",
     porQue:
       "Los movimientos oculares amplios y controlados mejoran la coordinación y reducen la rigidez ocular.",
     duracion: 70,
-    duracionLabel: "70 s · 30 s por sentido + pausa",
+    duracionLabel: "70 s · 30 s por sentido + descanso",
     pasos: [
-      "Mantén la cabeza completamente quieta.",
-      "Sigue el punto naranja con la mirada mientras traza un ocho acostado (∞).",
-      "A los 30 segundos, descansa 10 segundos.",
-      "El punto invierte el sentido: síguelo 30 segundos más.",
+      "Imagina un número ocho horizontal (∞) frente a ti.",
+      "Con tus ojos, sin mover la cabeza, síguelo durante 30 segundos en una dirección y 30 segundos en la otra.",
+      "Descansa 10 segundos.",
     ],
+    guia: "El punto naranja recorre el ocho a velocidad constante; síguelo solo con la mirada.",
   },
   {
     id: "enfoque-cercano-lejano",
     nombre: "Enfoque cercano-lejano",
     emoji: "🔭",
-    objetivo: "Flexibilizar la acomodación alternando entre foco cercano y lejano.",
+    objetivo: "Relajar y ejercitar los músculos ciliares.",
     porQue:
       "Alternar distancias de enfoque entrena el cristalino y previene el espasmo acomodativo.",
     duracion: 200,
     duracionLabel: "3 min 20 s · 10 ciclos",
     pasos: [
-      "Sostén tu dedo índice a 15 cm frente a tus ojos.",
-      "Cuando el punto crezca: enfoca tu dedo (visión cercana) por 10 segundos.",
-      "Cuando el punto se encoja: mira un objeto lejano (mínimo 6 m).",
-      "Alterna cada 10 segundos hasta completar 10 ciclos.",
+      "Sostén tu dedo a 15 cm frente a tus ojos.",
+      "Enfoca en tu dedo durante 10 segundos.",
+      "Luego cambia el enfoque a un objeto lejano (mínimo 6 m).",
+      "Repite el ciclo 10 veces.",
     ],
+    guia: "No mires fijo la pantalla: el conteo grande y el punto marcan el ritmo de cada fase de 10 s.",
   },
   {
     id: "masaje-palpebral",
     nombre: "Masaje palpebral con calor",
     emoji: "🤲",
-    objetivo: "Estimular las glándulas de Meibomio y relajar la musculatura palpebral.",
+    objetivo: "Aliviar tensión muscular periocular.",
     porQue:
       "El calor suave mejora la secreción lipídica de la lágrima y estabiliza la película lagrimal.",
-    duracion: 30,
-    duracionLabel: "30 s",
+    duracion: 40,
+    duracionLabel: "40 s · 10 s de preparación + 30 s",
     pasos: [
-      "Frota tus palmas entre sí hasta sentir calor.",
-      "Cierra los ojos y coloca las palmas ahuecadas sobre los párpados.",
-      "Realiza pequeños círculos, sin presionar el globo ocular.",
-      "Acompaña el masaje con la respiración guiada.",
+      "Frota tus manos hasta calentarlas.",
+      "Colócalas suavemente sobre los párpados cerrados durante 30 segundos.",
+      "Respira profundamente y relájate.",
     ],
+    guia: "Primero la guía te muestra cómo frotar y colocar las palmas; luego marca la respiración.",
   },
   {
     id: "palming",
-    nombre: "Palming",
+    nombre: "Palming (oscurecimiento visual)",
     emoji: "🌑",
-    objetivo: "Descansar la retina en oscuridad total y bajar la activación visual.",
+    objetivo: "Relajar la vista con oscuridad.",
     porQue:
       "La oscuridad completa permite que la retina y la mente descansen del estímulo lumínico constante.",
     duracion: 60,
     duracionLabel: "1 min",
     pasos: [
-      "Apoya los codos sobre la mesa.",
-      "Cubre los ojos con las palmas sin tocar los párpados: oscuridad total.",
-      "Sigue el círculo de respiración: inhala cuando crece, exhala cuando se contrae.",
-      "Permanece así 1 minuto y retira las manos lentamente.",
+      "Cubre los ojos con las palmas sin presionar los globos oculares.",
+      "Asegúrate de bloquear toda la luz.",
+      "Respira lento y profundo durante 1 minuto.",
     ],
+    guia: "La pantalla se oscurece contigo y respira a tu ritmo; al final te avisa con una salida suave.",
   },
   {
     id: "push-up-pencil",
     nombre: "Push up pencil",
     emoji: "✏️",
-    objetivo: "Fortalecer la convergencia y el seguimiento ocular suave.",
+    objetivo: "Mejorar control oculomotor.",
     porQue:
       "El seguimiento lento de un objetivo entrena la convergencia y mejora el control oculomotor.",
     duracion: 60,
     duracionLabel: "1 min",
     pasos: [
-      "Mantén la cabeza quieta; solo se mueven los ojos.",
-      "Sigue el punto naranja mientras cruza lentamente de izquierda a derecha.",
-      "A los 30 segundos el movimiento pasa a ser vertical: síguelo igual.",
-      "Si sientes tensión, parpadea y continúa.",
+      "Sostén un lápiz frente a ti.",
+      "Muévelo lentamente de izquierda a derecha y luego arriba-abajo.",
+      "Sigue con la mirada sin mover la cabeza.",
+      "Realiza por 1 minuto.",
     ],
+    guia: "Si no tienes un lápiz a mano, el punto naranja hace de lápiz: síguelo sin mover la cabeza.",
   },
 ];
 

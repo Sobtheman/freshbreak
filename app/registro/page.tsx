@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useApp } from "@/components/providers";
-import { EyeMark } from "@/components/Logo";
+import { EyeBadge } from "@/components/Logo";
 
 export default function RegistroPage() {
   const router = useRouter();
@@ -29,14 +29,13 @@ export default function RegistroPage() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="mb-8 text-center"
       >
-        <motion.div
-          className="mx-auto mb-3 w-28"
-          animate={{ rotate: [0, -3, 3, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <EyeMark className="w-full" />
-        </motion.div>
-        <h1 className="text-3xl font-bold text-brand-accent dark:text-sky-200">
+        <div className="mx-auto mb-4 w-24">
+          <EyeBadge className="w-full rounded-3xl shadow-lg shadow-brand-tealDeep/20" />
+        </div>
+        <p className="text-xs font-bold uppercase tracking-widest text-black/40 dark:text-slate-500">
+          Paso 1 de 3
+        </p>
+        <h1 className="mt-1 text-3xl font-bold text-brand-accent dark:text-sky-200">
           Crea tu cuenta en FreshBreak
         </h1>
         <p className="mt-2 text-black/70 dark:text-slate-300">

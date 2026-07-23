@@ -8,12 +8,18 @@ import EmailPreview from "./EmailPreview";
 
 export default function NotificationModal({
   ejercicio,
-  onClose,
+  onRealizar,
+  onPosponer,
 }: {
   ejercicio: Ejercicio;
-  onClose: () => void;
+  onRealizar: () => void;
+  onPosponer: () => void;
 }) {
   const [verCorreo, setVerCorreo] = useState(false);
+  const hora = new Date().toLocaleTimeString("es-CO", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <>
@@ -40,17 +46,20 @@ export default function NotificationModal({
           <h2 className="text-2xl font-bold text-brand-accent dark:text-sky-200">
             ¡Hora de tu pausa visual!
           </h2>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-black/40 dark:text-slate-500">
+            Recordatorio de las {hora} · también enviado a tu correo
+          </p>
           <p className="mt-2 text-black/70 dark:text-slate-300">
-            Tus ojos llevan un buen rato trabajando. Te proponemos:
+            Tu ejercicio de esta pausa, elegido al azar:
           </p>
 
-          <div className="mt-5 rounded-2xl bg-brand-bg p-5 dark:bg-brand-dark">
+          <div className="mt-4 rounded-2xl bg-brand-bg p-5 dark:bg-brand-dark">
             <div className="text-4xl">{ejercicio.emoji}</div>
             <p className="mt-1 text-lg font-bold">{ejercicio.nombre}</p>
             <p className="mt-1 text-sm text-black/60 dark:text-slate-400">
               {ejercicio.objetivo}
             </p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-accent dark:text-sky-300">
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-tealDark dark:text-brand-teal">
               ⏱ {ejercicio.duracionLabel}
             </p>
           </div>
@@ -58,12 +67,13 @@ export default function NotificationModal({
           <div className="mt-6 space-y-3">
             <Link
               href={`/ejercicio/${ejercicio.id}`}
+              onClick={onRealizar}
               className="btn-cta w-full text-base"
             >
               Realizar ejercicio
             </Link>
-            <button onClick={onClose} className="btn-ghost w-full text-sm">
-              Posponer y seguir estudiando
+            <button onClick={onPosponer} className="btn-ghost w-full text-sm">
+              Posponer 5 minutos
             </button>
             <button
               onClick={() => setVerCorreo(true)}
@@ -77,7 +87,11 @@ export default function NotificationModal({
 
       <AnimatePresence>
         {verCorreo && (
-          <EmailPreview ejercicio={ejercicio} onClose={() => setVerCorreo(false)} />
+          <EmailPreview
+            ejercicio={ejercicio}
+            onClose={() => setVerCorreo(false)}
+            onIr={onRealizar}
+          />
         )}
       </AnimatePresence>
     </>

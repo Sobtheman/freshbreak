@@ -6,7 +6,9 @@ import { Usuario, useApp } from "./providers";
 
 export default function PerfilModal({ onClose }: { onClose: () => void }) {
   const { user, setUser, showToast } = useApp();
-  const [form, setForm] = useState<Usuario>(user);
+  const [form, setForm] = useState<Usuario>(
+    user ?? { nombre: "", correo: "", edad: "", ocupacion: "", correccion: "No" }
+  );
 
   function guardar(e: FormEvent) {
     e.preventDefault();

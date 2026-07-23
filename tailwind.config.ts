@@ -36,7 +36,7 @@ const config: Config = {
         sans: ["var(--font-montserrat)", "Montserrat", "sans-serif"],
       },
       boxShadow: {
-        panel: "0 10px 40px rgba(3, 24, 25, 0.35), 0 0 0 1px rgba(64, 191, 192, 0.10)",
+        panel: "0 10px 40px rgba(3, 24, 25, 0.4), 0 0 0 1px rgba(64, 191, 192, 0.12), 0 0 60px rgba(127, 231, 220, 0.16)",
         panelLight: "0 10px 30px rgba(14, 59, 59, 0.08)",
         glowTeal: "0 0 24px rgba(64, 191, 192, 0.35)",
       },

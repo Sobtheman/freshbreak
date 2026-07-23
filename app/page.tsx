@@ -443,7 +443,7 @@ export default function LandingPage() {
       >
         <Starfield n={80} />
         <div className="vignette pointer-events-none absolute inset-0 hidden dark:block" />
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-6 px-4 pb-16 pt-10 lg:grid-cols-[1fr_1.1fr] lg:gap-2 lg:pt-6">
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-2 px-4 pb-16 pt-6 lg:grid-cols-[1fr_1.35fr] lg:gap-0">
           <div className="order-2 lg:order-1">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -467,8 +467,8 @@ export default function LandingPage() {
               transition={{ delay: 0.28, duration: 0.5 }}
               className="mt-5 max-w-md text-ink/70 dark:text-mist-tint/75"
             >
-              La app de cuidado visual que programa tus pausas dentro de tu
-              horario académico y te guía ejercicio por ejercicio.
+              La app que programa tus pausas visuales dentro de tu horario y
+              guía a tus ojos, ejercicio por ejercicio.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 14 }}
@@ -487,7 +487,7 @@ export default function LandingPage() {
                   seedDemo();
                   router.push("/panel");
                 }}
-                className="text-sm font-semibold text-ink/60 underline underline-offset-4 transition hover:text-ink dark:text-mist-tint/60 dark:hover:text-white"
+                className="text-sm font-semibold text-ink/75 underline underline-offset-4 transition hover:text-ink dark:text-mist-tint/80 dark:hover:text-white"
               >
                 o explora la demo
               </button>
@@ -497,9 +497,9 @@ export default function LandingPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="order-1 lg:order-2"
+            className="order-1 lg:order-2 lg:-my-14 lg:-mr-20"
           >
-            <EyeHero className="w-full" />
+            <EyeHero className="w-full scale-110 lg:scale-125" />
           </motion.div>
         </div>
         {/* línea punteada que cruza toda la pantalla a la altura del iris */}

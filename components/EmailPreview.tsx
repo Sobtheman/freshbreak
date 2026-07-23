@@ -51,7 +51,7 @@ export default function EmailPreview({
           <div className="space-y-1 border-b border-black/10 px-5 py-4 text-sm dark:border-white/10">
             <p>
               <span className="font-semibold text-black/50 dark:text-slate-400">De: </span>
-              Pausa Visual &lt;notificaciones@pausavisual.app&gt;
+              FreshBreak &lt;notificaciones@freshbreak.app&gt;
             </p>
             <p>
               <span className="font-semibold text-black/50 dark:text-slate-400">Para: </span>
@@ -88,15 +88,15 @@ export default function EmailPreview({
                 <Link
                   href={`/ejercicio/${ejercicio.id}`}
                   onClick={onClose}
-                  className="btn-primary text-sm"
+                  className="btn-cta text-sm"
                 >
                   Realizar ejercicio ahora
                 </Link>
               </div>
             </div>
             <p className="mt-4 text-center text-[11px] text-black/40 dark:text-slate-500">
-              Recibes este correo porque activaste los recordatorios de Pausa
-              Visual · Demo académica
+              Recibes este correo porque activaste los recordatorios de
+              FreshBreak · Demo académica
             </p>
           </div>
         </div>

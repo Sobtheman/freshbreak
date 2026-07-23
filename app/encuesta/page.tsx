@@ -6,9 +6,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   FRECUENCIAS,
   INTENSIDADES,
+  PREGUNTAS,
   PUNTAJE_MAXIMO,
   Respuesta,
-  SINTOMAS,
   UMBRAL,
   calcularPuntaje,
 } from "@/lib/cvsq";
@@ -16,7 +16,7 @@ import { useApp } from "@/components/providers";
 import Gauge from "@/components/Gauge";
 
 const inicial = (): Respuesta[] =>
-  SINTOMAS.map(() => ({ frecuencia: null, intensidad: 1 }));
+  PREGUNTAS.map(() => ({ frecuencia: null, intensidad: 1 }));
 
 export default function EncuestaPage() {
   const { user, setScore } = useApp();
@@ -41,9 +41,9 @@ export default function EncuestaPage() {
 
   function autollenar() {
     setRespuestas(
-      SINTOMAS.map((_, i) => ({
+      PREGUNTAS.map((_, i) => ({
         frecuencia: ([0, 1, 2] as const)[(i * 7 + 3) % 3],
-        intensidad: i % 4 === 2 ? 2 : 1,
+        intensidad: i % 3 === 0 ? 2 : 1,
       }))
     );
   }
@@ -66,7 +66,7 @@ export default function EncuestaPage() {
           <h1 className="mb-6 text-2xl font-bold text-brand-accent dark:text-sky-200">
             Resultado del cuestionario CVS-Q
           </h1>
-          <Gauge score={puntaje} danger={tieneSintomas} />
+          <Gauge score={puntaje} visualMax={16} danger={tieneSintomas} />
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -94,7 +94,7 @@ export default function EncuestaPage() {
             transition={{ delay: 1.4 }}
             className="mt-8"
           >
-            <Link href="/panel" className="btn-primary text-base">
+            <Link href="/panel" className="btn-cta">
               Ir a mi panel →
             </Link>
           </motion.div>
@@ -114,9 +114,8 @@ export default function EncuestaPage() {
           Cuestionario CVS-Q
         </h1>
         <p className="mt-2 text-black/70 dark:text-slate-300">
-          Durante los últimos meses, ¿con qué frecuencia has experimentado estos
-          síntomas mientras usas pantallas? Si aparece el síntoma, indica también
-          su intensidad.
+          Responde las 16 preguntas del cuestionario. Cuando un síntoma se
+          presenta, indica también su intensidad.
         </p>
         <button onClick={autollenar} className="btn-ghost mt-4 text-sm">
           ⚡ Rellenar con ejemplo (demo)
@@ -126,34 +125,34 @@ export default function EncuestaPage() {
       {/* Barra de progreso pegajosa */}
       <div className="sticky top-16 z-30 -mx-4 mb-6 bg-brand-bg/90 px-4 py-3 backdrop-blur dark:bg-brand-dark/90">
         <div className="mb-1.5 flex justify-between text-xs font-semibold text-brand-accent dark:text-sky-200">
-          <span>{contestadas} de {SINTOMAS.length} respondidas</span>
-          <span>{Math.round((contestadas / SINTOMAS.length) * 100)} %</span>
+          <span>{contestadas} de {PREGUNTAS.length} respondidas</span>
+          <span>{Math.round((contestadas / PREGUNTAS.length) * 100)} %</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-brand-accent/15 dark:bg-white/10">
           <motion.div
-            className="h-full rounded-full bg-brand-accent dark:bg-sky-400"
-            animate={{ width: `${(contestadas / SINTOMAS.length) * 100}%` }}
+            className="h-full rounded-full bg-brand-teal"
+            animate={{ width: `${(contestadas / PREGUNTAS.length) * 100}%` }}
             transition={{ ease: "easeOut", duration: 0.35 }}
           />
         </div>
       </div>
 
       <div className="space-y-4">
-        {SINTOMAS.map((sintoma, i) => {
+        {PREGUNTAS.map((p, i) => {
           const r = respuestas[i];
           return (
             <motion.div
-              key={sintoma}
+              key={p.num}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               className="card"
             >
               <p className="mb-3 font-semibold">
-                <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-accent/10 text-sm font-bold text-brand-accent dark:bg-sky-400/15 dark:text-sky-300">
-                  {i + 1}
+                <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-teal/15 text-sm font-bold text-brand-tealDark dark:bg-brand-teal/20 dark:text-brand-teal">
+                  {p.num}
                 </span>
-                {sintoma}
+                {p.texto}
               </p>
               <div className="grid gap-2 sm:grid-cols-3">
                 {FRECUENCIAS.map((f, fi) => (
@@ -173,7 +172,7 @@ export default function EncuestaPage() {
                 ))}
               </div>
               <AnimatePresence>
-                {!!r.frecuencia && (
+                {p.intensidad && !!r.frecuencia && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
@@ -182,8 +181,11 @@ export default function EncuestaPage() {
                     className="overflow-hidden"
                   >
                     <div className="mt-3 border-t border-brand-accent/10 pt-3 dark:border-white/10">
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
-                        Intensidad del síntoma
+                      <p className="mb-2 text-sm font-semibold">
+                        <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-orange/20 text-xs font-bold text-brand-orangeDark dark:text-brand-orange">
+                          {p.intensidad.num}
+                        </span>
+                        {p.intensidad.texto}
                       </p>
                       <div className="grid grid-cols-2 gap-2">
                         {INTENSIDADES.map((s, si) => (
@@ -194,8 +196,8 @@ export default function EncuestaPage() {
                             aria-pressed={r.intensidad === si + 1}
                             className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
                               r.intensidad === si + 1
-                                ? "border-brand-accent bg-brand-accent/90 text-white dark:border-sky-400 dark:bg-sky-400/90 dark:text-brand-dark"
-                                : "border-brand-accent/15 bg-white text-black/80 hover:border-brand-accent/40 dark:border-white/10 dark:bg-brand-dark dark:text-slate-200"
+                                ? "border-brand-orangeDark bg-brand-orange text-[#0E2A47]"
+                                : "border-brand-accent/15 bg-white text-black/80 hover:border-brand-orange/60 dark:border-white/10 dark:bg-brand-dark dark:text-slate-200"
                             }`}
                           >
                             {s}
@@ -214,7 +216,7 @@ export default function EncuestaPage() {
       <div className="mt-8 flex justify-center">
         <button
           onClick={enviar}
-          disabled={contestadas < SINTOMAS.length}
+          disabled={contestadas < PREGUNTAS.length}
           className="btn-primary w-full text-base sm:w-auto sm:px-12"
         >
           Ver mi resultado

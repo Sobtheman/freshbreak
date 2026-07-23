@@ -21,7 +21,7 @@ export default function NotificationModal({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[60] flex items-center justify-center bg-brand-accent/80 p-4 backdrop-blur-md dark:bg-black/80"
+        className="fixed inset-0 z-[60] flex items-center justify-center bg-brand-tealDeep/85 p-4 backdrop-blur-md dark:bg-black/80"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.8, y: 30 }}
@@ -58,7 +58,7 @@ export default function NotificationModal({
           <div className="mt-6 space-y-3">
             <Link
               href={`/ejercicio/${ejercicio.id}`}
-              className="btn-primary w-full text-base"
+              className="btn-cta w-full text-base"
             >
               Realizar ejercicio
             </Link>

@@ -11,6 +11,11 @@ const config: Config = {
           accent: "#003366",
           dark: "#0B1B2E",
           card: "#122740",
+          teal: "#2EC4B6",
+          tealDark: "#0E7C74",
+          tealDeep: "#0B4F55",
+          orange: "#F79A56",
+          orangeDark: "#E8823B",
         },
       },
       fontFamily: {

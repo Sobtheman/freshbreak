@@ -10,7 +10,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Pausa Visual — Prevención de fatiga visual digital",
+  title: "FreshBreak — Hora de tu pausa visual",
   description:
     "Aplicativo demo para la prevención de la fatiga visual digital en estudiantes universitarios.",
 };

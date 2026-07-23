@@ -7,6 +7,8 @@ import { useApp } from "@/components/providers";
 import { EJERCICIOS, Ejercicio, randomEjercicio } from "@/lib/exercises";
 import NotificationModal from "@/components/NotificationModal";
 import ComplianceChart from "@/components/ComplianceChart";
+import SymptomChart from "@/components/SymptomChart";
+import PerfilModal from "@/components/PerfilModal";
 
 const INTERVALOS = [
   { valor: 3600, etiqueta: "60 minutos (recomendado)" },
@@ -26,6 +28,7 @@ export default function PanelPage() {
   const [restante, setRestante] = useState(pauseSeconds);
   const [activo, setActivo] = useState(false);
   const [propuesto, setPropuesto] = useState<Ejercicio | null>(null);
+  const [editandoPerfil, setEditandoPerfil] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -60,13 +63,20 @@ export default function PanelPage() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold sm:text-3xl">
-          ¡Hola, <span className="text-brand-accent dark:text-sky-300">{user.nombre.split(" ")[0]}</span>!
-          Bienvenida de nuevo. 👋
-        </h1>
-        <p className="mt-1 text-black/60 dark:text-slate-400">
-          Cuidemos tus ojos durante la jornada de estudio de hoy.
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold sm:text-3xl">
+              ¡Hola, <span className="text-brand-tealDark dark:text-brand-teal">{user.nombre.split(" ")[0]}</span>!
+              Bienvenida de nuevo. 👋
+            </h1>
+            <p className="mt-1 text-black/60 dark:text-slate-400">
+              Cuidemos tus ojos durante la jornada de estudio de hoy.
+            </p>
+          </div>
+          <button onClick={() => setEditandoPerfil(true)} className="btn-ghost text-sm">
+            ⚙️ Editar perfil
+          </button>
+        </div>
       </motion.div>
 
       {/* Tarjeta grande del temporizador */}
@@ -74,7 +84,7 @@ export default function PanelPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="card overflow-hidden bg-gradient-to-br from-brand-accent to-[#0a4a8f] !text-white dark:from-brand-card dark:to-[#0a3055]"
+        className="card overflow-hidden bg-gradient-to-br from-brand-tealDeep to-brand-tealDark !text-white dark:from-brand-card dark:to-[#0a4540]"
       >
         <div className="flex flex-col items-center gap-6 py-4 text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
@@ -84,7 +94,9 @@ export default function PanelPage() {
             key={restante}
             initial={{ scale: 1 }}
             animate={restante <= 5 && activo ? { scale: [1, 1.08, 1] } : {}}
-            className="font-mono text-6xl font-bold tabular-nums sm:text-7xl"
+            className={`font-mono text-6xl font-bold tabular-nums sm:text-7xl ${
+              restante <= 5 && activo ? "text-brand-orange" : ""
+            }`}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
             {fmt(restante)}
@@ -93,7 +105,7 @@ export default function PanelPage() {
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <button
               onClick={() => (activo ? setActivo(false) : setActivo(true))}
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3 font-semibold text-brand-accent shadow-lg transition hover:scale-[1.02] hover:bg-brand-bg"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-orange px-7 py-3 font-bold text-[#0E2A47] shadow-lg transition hover:scale-[1.02] hover:bg-brand-orangeDark"
             >
               {activo ? "⏸ Pausar jornada" : "📚 Iniciar jornada de estudio"}
             </button>
@@ -158,14 +170,14 @@ export default function PanelPage() {
         </div>
       </section>
 
-      {/* Widget de cumplimiento (datos simulados) */}
+      {/* Widgets de seguimiento (datos simulados) */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="grid gap-4 lg:grid-cols-3"
+        className="grid gap-4 lg:grid-cols-2"
       >
-        <div className="card lg:col-span-2">
+        <div className="card">
           <div className="mb-2 flex items-baseline justify-between gap-3">
             <h2 className="text-lg font-bold text-brand-accent dark:text-sky-200">
               Cumplimiento semanal
@@ -177,21 +189,50 @@ export default function PanelPage() {
           </p>
           <ComplianceChart />
         </div>
-        <div className="card flex flex-col justify-center text-center">
-          <p className="text-sm font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
-            Ejercicio más realizado
+        <div className="card">
+          <div className="mb-2 flex items-baseline justify-between gap-3">
+            <h2 className="text-lg font-bold text-brand-accent dark:text-sky-200">
+              Reducción de síntomas
+            </h2>
+            <p className="text-3xl font-bold text-brand-orangeDark dark:text-brand-orange">−61 %</p>
+          </div>
+          <p className="mb-4 text-sm text-black/60 dark:text-slate-400">
+            Puntaje CVS-Q reportado por semana (menos es mejor)
           </p>
-          <motion.div
-            className="mx-auto my-3 text-5xl"
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          >
-            👁️
-          </motion.div>
-          <p className="text-lg font-bold">Parpadeo consciente</p>
-          <p className="mt-1 text-sm text-black/60 dark:text-slate-400">
-            23 veces esta semana
-          </p>
+          <SymptomChart />
+        </div>
+        <div className="card lg:col-span-2">
+          <h2 className="mb-4 text-lg font-bold text-brand-accent dark:text-sky-200">
+            Tus ejercicios
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex items-center gap-4 rounded-2xl bg-brand-teal/10 p-4 dark:bg-brand-teal/15">
+              <motion.span
+                className="text-4xl"
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                👁️
+              </motion.span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
+                  Más realizado
+                </p>
+                <p className="font-bold">Parpadeo consciente</p>
+                <p className="text-sm text-black/60 dark:text-slate-400">23 veces esta semana</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 rounded-2xl bg-brand-orange/10 p-4 dark:bg-brand-orange/15">
+              <span className="text-4xl">🌑</span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-black/50 dark:text-slate-400">
+                  Menos realizado
+                </p>
+                <p className="font-bold">Palming</p>
+                <p className="text-sm text-black/60 dark:text-slate-400">4 veces esta semana · ¡dale una oportunidad!</p>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.section>
 
@@ -199,6 +240,7 @@ export default function PanelPage() {
         {propuesto && (
           <NotificationModal ejercicio={propuesto} onClose={cerrarModal} />
         )}
+        {editandoPerfil && <PerfilModal onClose={() => setEditandoPerfil(false)} />}
       </AnimatePresence>
     </div>
   );

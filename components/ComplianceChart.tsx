@@ -22,10 +22,10 @@ const DATA = [
   { dia: "D", pct: 97 },
 ];
 
-// Azules de marca ajustados a la banda de luminosidad de marcas de datos
-// (validados para contraste y visión del color en ambos temas).
-const MARK_LIGHT = "#1D5FA6";
-const MARK_DARK = "#3F8EDC";
+// Teales de marca ajustados a la banda de luminosidad de marcas de datos
+// (validados junto al naranja para contraste y visión del color en ambos temas).
+const MARK_LIGHT = "#17A398";
+const MARK_DARK = "#14A292";
 
 export default function ComplianceChart() {
   const { dark } = useApp();

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 220" role="img" aria-label="FreshBreak — Hora de tu pausa visual">
+  <!-- Recreación vectorial del logo FreshBreak; reemplazar por el archivo vectorizado original cuando esté disponible. -->
+  <defs>
+    <radialGradient id="fb-iris" cx="42%" cy="38%" r="68%">
+      <stop offset="0%" stop-color="#C9F5EF"/>
+      <stop offset="35%" stop-color="#4ED8C8"/>
+      <stop offset="72%" stop-color="#17A398"/>
+      <stop offset="100%" stop-color="#0B4F55"/>
+    </radialGradient>
+  </defs>
+  <path d="M30 46 Q112 -10 214 40 Q152 24 98 34 Q58 42 30 46 Z" fill="#0E2A47"/>
+  <path d="M194 60 L222 42" stroke="#0E2A47" stroke-width="7" stroke-linecap="round"/>
+  <path d="M204 72 L234 60" stroke="#0E2A47" stroke-width="7" stroke-linecap="round"/>
+  <path d="M211 86 L242 80" stroke="#0E2A47" stroke-width="6" stroke-linecap="round"/>
+  <path d="M34 92 Q120 28 208 92 Q120 146 34 92 Z" fill="#F4FBFA" stroke="#0E2A47" stroke-width="5"/>
+  <path d="M32 90 Q120 22 210 90" fill="none" stroke="#0E2A47" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="48" cy="94" r="7" fill="#D9A7C7" opacity="0.7"/>
+  <circle cx="126" cy="90" r="35" fill="url(#fb-iris)"/>
+  <circle cx="126" cy="90" r="14" fill="#082033"/>
+  <ellipse cx="113" cy="76" rx="10" ry="7" fill="#fff" opacity="0.95"/>
+  <path d="M54 112 Q122 142 196 106" fill="none" stroke="#0E2A47" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+  <text x="125" y="182" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="30" font-weight="700" letter-spacing="2" fill="#0E2A47">FRESHBREAK</text>
+  <text x="125" y="206" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="12" font-weight="600" letter-spacing="4" fill="#17A398">HORA DE TU PAUSA VISUAL</text>
+</svg>

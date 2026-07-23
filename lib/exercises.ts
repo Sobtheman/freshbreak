@@ -18,12 +18,12 @@ export const EJERCICIOS: Ejercicio[] = [
     porQue:
       "Frente a pantallas parpadeamos hasta un 60 % menos, lo que reseca la superficie del ojo.",
     duracion: 120,
-    duracionLabel: "2 min",
+    duracionLabel: "2 min · rondas de 10 parpadeos",
     pasos: [
-      "Siéntate cómodamente y relaja los hombros.",
-      "Cierra los ojos suavemente durante 1 segundo.",
-      "Ábrelos sin apretar y sigue el ritmo del ojo animado (1 parpadeo cada 2 s).",
-      "Completa 10 parpadeos por ronda y repite durante 2 minutos.",
+      "Siéntate recto, relaja los hombros.",
+      "Cierra los ojos suavemente por 2 segundos y ábrelos, siguiendo el ojo animado.",
+      "Completa 10 parpadeos lentos por ronda.",
+      "Descansa 10 segundos entre rondas y continúa durante 2 minutos.",
     ],
   },
   {
@@ -36,8 +36,8 @@ export const EJERCICIOS: Ejercicio[] = [
     duracion: 60,
     duracionLabel: "1 min · 3 rondas de 20 s",
     pasos: [
-      "Aparta la mirada de la pantalla.",
-      "Busca un objeto a unos 6 metros de distancia (una ventana ayuda).",
+      "Aparta la mirada de la pantalla: se atenuará para recordártelo.",
+      "Busca un objeto bien iluminado a unos 6 metros (20 pies); una ventana ayuda.",
       "Manténlo enfocado mientras el anillo completa los 20 segundos.",
       "Repite 3 rondas.",
     ],
@@ -49,13 +49,13 @@ export const EJERCICIOS: Ejercicio[] = [
     objetivo: "Ejercitar los músculos extraoculares con movimientos suaves y amplios.",
     porQue:
       "Los movimientos oculares amplios y controlados mejoran la coordinación y reducen la rigidez ocular.",
-    duracion: 60,
-    duracionLabel: "1 min · 30 s por sentido",
+    duracion: 70,
+    duracionLabel: "70 s · 30 s por sentido + pausa",
     pasos: [
       "Mantén la cabeza completamente quieta.",
-      "Sigue el punto azul con la mirada mientras traza un ocho acostado (∞).",
-      "A los 30 segundos el punto invierte el sentido: síguelo igual.",
-      "Respira con calma durante todo el recorrido.",
+      "Sigue el punto naranja con la mirada mientras traza un ocho acostado (∞).",
+      "A los 30 segundos, descansa 10 segundos.",
+      "El punto invierte el sentido: síguelo 30 segundos más.",
     ],
   },
   {
@@ -68,9 +68,9 @@ export const EJERCICIOS: Ejercicio[] = [
     duracion: 200,
     duracionLabel: "3 min 20 s · 10 ciclos",
     pasos: [
-      "Extiende tu brazo y levanta el dedo índice frente a ti.",
-      "Cuando el punto crezca: enfoca tu dedo (visión cercana).",
-      "Cuando el punto se encoja: mira un objeto lejano de la habitación.",
+      "Sostén tu dedo índice a 15 cm frente a tus ojos.",
+      "Cuando el punto crezca: enfoca tu dedo (visión cercana) por 10 segundos.",
+      "Cuando el punto se encoja: mira un objeto lejano (mínimo 6 m).",
       "Alterna cada 10 segundos hasta completar 10 ciclos.",
     ],
   },
@@ -117,7 +117,7 @@ export const EJERCICIOS: Ejercicio[] = [
     duracionLabel: "1 min",
     pasos: [
       "Mantén la cabeza quieta; solo se mueven los ojos.",
-      "Sigue el punto mientras cruza lentamente de izquierda a derecha.",
+      "Sigue el punto naranja mientras cruza lentamente de izquierda a derecha.",
       "A los 30 segundos el movimiento pasa a ser vertical: síguelo igual.",
       "Si sientes tensión, parpadea y continúa.",
     ],

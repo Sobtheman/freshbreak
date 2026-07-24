@@ -36,9 +36,46 @@ function Starfield({ n = 70 }: { n?: number }) {
       aria-hidden
     >
       {stars.map((s, i) => (
-        <circle key={i} cx={s.x} cy={s.y} r={s.r * 0.14} fill="#7FE7DC" opacity={s.o} />
+        <circle key={i} cx={s.x} cy={s.y} r={s.r * 0.1} fill="#7FE7DC" opacity={s.o} />
       ))}
     </svg>
+  );
+}
+
+/* Manchas de luz difusa que unifican la profundidad de toda la página */
+function Blob({ className }: { className: string }) {
+  return (
+    <div
+      aria-hidden
+      className={`pointer-events-none absolute rounded-full blur-[130px] ${className}`}
+    />
+  );
+}
+
+/* Cabecera de sección unificada: guiones + etiqueta espaciada + título */
+function SectionHead({
+  eyebrow,
+  title,
+  sub,
+}: {
+  eyebrow: string;
+  title: string;
+  sub?: string;
+}) {
+  return (
+    <div className="mb-12 text-center">
+      <p className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.4em] text-brand-tealDark dark:text-marine-line">
+        <span className="dashed-line h-[3px] w-10 opacity-50" aria-hidden />
+        {eyebrow}
+        <span className="dashed-line h-[3px] w-10 opacity-50" aria-hidden />
+      </p>
+      <h2 className="mt-3 text-3xl font-bold text-ink dark:text-white">{title}</h2>
+      {sub && (
+        <p className="mx-auto mt-3 max-w-xl text-sm text-ink/65 dark:text-mist-tint/65">
+          {sub}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -109,7 +146,6 @@ function DemoOcho() {
     return pts.join(" ");
   }, []);
 
-  // Flechas de sentido a lo largo del ∞, como en el arte de referencia
   const flechas = useMemo(() => {
     return Array.from({ length: 8 }, (_, i) => {
       const t = (i / 8) * Math.PI * 2 + 0.35;
@@ -176,12 +212,14 @@ function MiniCVSQ() {
   }
 
   return (
-    <div className="card flex h-full flex-col">
-      <div className="flex items-center gap-2">
-        <IconOjo className="h-6 w-6 text-brand-tealDark" />
+    <div className="card flex h-full flex-col !rounded-3xl !p-7">
+      <div className="flex items-center gap-3">
+        <span className="icon-chip !border-brand-tealDark/40 !text-brand-tealDark">
+          <IconOjo className="h-6 w-6" />
+        </span>
         <h3 className="m-0 text-lg font-bold">CVS-Q</h3>
       </div>
-      <p className="mb-4 mt-1 text-sm text-ink/60">
+      <p className="mb-4 mt-2 text-sm text-ink/60">
         Descubre tu nivel de fatiga visual. Empieza con 3 preguntas:
       </p>
       <div className="flex-1 space-y-3">
@@ -195,7 +233,7 @@ function MiniCVSQ() {
                   type="button"
                   onClick={() => responder(i, oi as 0 | 1 | 2)}
                   aria-pressed={teaser[i] === oi}
-                  className={`rounded-lg border px-2 py-1.5 text-xs font-semibold transition ${
+                  className={`rounded-full border px-2 py-1.5 text-xs font-semibold transition ${
                     teaser[i] === oi
                       ? "border-ink bg-ink text-white"
                       : "border-ink/15 bg-mist-bg text-ink/70 hover:border-ink/40"
@@ -261,12 +299,14 @@ function SemanaWidget() {
   }
 
   return (
-    <div className="card flex h-full flex-col">
-      <div className="flex items-center gap-2">
-        <IconCampana className="h-6 w-6 text-brand-tealDark" />
+    <div className="card flex h-full flex-col !rounded-3xl !p-7">
+      <div className="flex items-center gap-3">
+        <span className="icon-chip !border-brand-tealDark/40 !text-brand-tealDark">
+          <IconCampana className="h-6 w-6" />
+        </span>
         <h3 className="m-0 text-lg font-bold">Esta semana</h3>
       </div>
-      <p className="mb-4 mt-1 text-sm text-ink/60">
+      <p className="mb-4 mt-2 text-sm text-ink/60">
         Marca tus días de estudio y mira cuándo te recordaríamos:
       </p>
       <div className="grid grid-cols-7 gap-1.5">
@@ -276,7 +316,7 @@ function SemanaWidget() {
             type="button"
             onClick={() => toggleDia(di)}
             aria-pressed={teaserDias.includes(di)}
-            className={`rounded-lg border py-2 text-xs font-bold transition ${
+            className={`rounded-full border py-2 text-xs font-bold transition ${
               teaserDias.includes(di)
                 ? "border-brand-tealDark bg-brand-tealDark text-white"
                 : "border-ink/15 bg-mist-bg text-ink/60 hover:border-ink/40"
@@ -288,7 +328,7 @@ function SemanaWidget() {
       </div>
       <div className="mt-4 flex-1">
         {primerDia !== null ? (
-          <div className="rounded-xl bg-mist-tint p-3">
+          <div className="rounded-2xl bg-mist-tint p-3">
             <p className="m-0 text-xs font-semibold text-ink/70">
               {DIAS[primerDia]}, con un bloque de 8:00 a 12:00 y pausas cada 30 min:
             </p>
@@ -302,7 +342,7 @@ function SemanaWidget() {
             </p>
           </div>
         ) : (
-          <p className="rounded-xl border border-dashed border-ink/20 p-3 text-center text-xs text-ink/50">
+          <p className="rounded-2xl border border-dashed border-ink/20 p-3 text-center text-xs text-ink/50">
             Toca un día para ver el ejemplo
           </p>
         )}
@@ -319,15 +359,17 @@ function SemanaWidget() {
 /* Recordatorio: la notificación tal como llega, con botón real */
 function RecordatorioCard() {
   return (
-    <div className="card flex h-full flex-col">
-      <div className="flex items-center gap-2">
-        <IconCorreo className="h-6 w-6 text-brand-tealDark" />
+    <div className="card flex h-full flex-col !rounded-3xl !p-7">
+      <div className="flex items-center gap-3">
+        <span className="icon-chip !border-brand-tealDark/40 !text-brand-tealDark">
+          <IconCorreo className="h-6 w-6" />
+        </span>
         <h3 className="m-0 text-lg font-bold">Recordatorio</h3>
       </div>
-      <p className="mb-4 mt-1 text-sm text-ink/60">
+      <p className="mb-4 mt-2 text-sm text-ink/60">
         Así llega, en la app y a tu correo:
       </p>
-      <div className="flex-1 rounded-xl bg-mist-tint p-4 shadow-inner">
+      <div className="flex-1 rounded-2xl bg-mist-tint p-4 shadow-inner">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-xs font-bold">
             <EyeMark className="w-6 text-ink" /> FreshBreak
@@ -435,275 +477,281 @@ export default function LandingPage() {
   const [faqAbierta, setFaqAbierta] = useState<number | null>(0);
 
   return (
-    <div className="relative left-1/2 -mb-20 -mt-8 w-screen -translate-x-1/2 overflow-x-clip">
-      {/* ============ HERO ============ */}
-      <section
-        id="inicio"
-        className="grain relative overflow-hidden bg-mist-bg dark:bg-marine-bg"
-      >
-        <Starfield n={80} />
-        <div className="vignette pointer-events-none absolute inset-0 hidden dark:block" />
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-2 px-4 pb-16 pt-6 lg:grid-cols-[1fr_1.35fr] lg:gap-0">
-          <div className="order-2 lg:order-1">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="glow-word text-5xl font-bold tracking-[0.04em] text-ink dark:text-white sm:text-6xl lg:text-7xl"
-            >
-              FRESHBREAK
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.5 }}
-              className="mt-2 text-sm font-bold uppercase tracking-[0.3em] text-brand-tealDark dark:text-marine-line sm:text-base"
-            >
-              Hora de tu pausa visual
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.5 }}
-              className="mt-5 max-w-md text-ink/70 dark:text-mist-tint/75"
-            >
-              La app que programa tus pausas visuales dentro de tu horario y
-              guía a tus ojos, ejercicio por ejercicio.
-            </motion.p>
+    <div className="relative left-1/2 -mb-20 -mt-8 w-screen -translate-x-1/2 overflow-x-clip bg-mist-bg dark:bg-[#04201F]">
+      {/* Un solo campo de profundidad para TODA la página: gradiente continuo,
+          manchas de luz, estrellas y grano — sin bloques de color por sección */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 hidden dark:block"
+        style={{
+          background:
+            "linear-gradient(180deg, #06282A 0%, #052624 26%, #04201F 52%, #052A28 78%, #04201F 100%)",
+        }}
+      />
+      <Blob className="left-[55%] top-[2%] hidden h-[520px] w-[620px] bg-[#2CA7A0]/25 dark:block" />
+      <Blob className="-left-40 top-[30%] hidden h-[420px] w-[420px] bg-[#177E7C]/20 dark:block" />
+      <Blob className="left-[30%] top-[62%] hidden h-[460px] w-[560px] bg-[#2CA7A0]/15 dark:block" />
+      <div className="absolute inset-0">
+        <Starfield n={160} />
+      </div>
+      <div className="grain pointer-events-none absolute inset-0 opacity-60" aria-hidden />
+
+      <div className="relative">
+        {/* ============ HERO ============ */}
+        <section id="inicio" className="relative">
+          <div className="vignette pointer-events-none absolute inset-0 hidden dark:block" />
+          <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-2 px-4 pb-24 pt-8 lg:min-h-[82vh] lg:grid-cols-[1fr_1.35fr] lg:gap-0 lg:pb-16 lg:pt-0">
+            <div className="order-2 lg:order-1">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="glow-word text-5xl font-bold tracking-[0.04em] text-ink dark:text-white sm:text-6xl lg:text-7xl"
+              >
+                FRESHBREAK
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+                className="mt-2 text-sm font-bold uppercase tracking-[0.3em] text-brand-tealDark dark:text-marine-line sm:text-base"
+              >
+                Hora de tu pausa visual
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.28, duration: 0.5 }}
+                className="mt-5 max-w-md text-ink/70 dark:text-mist-tint/75"
+              >
+                La app que programa tus pausas visuales dentro de tu horario y
+                guía a tus ojos, ejercicio por ejercicio.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="mt-8 flex flex-wrap items-center gap-4"
+              >
+                <Link
+                  href="/registro"
+                  className="btn-primary px-8 dark:bg-marine-line dark:text-marine-bg dark:hover:bg-[#5FD9D2]"
+                >
+                  Crear mi plan →
+                </Link>
+                <button
+                  onClick={() => {
+                    seedDemo();
+                    router.push("/panel");
+                  }}
+                  className="text-sm font-semibold text-ink/75 underline underline-offset-4 transition hover:text-ink dark:text-mist-tint/80 dark:hover:text-white"
+                >
+                  o explora la demo
+                </button>
+              </motion.div>
+            </div>
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="mt-8 flex flex-wrap items-center gap-4"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="order-1 lg:order-2 lg:-my-14 lg:-mr-20"
             >
-              <Link
-                href="/registro"
-                className="btn-primary dark:bg-marine-line dark:text-marine-bg dark:hover:bg-[#5FD9D2]"
-              >
-                Crear mi plan →
-              </Link>
-              <button
-                onClick={() => {
-                  seedDemo();
-                  router.push("/panel");
-                }}
-                className="text-sm font-semibold text-ink/75 underline underline-offset-4 transition hover:text-ink dark:text-mist-tint/80 dark:hover:text-white"
-              >
-                o explora la demo
-              </button>
+              <EyeHero className="w-full scale-110 lg:scale-125" />
             </motion.div>
           </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="order-1 lg:order-2 lg:-my-14 lg:-mr-20"
-          >
-            <EyeHero className="w-full scale-110 lg:scale-125" />
-          </motion.div>
-        </div>
-        {/* línea punteada que cruza toda la pantalla a la altura del iris */}
-        <div className="absolute inset-x-0 top-[56%] z-0 hidden lg:block">
-          <LineaConPunto />
-        </div>
-      </section>
-
-      {/* ============ SIGUE EL PUNTO ============ */}
-      <section className="grain seam relative bg-mist-tint dark:bg-[#04211F]">
-        <Starfield n={40} />
-        <div className="mx-auto max-w-6xl px-4 py-14">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            className="grid items-center gap-8 rounded-3xl border border-brand-tealDark/25 bg-white/40 p-6 dark:border-marine-line/25 dark:bg-marine-deep/25 dark:shadow-glowTeal lg:grid-cols-[1fr_2fr] lg:p-10"
-          >
-            <div>
-              <h2 className="flex items-center gap-2 text-2xl font-bold text-ink dark:text-white">
-                <IconOjo className="h-6 w-6 text-brand-tealDark dark:text-marine-line" />
-                Sigue el punto
-              </h2>
-              <p className="mt-2 text-sm text-ink/65 dark:text-mist-tint/65">
-                Relaja tus ojos siguiendo el punto naranja con un movimiento
-                suave, sin mover la cabeza. Acabas de hacer tu primer ejercicio.
-              </p>
-            </div>
-            <DemoOcho />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ============ WIDGETS EN VIVO ============ */}
-      <section id="widgets" className="grain bg-mist-bg dark:bg-marine-bg">
-        <div className="mx-auto max-w-6xl px-4 py-14">
-          <div className="grid gap-5 md:grid-cols-3">
-            <MiniCVSQ />
-            <SemanaWidget />
-            <RecordatorioCard />
+          <div className="absolute inset-x-0 top-[56%] z-0 hidden lg:block">
+            <LineaConPunto />
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ============ SERVICIOS ============ */}
-      <section id="servicios" className="grain bg-mist-bg dark:bg-marine-bg">
-        <div className="mx-auto max-w-5xl px-4 pb-14 pt-2">
-          <h2 className="text-center text-sm font-bold uppercase tracking-[0.35em] text-ink/60 dark:text-mist-tint/60">
-            Servicios
-          </h2>
-          <div className="mt-6 space-y-3">
-            {SERVICIOS.map(({ Icon, nombre, desc, href }) => (
-              <Link
-                key={nombre}
-                href={href}
-                className="group flex items-center gap-4 rounded-2xl border border-ink/15 bg-white/60 px-5 py-4 transition hover:border-brand-tealDark hover:bg-white dark:border-marine-line/25 dark:bg-marine-deep/40 dark:hover:border-marine-line/70 dark:hover:shadow-glowTeal"
-              >
-                <span className="flex-none text-brand-tealDark dark:text-marine-line">
-                  <Icon />
-                </span>
-                <span className="flex-1">
-                  <span className="block font-bold text-ink dark:text-white">{nombre}</span>
-                  <span className="block text-sm text-ink/60 dark:text-mist-tint/60">{desc}</span>
-                </span>
-                <span className="flex-none text-brand-tealDark transition group-hover:translate-x-1 dark:text-marine-line">
-                  →
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ CIENCIA ============ */}
-      <section id="ciencia" className="grain seam bg-mist-tint dark:bg-[#04211F]">
-        <div className="mx-auto max-w-5xl px-4 py-14">
-          <h2 className="text-center text-2xl font-bold text-ink dark:text-white">
-            La ciencia detrás
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-center text-sm text-ink/65 dark:text-mist-tint/65">
-            Cada ejercicio de FreshBreak existe por una razón fisiológica
-            concreta, y el CVS-Q mide tus síntomas para dosificarlos.
-          </p>
-          <div className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-            {CIENCIA.map((c) => (
-              <div key={c.t} className="border-l-2 border-brand-tealDark/50 pl-4 dark:border-marine-line/50">
-                <p className="m-0 font-bold text-ink dark:text-white">{c.t}</p>
-                <p className="m-0 mt-1 text-sm text-ink/65 dark:text-mist-tint/65">{c.d}</p>
+        {/* ============ SIGUE EL PUNTO ============ */}
+        <section className="relative">
+          <div className="mx-auto max-w-6xl px-4 pb-24">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              className="grid items-center gap-8 rounded-[28px] border border-brand-tealDark/25 bg-white/40 p-7 backdrop-blur-sm dark:border-marine-line/25 dark:bg-marine-deep/25 dark:shadow-glowTeal lg:grid-cols-[1fr_2fr] lg:p-10"
+            >
+              <div>
+                <h2 className="flex items-center gap-3 text-2xl font-bold text-ink dark:text-white">
+                  <span className="icon-chip">
+                    <IconOjo className="h-6 w-6" />
+                  </span>
+                  Sigue el punto
+                </h2>
+                <p className="mt-3 text-sm text-ink/65 dark:text-mist-tint/65">
+                  Relaja tus ojos siguiendo el punto naranja con un movimiento
+                  suave, sin mover la cabeza. Acabas de hacer tu primer
+                  ejercicio.
+                </p>
               </div>
-            ))}
-            <div className="border-l-2 border-brand-orange/60 pl-4">
-              <p className="m-0 font-bold text-ink dark:text-white">
-                El CVS-Q® como punto de partida
-              </p>
-              <p className="m-0 mt-1 text-sm text-ink/65 dark:text-mist-tint/65">
-                16 preguntas sobre frecuencia e intensidad de síntomas definen
-                tu nivel de fatiga y la frecuencia de tus pausas.
-              </p>
+              <DemoOcho />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ============ WIDGETS EN VIVO ============ */}
+        <section id="widgets" className="relative">
+          <div className="mx-auto max-w-6xl px-4 pb-24">
+            <div className="grid gap-6 md:grid-cols-3">
+              <MiniCVSQ />
+              <SemanaWidget />
+              <RecordatorioCard />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ============ CÓMO FUNCIONA ============ */}
-      <section id="como-funciona" className="grain bg-mist-bg dark:bg-marine-bg">
-        <div className="mx-auto max-w-6xl px-4 py-14">
-          <h2 className="text-center text-2xl font-bold text-ink dark:text-white">
-            ¿Cómo funciona?
-          </h2>
-          <div className="relative mt-10">
-            <div className="dashed-line absolute left-0 right-0 top-[9px] hidden h-[4px] opacity-40 dark:opacity-70 md:block" />
-            <div className="grid gap-8 md:grid-cols-4">
-              {[
-                { t: "Regístrate", d: "Nombre, correo, edad y ocupación. Sin contraseñas." },
-                { t: "Responde el CVS-Q", d: "16 preguntas miden tu fatiga visual digital." },
-                { t: "Registra tu horario", d: "Tus bloques de estudio y horas de pantalla." },
-                { t: "Recibe tus pausas", d: "Recordatorios con ejercicios guiados, en app y correo." },
-              ].map((p, i) => (
-                <div key={p.t} className="relative">
-                  <span className="mb-3 block h-[22px] w-[22px] rounded-full border-2 border-white bg-brand-orange shadow-[0_0_14px_rgba(247,154,86,0.7)] dark:border-marine-bg" />
-                  <p className="m-0 font-bold text-ink dark:text-white">
-                    {i + 1}. {p.t}
-                  </p>
-                  <p className="m-0 mt-1 text-sm text-ink/60 dark:text-mist-tint/60">{p.d}</p>
+        {/* ============ SERVICIOS ============ */}
+        <section id="servicios" className="relative">
+          <div className="mx-auto max-w-4xl px-4 pb-24">
+            <SectionHead eyebrow="Servicios" title="Lo que FreshBreak hace por ti" />
+            <div className="space-y-4">
+              {SERVICIOS.map(({ Icon, nombre, desc, href }) => (
+                <Link
+                  key={nombre}
+                  href={href}
+                  className="group flex items-center gap-5 rounded-2xl border border-ink/10 bg-white/70 px-6 py-5 backdrop-blur-sm transition hover:border-brand-tealDark hover:bg-white dark:border-marine-line/20 dark:bg-white/[0.04] dark:hover:border-marine-line/60 dark:hover:shadow-glowTeal"
+                >
+                  <span className="icon-chip">
+                    <Icon />
+                  </span>
+                  <span className="flex-1">
+                    <span className="block font-bold text-ink dark:text-white">{nombre}</span>
+                    <span className="block text-sm text-ink/60 dark:text-mist-tint/60">{desc}</span>
+                  </span>
+                  <span className="arrow-ring text-brand-tealDark dark:text-marine-line">→</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============ CIENCIA ============ */}
+        <section id="ciencia" className="relative">
+          <div className="mx-auto max-w-5xl px-4 pb-24">
+            <SectionHead
+              eyebrow="La ciencia"
+              title="Cada ejercicio existe por una razón"
+              sub="Fisiología concreta detrás de cada pausa, y el CVS-Q midiendo tus síntomas para dosificarlas."
+            />
+            <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
+              {CIENCIA.map((c) => (
+                <div key={c.t} className="border-l-2 border-brand-tealDark/50 pl-5 dark:border-marine-line/50">
+                  <p className="m-0 font-bold text-ink dark:text-white">{c.t}</p>
+                  <p className="m-0 mt-1.5 text-sm text-ink/65 dark:text-mist-tint/65">{c.d}</p>
+                </div>
+              ))}
+              <div className="border-l-2 border-brand-orange/60 pl-5">
+                <p className="m-0 font-bold text-ink dark:text-white">
+                  El CVS-Q® como punto de partida
+                </p>
+                <p className="m-0 mt-1.5 text-sm text-ink/65 dark:text-mist-tint/65">
+                  16 preguntas sobre frecuencia e intensidad de síntomas definen
+                  tu nivel de fatiga y la frecuencia de tus pausas.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ CÓMO FUNCIONA ============ */}
+        <section id="como-funciona" className="relative">
+          <div className="mx-auto max-w-6xl px-4 pb-24">
+            <SectionHead eyebrow="Cómo funciona" title="Cuatro pasos, cero fricción" />
+            <div className="relative">
+              <div className="dashed-line absolute left-0 right-0 top-[9px] hidden h-[4px] opacity-40 dark:opacity-70 md:block" />
+              <div className="grid gap-10 md:grid-cols-4">
+                {[
+                  { t: "Regístrate", d: "Nombre, correo, edad y ocupación. Sin contraseñas." },
+                  { t: "Responde el CVS-Q", d: "16 preguntas miden tu fatiga visual digital." },
+                  { t: "Registra tu horario", d: "Tus bloques de estudio y horas de pantalla." },
+                  { t: "Recibe tus pausas", d: "Recordatorios con ejercicios guiados, en app y correo." },
+                ].map((p, i) => (
+                  <div key={p.t} className="relative">
+                    <span className="mb-4 block h-[22px] w-[22px] rounded-full border-2 border-white bg-brand-orange shadow-[0_0_14px_rgba(247,154,86,0.7)] dark:border-[#04201F]" />
+                    <p className="m-0 font-bold text-ink dark:text-white">
+                      {i + 1}. {p.t}
+                    </p>
+                    <p className="m-0 mt-1.5 text-sm text-ink/60 dark:text-mist-tint/60">{p.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ FAQ ============ */}
+        <section id="faq" className="relative">
+          <div className="mx-auto max-w-3xl px-4 pb-24">
+            <SectionHead eyebrow="Dudas" title="Preguntas frecuentes" />
+            <div className="space-y-4">
+              {FAQS.map((f, i) => (
+                <div
+                  key={f.q}
+                  className="overflow-hidden rounded-2xl border border-ink/10 bg-white/70 backdrop-blur-sm dark:border-marine-line/20 dark:bg-white/[0.04]"
+                >
+                  <button
+                    onClick={() => setFaqAbierta(faqAbierta === i ? null : i)}
+                    aria-expanded={faqAbierta === i}
+                    className="flex w-full items-center justify-between gap-3 px-6 py-4.5 py-4 text-left font-semibold text-ink dark:text-white"
+                  >
+                    {f.q}
+                    <span
+                      className={`flex-none text-brand-tealDark transition-transform dark:text-marine-line ${
+                        faqAbierta === i ? "rotate-45" : ""
+                      }`}
+                    >
+                      +
+                    </span>
+                  </button>
+                  {faqAbierta === i && (
+                    <p className="m-0 px-6 pb-5 text-sm leading-relaxed text-ink/70 dark:text-mist-tint/70">
+                      {f.a}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ============ FAQ ============ */}
-      <section id="faq" className="grain seam bg-mist-tint dark:bg-[#04211F]">
-        <div className="mx-auto max-w-3xl px-4 py-14">
-          <h2 className="text-center text-2xl font-bold text-ink dark:text-white">
-            Preguntas frecuentes
-          </h2>
-          <div className="mt-8 space-y-3">
-            {FAQS.map((f, i) => (
-              <div
-                key={f.q}
-                className="overflow-hidden rounded-2xl border border-ink/15 bg-white/70 dark:border-marine-line/25 dark:bg-marine-deep/40"
-              >
-                <button
-                  onClick={() => setFaqAbierta(faqAbierta === i ? null : i)}
-                  aria-expanded={faqAbierta === i}
-                  className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-ink dark:text-white"
-                >
-                  {f.q}
-                  <span
-                    className={`flex-none text-brand-tealDark transition-transform dark:text-marine-line ${
-                      faqAbierta === i ? "rotate-45" : ""
-                    }`}
-                  >
-                    +
-                  </span>
-                </button>
-                {faqAbierta === i && (
-                  <p className="m-0 px-5 pb-4 text-sm leading-relaxed text-ink/70 dark:text-mist-tint/70">
-                    {f.a}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ CTA FINAL ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-mist-tint via-[#AEEBEA] to-[#40BFC0] dark:from-[#04211F] dark:via-[#0A3F40] dark:to-[#177E7C]">
-        {/* ondas de luz ascendiendo, como el cierre del arte de referencia */}
-        <svg
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full opacity-40 dark:opacity-60"
-          viewBox="0 0 400 100"
-          preserveAspectRatio="none"
-          aria-hidden
-        >
-          <path d="M0 78 Q100 58 200 74 T400 66 V100 H0 Z" fill="#7FE7DC" opacity="0.25" />
-          <path d="M0 88 Q120 70 240 84 T400 80 V100 H0 Z" fill="#B9F5EE" opacity="0.3" />
-          <path d="M0 70 Q90 92 210 78 T400 88" fill="none" stroke="#DFFDF9" strokeWidth="1.2" opacity="0.5" />
-        </svg>
-        <div className="relative mx-auto max-w-3xl px-4 py-16 text-center">
-          <EyeMark className="mx-auto w-14 text-ink dark:text-white" />
-          <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-ink/70 dark:text-white/70">
-            Tus ojos trabajan duro por ti
-          </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink dark:text-white sm:text-4xl">
-            Dales la pausa que merecen.
-          </h2>
-          <Link
-            href="/registro"
-            className="btn-primary mt-8 px-10 dark:bg-white dark:text-marine-bg dark:hover:bg-mist-tint"
+        {/* ============ CTA FINAL ============ */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-transparent via-[#AEEBEA]/60 to-[#40BFC0] dark:via-[#0A3F40] dark:to-[#177E7C]">
+          <svg
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full opacity-40 dark:opacity-60"
+            viewBox="0 0 400 100"
+            preserveAspectRatio="none"
+            aria-hidden
           >
-            Crear mi plan →
-          </Link>
-        </div>
-        <footer className="border-t border-ink/10 bg-ink/5 py-5 text-center text-[11px] text-ink/60 dark:border-white/10 dark:bg-black/20 dark:text-white/60">
-          <p className="m-0">
-            FreshBreak · Demo académica · Datos protegidos según la Ley 1581 de
-            2012 y el Decreto 1377 de 2013 — los correos solo incluyen tu nombre
-            y las indicaciones del ejercicio.
-          </p>
-        </footer>
-      </section>
+            <path d="M0 78 Q100 58 200 74 T400 66 V100 H0 Z" fill="#7FE7DC" opacity="0.25" />
+            <path d="M0 88 Q120 70 240 84 T400 80 V100 H0 Z" fill="#B9F5EE" opacity="0.3" />
+            <path d="M0 70 Q90 92 210 78 T400 88" fill="none" stroke="#DFFDF9" strokeWidth="1.2" opacity="0.5" />
+          </svg>
+          <div className="relative mx-auto max-w-3xl px-4 py-20 text-center">
+            <EyeMark className="mx-auto w-14 text-ink dark:text-white" />
+            <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-ink/70 dark:text-white/70">
+              Tus ojos trabajan duro por ti
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-ink dark:text-white sm:text-4xl">
+              Dales la pausa que merecen.
+            </h2>
+            <Link
+              href="/registro"
+              className="btn-primary mt-8 px-10 dark:bg-white dark:text-marine-bg dark:hover:bg-mist-tint"
+            >
+              Crear mi plan →
+            </Link>
+          </div>
+          <footer className="border-t border-ink/10 bg-ink/5 py-5 text-center text-[11px] text-ink/60 dark:border-white/10 dark:bg-black/20 dark:text-white/60">
+            <p className="m-0">
+              FreshBreak · Demo académica · Datos protegidos según la Ley 1581
+              de 2012 y el Decreto 1377 de 2013 — los correos solo incluyen tu
+              nombre y las indicaciones del ejercicio.
+            </p>
+          </footer>
+        </section>
+      </div>
     </div>
   );
 }

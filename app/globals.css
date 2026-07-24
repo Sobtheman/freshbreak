@@ -18,25 +18,33 @@
     @apply rounded-2xl bg-white p-6 text-ink shadow-panelLight ring-1 ring-ink/5 dark:bg-[#F4FAF8] dark:shadow-panel dark:ring-0;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-6 py-3 font-semibold text-white transition hover:bg-[#0B4F55] focus:outline-none focus:ring-2 focus:ring-marine-line/50 disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-white transition hover:bg-[#0B4F55] focus:outline-none focus:ring-2 focus:ring-marine-line/50 disabled:cursor-not-allowed disabled:opacity-40;
   }
   /* Botón sobre superficies oscuras: contorno teal luminoso */
   .btn-sea {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-marine-line/60 bg-marine-line/10 px-6 py-3 font-semibold text-marine-line transition hover:bg-marine-line/20 hover:shadow-glowTeal focus:outline-none focus:ring-2 focus:ring-marine-line/50;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-marine-line/60 bg-marine-line/10 px-6 py-3 font-semibold text-marine-line transition hover:bg-marine-line/20 hover:shadow-glowTeal focus:outline-none focus:ring-2 focus:ring-marine-line/50;
   }
   /* Fantasma sobre paneles claros (fijo, no cambia con el tema) */
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-ink/25 px-5 py-2.5 font-semibold text-ink transition hover:bg-ink/5 focus:outline-none focus:ring-2 focus:ring-marine-line/40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/25 px-5 py-2.5 font-semibold text-ink transition hover:bg-ink/5 focus:outline-none focus:ring-2 focus:ring-marine-line/40;
   }
   /* Fantasma sobre el fondo de página (se adapta al tema) */
   .btn-ghost-page {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-ink/25 px-5 py-2.5 font-semibold text-ink transition hover:bg-ink/5 focus:outline-none focus:ring-2 focus:ring-marine-line/40 dark:border-marine-line/40 dark:text-marine-line dark:hover:bg-marine-line/10;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/25 px-5 py-2.5 font-semibold text-ink transition hover:bg-ink/5 focus:outline-none focus:ring-2 focus:ring-marine-line/40 dark:border-marine-line/40 dark:text-marine-line dark:hover:bg-marine-line/10;
   }
   .field {
     @apply w-full rounded-xl border border-ink/15 bg-mist-bg px-4 py-3 text-ink outline-none transition focus:border-brand-tealDark focus:ring-2 focus:ring-marine-line/30;
   }
   .label {
     @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+  /* Chip de icono con contorno, como el arte de referencia */
+  .icon-chip {
+    @apply flex h-12 w-12 flex-none items-center justify-center rounded-xl border-[1.5px] border-brand-tealDark/40 text-brand-tealDark dark:border-marine-line/50 dark:text-marine-line;
+  }
+  /* Flecha circulada que se llena al pasar el cursor */
+  .arrow-ring {
+    @apply flex h-9 w-9 flex-none items-center justify-center rounded-full border-[1.5px] border-current transition group-hover:bg-brand-tealDark group-hover:text-white dark:group-hover:bg-marine-line dark:group-hover:text-marine-bg;
   }
   /* Texto de página (fuera de paneles): tinta en claro, bruma en oscuro */
   .page-ink {

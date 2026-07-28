@@ -21,22 +21,22 @@ export const BLOQUES_EJEMPLO: Bloque[] = [
   { dia: 4, inicio: 8, fin: 12 },
 ];
 
-// Recomendación de intervalo entre pausas según CVS-Q y exposición a pantallas
-// (la propuesta pide personalizar frecuencia según síntomas y carga visual).
+// Recomendación de intervalo entre pausas. La propuesta fija el estándar en
+// 60 minutos y pide personalizar la frecuencia según síntomas y carga visual:
+// con síntomas (CVS-Q ≥ 6) o alta exposición (≥ 8 h/día) se acorta a 45 min.
+// (La regla 20-20-20 es un EJERCICIO de micro-descanso, no la cadencia de
+// los recordatorios.)
 export function recomendarIntervalo(score: number | null, horasPantalla: number): number {
   const s = score ?? 0;
-  if (s >= 12 || horasPantalla >= 8) return 20;
-  if (s >= 6 || horasPantalla >= 6) return 30;
+  if (s >= 6 || horasPantalla >= 8) return 45;
   return 60;
 }
 
 export function razonIntervalo(score: number | null, horasPantalla: number): string {
   const s = score ?? 0;
-  if (s >= 12 || horasPantalla >= 8)
-    return "Tu puntaje CVS-Q y tu alta exposición a pantallas indican pausas frecuentes.";
-  if (s >= 6 || horasPantalla >= 6)
-    return "Presentas síntomas de fatiga visual: te conviene descansar más seguido.";
-  return "Tu nivel de fatiga es bajo: el estándar de 60 minutos es suficiente.";
+  if (s >= 6 || horasPantalla >= 8)
+    return "Presentas síntomas de fatiga visual o alta exposición: acortamos el estándar de 60 a 45 minutos.";
+  return "Tu nivel de fatiga es bajo: el estándar de 60 minutos de la propuesta es suficiente.";
 }
 
 // Horas de pausa programadas para un día dado ("HH:MM"), cada `intervaloMin`
@@ -48,7 +48,8 @@ export function pausasDelDia(bloques: Bloque[], dia: number, intervaloMin: numbe
     .sort((a, b) => a.inicio - b.inicio)
     .forEach((b) => {
       let t = b.inicio * 60 + intervaloMin;
-      while (t <= b.fin * 60) {
+      // estrictamente DENTRO del bloque: sin recordatorios al minuto de salida
+      while (t < b.fin * 60) {
         horas.push(
           `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`
         );

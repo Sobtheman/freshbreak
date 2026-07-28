@@ -124,9 +124,8 @@ export default function PanelPage() {
                 }}
                 className="rounded-lg border border-white/30 bg-white/10 px-2.5 py-1.5 font-semibold text-white outline-none [&>option]:text-black"
               >
-                <option value={60}>60 min</option>
-                <option value={30}>30 min</option>
-                <option value={20}>20 min</option>
+                <option value={60}>60 min (estándar)</option>
+                <option value={45}>45 min (con síntomas)</option>
                 <option value={1}>1 min (demo)</option>
               </select>
               <span className="opacity-70">· recomendado: según tu CVS-Q</span>

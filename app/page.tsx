@@ -287,7 +287,7 @@ function SemanaWidget() {
   const primerDia = teaserDias.length ? Math.min(...teaserDias) : null;
   const horas =
     primerDia !== null
-      ? pausasDelDia([{ dia: primerDia, inicio: 8, fin: 12 }], primerDia, 30)
+      ? pausasDelDia([{ dia: primerDia, inicio: 8, fin: 12 }], primerDia, 60)
       : [];
 
   function toggleDia(d: number) {
@@ -330,7 +330,7 @@ function SemanaWidget() {
         {primerDia !== null ? (
           <div className="rounded-2xl bg-mist-tint p-3">
             <p className="m-0 text-xs font-semibold text-ink/70">
-              {DIAS[primerDia]}, con un bloque de 8:00 a 12:00 y pausas cada 30 min:
+              {DIAS[primerDia]}, con un bloque de 8:00 a 12:00 y pausas cada hora:
             </p>
             <p className="m-0 mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[13px] font-semibold tabular-nums">
               {horas.map((h) => (
@@ -451,7 +451,7 @@ const FAQS = [
   },
   {
     q: "¿Cómo se personaliza mi intervalo de pausas?",
-    a: "Con tu puntaje del CVS-Q y tus horas diarias de pantalla: síntomas altos o mucha exposición sugieren pausas cada 20 o 30 minutos; un nivel bajo mantiene el estándar de 60 minutos. Siempre puedes ajustarlo desde tu panel.",
+    a: "El estándar de la propuesta es una pausa cada 60 minutos. Si tu CVS-Q marca síntomas o pasas 8 o más horas frente a pantallas, el intervalo se acorta a 45 minutos. Siempre puedes ajustarlo desde tu panel.",
   },
   {
     q: "¿Qué es el CVS-Q?",

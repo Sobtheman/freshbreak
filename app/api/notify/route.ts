@@ -3,10 +3,8 @@ import { getEjercicio } from "@/lib/exercises";
 
 // Envía el recordatorio real por correo usando la API REST de Resend.
 // La clave vive en .env.local (RESEND_API_KEY) y nunca se versiona.
-//
-// Nota del modo sandbox de Resend: sin un dominio verificado, solo entrega
-// a la dirección del dueño de la cuenta y el remitente debe ser
-// onboarding@resend.dev.
+// Dominio verificado en Resend: freshbreak.online — puede entregar a
+// cualquier destinatario desde recordatorios@freshbreak.online.
 export async function POST(req: Request) {
   // Variable de entorno primero (despliegues); clave del proyecto como
   // respaldo para que un clon fresco funcione sin configuración.
@@ -69,7 +67,7 @@ export async function POST(req: Request) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "FreshBreak <onboarding@resend.dev>",
+      from: "FreshBreak <recordatorios@freshbreak.online>",
       to: [body.correo],
       subject: "¡Hora de tu pausa visual! 👁️",
       html,

@@ -60,19 +60,25 @@ export function ParpadeoAnim() {
           <circle cx="110" cy="70" r="34" className="fill-brand-tealDark" />
           <circle cx="110" cy="70" r="15" fill="#071A2B" />
           <ellipse cx="99" cy="57" rx="9" ry="7" fill="#fff" opacity="0.95" />
-          {/* párpado: tapa que baja de verdad (2 s cerrado / 2 s abierto) */}
+          {/* párpado: tapa cuyo borde inferior coincide con el contorno del
+             ojo al cerrar, de modo que lo cubre POR COMPLETO (nada de ojo a
+             medio cerrar) */}
           <motion.g
-            animate={{ y: cerrado ? 0 : -150 }}
-            transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+            animate={{ y: cerrado ? 0 : -160 }}
+            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
           >
             <path
-              d="M-10 -90 H230 V64 Q110 118 -10 64 Z"
+              d="M-10 -100 H230 V70 Q110 154 -10 70 Z"
               className="fill-brand-tealDeep"
             />
-            {/* pestañas de la tapa */}
-            <g className="stroke-brand-tealDeep" strokeWidth="4" strokeLinecap="round">
-              <path d="M60 84 L52 98 M110 92 L110 108 M160 84 L168 98" />
-            </g>
+            {/* línea de pestañas del párpado cerrado */}
+            <path
+              d="M-10 70 Q110 154 230 70"
+              fill="none"
+              stroke="#0E2A47"
+              strokeWidth="3.5"
+              opacity="0.55"
+            />
           </motion.g>
         </g>
         {/* contorno */}
@@ -136,20 +142,47 @@ export function Regla202020Anim() {
         animate={{ opacity: fase === "lejos" ? 0 : 1 }}
         transition={{ duration: 1.2 }}
       />
-      {/* horizonte (sol pálido, sin naranja: el naranja es "sígueme") */}
+      {/* horizonte con un punto lejano REAL para fijar la vista: un faro al
+         fondo cuyos anillos convergen hacia él (la señal de "mira lejos").
+         El paisaje entero se acerca lentamente para sugerir profundidad. */}
       <motion.svg
         className="absolute inset-x-0 bottom-0 h-2/3 w-full"
         viewBox="0 0 400 160"
         preserveAspectRatio="none"
         aria-hidden
-        animate={{ opacity: fase === "lejos" ? 1 : 0 }}
-        transition={{ duration: 1.2 }}
+        animate={{
+          opacity: fase === "lejos" ? 1 : 0,
+          scale: fase === "lejos" ? 1.09 : 1,
+        }}
+        transition={{ opacity: { duration: 1.2 }, scale: { duration: 20, ease: "linear" } }}
+        style={{ transformOrigin: "50% 60%" }}
       >
-        <circle cx="316" cy="52" r="20" fill="#F3EAC8" opacity="0.9" />
-        <circle cx="316" cy="52" r="32" fill="#F3EAC8" opacity="0.15" />
+        <circle cx="316" cy="46" r="18" fill="#F3EAC8" opacity="0.85" />
+        <circle cx="316" cy="46" r="30" fill="#F3EAC8" opacity="0.14" />
         <path d="M0 96 L400 88" stroke="#8FB8D8" strokeWidth="2" opacity="0.5" />
         <path d="M0 160 L0 110 Q80 84 170 104 T400 96 L400 160 Z" fill="#0C1830" />
         <path d="M0 160 L0 128 Q120 104 230 122 T400 116 L400 160 Z" fill="#070F20" />
+        {/* faro en el horizonte: el punto donde "aterriza" la mirada */}
+        <g>
+          <rect x="196" y="74" width="8" height="22" rx="2" fill="#1E3A5C" />
+          <motion.circle
+            cx="200"
+            cy="70"
+            r="4"
+            fill="#F3EAC8"
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.circle
+            cx="200"
+            cy="70"
+            fill="none"
+            stroke="#F3EAC8"
+            strokeWidth="1.4"
+            animate={{ r: [34, 8], opacity: [0, 0.45, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeOut" }}
+          />
+        </g>
       </motion.svg>
 
       <div className="relative z-10 flex min-h-[290px] flex-col items-center justify-center gap-4 p-5">
@@ -160,9 +193,10 @@ export function Regla202020Anim() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <p className="text-lg font-bold">🔭 Busca tu objeto lejano</p>
+            <p className="text-lg font-bold">Elige tu punto lejano</p>
             <p className="mt-1 text-sm text-ink/60">
-              Una ventana o el punto más lejano de la habitación (6 m), bien iluminado.
+              Una ventana o el punto más lejano de la habitación (6 m), bien
+              iluminado. Gira la silla si hace falta.
             </p>
             <p className="mt-4 text-6xl font-bold tabular-nums text-brand-tealDark">
               {5 - t}
@@ -192,8 +226,11 @@ export function Regla202020Anim() {
                 {25 - t}
               </div>
             </div>
-            <p className="font-semibold">👀 Mira el horizonte, no la pantalla</p>
-            <p className="text-xs text-white/60">La pantalla descansa contigo</p>
+            <p className="font-semibold">Fija la mirada en TU punto lejano</p>
+            <p className="text-xs text-white/60">
+              No mires la pantalla: ella solo lleva el tiempo, como el faro del
+              fondo
+            </p>
           </motion.div>
         )}
         {fase === "fin" && (
@@ -203,8 +240,7 @@ export function Regla202020Anim() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <p className="text-4xl">✅</p>
-            <p className="mt-2 text-lg font-bold">¡Listo! Parpadea suavemente</p>
+            <p className="text-lg font-bold">Listo — parpadea suavemente un par de veces</p>
             <p className="mt-1 text-sm text-ink/60">
               Marca la pausa como cumplida.
             </p>
@@ -364,7 +400,7 @@ export function EnfoqueAnim() {
             exit={{ opacity: 0, y: -10 }}
             className="text-xl font-bold sm:text-2xl"
           >
-            {cerca ? "👆 CERCA — enfoca tu dedo (15 cm)" : "🏔️ LEJOS — objeto a 6 m"}
+            {cerca ? "CERCA — enfoca tu dedo (15 cm)" : "LEJOS — objeto a 6 m"}
           </motion.p>
         </AnimatePresence>
         {/* conteo gigante: legible con visión periférica */}
@@ -395,51 +431,86 @@ export function EnfoqueAnim() {
   );
 }
 
-/* ---------- Manos SVG compartidas (5 y 6) ---------- */
-function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
+/* ---------- Rostro + manos SVG compartidos (5 y 6) ----------
+ * Una cara con ojos cerrados y dos manos reconocibles (palma + dedos +
+ * pulgar). La guía MUESTRA el gesto: frotar las palmas abajo y luego
+ * subirlas hasta cubrir los ojos. */
+function Mano({ espejo }: { espejo?: boolean }) {
+  // Mano con dedos, apuntando hacia arriba; origen en (0,0)-(46,78)
   return (
-    <svg width="240" height="150" viewBox="0 0 240 150" aria-hidden>
-      {/* ojos cerrados */}
-      <g
-        className="stroke-[#0E2A47]"
-        strokeWidth="5"
-        strokeLinecap="round"
-        fill="none"
-      >
-        <path d="M62 38 Q82 52 102 38" />
-        <path d="M138 38 Q158 52 178 38" />
+    <g transform={espejo ? "scale(-1,1) translate(-46,0)" : undefined}>
+      {/* dedos */}
+      <g fill="#F1BC93" stroke="#B96A32" strokeWidth="2.5">
+        <rect x="2" y="12" width="9" height="30" rx="4.5" />
+        <rect x="12.5" y="5" width="9" height="36" rx="4.5" />
+        <rect x="23" y="3" width="9" height="38" rx="4.5" />
+        <rect x="33.5" y="9" width="9" height="32" rx="4.5" />
+        {/* palma */}
+        <rect x="1" y="34" width="43" height="42" rx="14" />
+        {/* pulgar */}
+        <rect x="38" y="42" width="22" height="11" rx="5.5" transform="rotate(38 38 42)" />
       </g>
-      {/* palmas */}
-      <motion.g
-        animate={
-          fase === "frotar"
-            ? { x: [-10, 10, -10], y: 84 }
-            : { x: 0, y: 8 }
-        }
-        transition={
-          fase === "frotar"
-            ? { x: { duration: 1.1, repeat: Infinity, ease: "easeInOut" }, y: { duration: 0.4 } }
-            : { duration: 1.4, ease: "easeInOut" }
-        }
-      >
-        <rect x="52" y="0" width="56" height="76" rx="26" fill="#F7C08A" stroke="#C05E14" strokeWidth="3.5" />
-      </motion.g>
-      <motion.g
-        animate={
-          fase === "frotar"
-            ? { x: [10, -10, 10], y: 84 }
-            : { x: 0, y: 8 }
-        }
-        transition={
-          fase === "frotar"
-            ? { x: { duration: 1.1, repeat: Infinity, ease: "easeInOut" }, y: { duration: 0.4 } }
-            : { duration: 1.4, ease: "easeInOut" }
-        }
-      >
-        <rect x="132" y="0" width="56" height="76" rx="26" fill="#F7C08A" stroke="#C05E14" strokeWidth="3.5" />
-      </motion.g>
-      {/* calor al frotar */}
-      {fase === "frotar" && (
+    </g>
+  );
+}
+
+function ManoPosicionada({
+  espejo,
+  transform,
+  oscila,
+}: {
+  espejo?: boolean;
+  transform: string;
+  oscila?: string; // valores del vaivén de frote, p. ej. "0 0;16 0;0 0"
+}) {
+  // Posición por fase con transform CSS (transiciona suave entre fases);
+  // el vaivén continuo del frote usa animateTransform nativo de SVG.
+  return (
+    <g
+      style={{
+        transform,
+        transition: "transform 1.4s ease-in-out",
+        transformBox: "fill-box",
+        transformOrigin: "center",
+      }}
+    >
+      <g>
+        {oscila && (
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            values={oscila}
+            dur="1.1s"
+            repeatCount="indefinite"
+          />
+        )}
+        <Mano espejo={espejo} />
+      </g>
+    </g>
+  );
+}
+
+function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
+  const frotar = fase === "frotar";
+  return (
+    <svg width="280" height="180" viewBox="0 0 280 180" aria-hidden>
+      {/* rostro con ojos cerrados */}
+      <g>
+        <ellipse cx="92" cy="86" rx="56" ry="60" fill="#FBE8D6" stroke="#0E2A47" strokeWidth="3.5" />
+        <g stroke="#0E2A47" strokeWidth="4" strokeLinecap="round" fill="none">
+          {/* ojos cerrados (párpados relajados) */}
+          <path d="M58 80 Q70 90 82 80" />
+          <path d="M102 80 Q114 90 126 80" />
+          {/* cejas */}
+          <path d="M56 66 Q70 60 84 66" opacity="0.65" />
+          <path d="M100 66 Q114 60 128 66" opacity="0.65" />
+          {/* boca serena */}
+          <path d="M82 118 Q92 124 102 118" opacity="0.75" />
+        </g>
+      </g>
+
+      {/* calor al frotar (junto a las manos, no sobre el rostro) */}
+      {frotar && (
         <motion.g
           initial={{ opacity: 0 }}
           animate={{ opacity: [0.2, 0.7, 0.2] }}
@@ -449,11 +520,31 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
           strokeLinecap="round"
           fill="none"
         >
-          <path d="M108 70 q4 -8 0 -16" />
-          <path d="M120 74 q4 -8 0 -16" />
-          <path d="M132 70 q4 -8 0 -16" />
+          <path d="M204 50 q4 -8 0 -16" />
+          <path d="M216 54 q4 -8 0 -16" />
+          <path d="M228 50 q4 -8 0 -16" />
         </motion.g>
       )}
+
+      {/* mano izquierda: frota al costado y luego cubre el ojo izquierdo */}
+      <ManoPosicionada
+        transform={
+          frotar
+            ? "translate(180px, 58px) rotate(8deg)"
+            : "translate(48px, 30px) rotate(8deg)"
+        }
+        oscila={frotar ? "0 0;16 0;0 0" : undefined}
+      />
+      {/* mano derecha (espejo): cubre el ojo derecho */}
+      <ManoPosicionada
+        espejo
+        transform={
+          frotar
+            ? "translate(214px, 62px) rotate(-8deg)"
+            : "translate(94px, 30px) rotate(-8deg)"
+        }
+        oscila={frotar ? "0 0;-16 0;0 0" : undefined}
+      />
     </svg>
   );
 }
@@ -470,8 +561,20 @@ export function MasajeAnim() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex h-52 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100">
         <motion.div
-          animate={fase === "colocar" ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-          transition={fase === "colocar" ? { duration: 8, repeat: Infinity, ease: "easeInOut" } : {}}
+          animate={
+            fase === "colocar"
+              ? { scale: [1, 1.06, 1], x: [0, 3, 0, -3, 0], y: [0, -2, 0, 2, 0] }
+              : { scale: 1, x: 0, y: 0 }
+          }
+          transition={
+            fase === "colocar"
+              ? {
+                  scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                  x: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                }
+              : {}
+          }
         >
           <ManosGuia fase={fase} />
         </motion.div>
@@ -485,9 +588,9 @@ export function MasajeAnim() {
           className="text-lg font-bold"
         >
           {fase === "frotar"
-            ? `🤲 Frota tus manos hasta calentarlas… ${10 - t} s`
+            ? `Paso 1 · Frota tus manos hasta calentarlas… ${10 - t} s`
             : inhala
-              ? "Palmas sobre los párpados · Inhala profundo…"
+              ? "Paso 2 · Palmas sobre los párpados · Inhala profundo…"
               : "Círculos suaves, sin presionar · Exhala…"}
         </motion.p>
       </AnimatePresence>

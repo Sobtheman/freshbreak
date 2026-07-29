@@ -128,7 +128,7 @@ export default function RegistroPage() {
                     : "border-ink/20 bg-mist-bg text-ink hover:border-ink/50"
                 }`}
               >
-                {op === "Sí" ? "👓 Sí" : "✨ No"}
+                {op}
               </button>
             ))}
           </div>

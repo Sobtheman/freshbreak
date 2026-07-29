@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useApp } from "@/components/providers";
+import { IconCampana } from "@/components/icons";
 import {
   BLOQUES_EJEMPLO,
   Bloque,
@@ -69,7 +70,7 @@ export default function HorarioPage() {
     setIntervaloMin(recomendado);
     setOnboarded(true);
     iniciarJornada(recomendado * 60);
-    showToast("🔔 Recordatorios activados según tu horario");
+    showToast("Recordatorios activados según tu horario");
     router.push("/panel");
   }
 
@@ -81,8 +82,8 @@ export default function HorarioPage() {
         className="mx-auto max-w-xl"
       >
         <div className="card text-center">
-          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-tealDark/15 text-3xl">
-            🔔
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-tealDark/15 text-brand-tealDark">
+            <IconCampana className="h-8 w-8" />
           </div>
           <h1 className="text-2xl font-bold text-ink">
             Tu plan de pausas personalizado
@@ -153,7 +154,7 @@ export default function HorarioPage() {
             onClick={() => setLista(BLOQUES_EJEMPLO)}
             className="btn-ghost px-4 py-2 text-xs"
           >
-            ⚡ Cargar ejemplo
+            Cargar ejemplo
           </button>
         </div>
 

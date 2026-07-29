@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useApp } from "./providers";
 import { EyeMark } from "./Logo";
+import { IconLuna, IconSol } from "./icons";
 
 const ANCLAS = [
   { href: "#inicio", label: "Inicio" },
@@ -68,7 +69,9 @@ export default function Header() {
             aria-label={dark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
             className="flex h-9 items-center gap-1.5 rounded-full border border-ink/20 bg-white px-3 text-xs font-semibold text-ink transition hover:border-ink/40 dark:border-marine-line/30 dark:bg-marine-deep dark:text-mist-tint dark:hover:border-marine-line/60"
           >
-            <span aria-hidden>{dark ? "☀️" : "🌙"}</span>
+            <span aria-hidden>
+              {dark ? <IconSol className="h-4 w-4" /> : <IconLuna className="h-4 w-4" />}
+            </span>
             <span className="hidden sm:inline">{dark ? "Claro" : "Oscuro"}</span>
           </button>
         </nav>

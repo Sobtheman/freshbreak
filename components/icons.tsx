@@ -98,3 +98,83 @@ export function IconPerfil(p: IconProps) {
     </Stroke>
   );
 }
+
+export function IconSol(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 3 v2 M12 19 v2 M3 12 h2 M19 12 h2 M5.6 5.6 l1.4 1.4 M17 17 l1.4 1.4 M18.4 5.6 L17 7 M7 17 l-1.4 1.4" />
+    </Stroke>
+  );
+}
+
+export function IconLuna(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <path d="M20 13.5 A8 8 0 1 1 10.5 4 A6.5 6.5 0 0 0 20 13.5 Z" />
+    </Stroke>
+  );
+}
+
+export function IconInfinito(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <path d="M12 12 C9.5 8.5 4 8.5 4 12 C4 15.5 9.5 15.5 12 12 C14.5 8.5 20 8.5 20 12 C20 15.5 14.5 15.5 12 12 Z" />
+    </Stroke>
+  );
+}
+
+export function IconEnfoque(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="12" cy="12" r="0.6" fill="currentColor" />
+    </Stroke>
+  );
+}
+
+export function IconManos(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <path d="M7 12 V6.5 a1.4 1.4 0 0 1 2.8 0 V11 M9.8 10.5 V5 a1.4 1.4 0 0 1 2.8 0 V10.5 M12.6 10.5 V6 a1.4 1.4 0 0 1 2.8 0 V12" />
+      <path d="M7 12 l-1.6 -1.8 a1.5 1.5 0 0 0 -2.2 2 L7.5 17 a6 6 0 0 0 5 3 h0.5 a5.5 5.5 0 0 0 5.5 -5.5 V12 a1.4 1.4 0 0 0 -2.8 0" />
+    </Stroke>
+  );
+}
+
+export function IconHorizonte(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <circle cx="16.5" cy="8" r="2.6" />
+      <path d="M2.5 17 L21.5 17" />
+      <path d="M4 17 L9 11 L13 15.2 M11.5 13.6 L15 10 L20 15.5" />
+    </Stroke>
+  );
+}
+
+export function IconLapiz(p: IconProps) {
+  return (
+    <Stroke {...p}>
+      <path d="M4.5 19.5 L5.5 15.5 L16.5 4.5 A2.1 2.1 0 0 1 19.5 7.5 L8.5 18.5 Z" />
+      <path d="M14.8 6.2 L17.8 9.2" />
+    </Stroke>
+  );
+}
+
+// Icono por ejercicio (reemplaza los antiguos emojis de la biblioteca,
+// el modal de recordatorio y la vista del ejercicio).
+const ICONO_EJERCICIO: Record<string, (p: IconProps) => JSX.Element> = {
+  "parpadeo-consciente": IconOjo,
+  "regla-20-20-20": IconHorizonte,
+  "ocho-horizontal": IconInfinito,
+  "enfoque-cercano-lejano": IconEnfoque,
+  "masaje-palpebral": IconManos,
+  palming: IconLuna,
+  "push-up-pencil": IconLapiz,
+};
+
+export function IconoEjercicio({ id, className }: { id: string; className?: string }) {
+  const Ic = ICONO_EJERCICIO[id] ?? IconOjo;
+  return <Ic className={className} />;
+}

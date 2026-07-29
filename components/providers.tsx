@@ -102,8 +102,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     "enviando" | "enviado" | "error" | null
   >(null);
 
-  const [completions, setCompletions] = useState<Record<string, number>>(SEED_COMPLETIONS);
-  const [cumplidasHoy, setCumplidasHoy] = useState(2);
+  // Un usuario real empieza en cero; los datos de ejemplo solo aparecen
+  // al entrar por "explora la demo" (seedDemo).
+  const [completions, setCompletions] = useState<Record<string, number>>({});
+  const [cumplidasHoy, setCumplidasHoy] = useState(0);
 
   // Respuestas del mini CVS-Q y días marcados en la landing: precargan
   // la encuesta y el horario para no pedir nada dos veces.
@@ -185,7 +187,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (id: string) => {
       setCompletions((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
       setCumplidasHoy((n) => n + 1);
-      showToast("✓ Recordatorio cumplido · registrado en tu historial 🎉");
+      showToast("Recordatorio cumplido: registrado en tu historial");
     },
     [showToast]
   );
@@ -202,6 +204,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setHorasPantalla(8);
     setBloques(BLOQUES_EJEMPLO);
     setIntervaloMin(recomendarIntervalo(9, 8));
+    setCompletions(SEED_COMPLETIONS);
+    setCumplidasHoy(2);
     setOnboarded(true);
   }, []);
 

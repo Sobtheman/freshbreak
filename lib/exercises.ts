@@ -1,7 +1,6 @@
 export type Ejercicio = {
   id: string;
   nombre: string;
-  emoji: string;
   objetivo: string;
   porQue: string;
   duracion: number; // segundos
@@ -15,7 +14,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "parpadeo-consciente",
     nombre: "Parpadeo consciente",
-    emoji: "👁️",
     objetivo: "Lubricar naturalmente la superficie ocular.",
     porQue:
       "Frente a pantallas parpadeamos hasta un 60 % menos, lo que reseca la superficie del ojo.",
@@ -33,7 +31,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "regla-20-20-20",
     nombre: "Regla 20-20-20",
-    emoji: "⏱️",
     objetivo: "Relajar la acomodación ocular.",
     porQue:
       "Cada 20 minutos de pantalla, mirar 20 segundos a 20 pies (6 m) reduce la fatiga acomodativa.",
@@ -49,7 +46,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "ocho-horizontal",
     nombre: "Movimiento ocular en forma de ocho",
-    emoji: "♾️",
     objetivo: "Estimular movilidad ocular.",
     porQue:
       "Los movimientos oculares amplios y controlados mejoran la coordinación y reducen la rigidez ocular.",
@@ -65,7 +61,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "enfoque-cercano-lejano",
     nombre: "Enfoque cercano-lejano",
-    emoji: "🔭",
     objetivo: "Relajar y ejercitar los músculos ciliares.",
     porQue:
       "Alternar distancias de enfoque entrena el cristalino y previene el espasmo acomodativo.",
@@ -82,7 +77,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "masaje-palpebral",
     nombre: "Masaje palpebral con calor",
-    emoji: "🤲",
     objetivo: "Aliviar tensión muscular periocular.",
     porQue:
       "El calor suave mejora la secreción lipídica de la lágrima y estabiliza la película lagrimal.",
@@ -98,7 +92,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "palming",
     nombre: "Palming (oscurecimiento visual)",
-    emoji: "🌑",
     objetivo: "Relajar la vista con oscuridad.",
     porQue:
       "La oscuridad completa permite que la retina y la mente descansen del estímulo lumínico constante.",
@@ -114,7 +107,6 @@ export const EJERCICIOS: Ejercicio[] = [
   {
     id: "push-up-pencil",
     nombre: "Push up pencil",
-    emoji: "✏️",
     objetivo: "Mejorar control oculomotor.",
     porQue:
       "El seguimiento lento de un objetivo entrena la convergencia y mejora el control oculomotor.",

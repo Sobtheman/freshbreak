@@ -40,15 +40,15 @@ export async function POST(req: Request) {
   <div style="font-family:Arial,Helvetica,sans-serif;background:#F7FBFB;padding:24px;">
     <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:14px;padding:28px;border:1px solid #E6F2F2;">
       <p style="margin:0;font-size:12px;letter-spacing:2px;color:#0E7C74;font-weight:bold;">FRESHBREAK · HORA DE TU PAUSA VISUAL</p>
-      <h1 style="margin:12px 0 0;font-size:22px;color:#0E3B3B;">Hola, ${nombre} 👋</h1>
+      <h1 style="margin:12px 0 0;font-size:22px;color:#0E3B3B;">Hola, ${nombre}</h1>
       <p style="margin:10px 0 0;font-size:14px;color:#3D5C5C;">
         Tu vista necesita un descanso. Este recordatorio está programado dentro de tu bloque de estudio
         (cada ${body.intervaloMin ?? 60} minutos). Te recomendamos:
       </p>
       <div style="background:#F2F9F8;border-radius:12px;padding:18px;margin:18px 0;">
-        <p style="margin:0;font-size:16px;font-weight:bold;color:#0E3B3B;">${ejercicio.emoji} ${ejercicio.nombre}</p>
+        <p style="margin:0;font-size:16px;font-weight:bold;color:#0E3B3B;">${ejercicio.nombre}</p>
         <ol style="margin:10px 0 0;padding-left:20px;font-size:13px;color:#3D5C5C;">${pasos}</ol>
-        <p style="margin:12px 0 0;font-size:11px;letter-spacing:1px;color:#0E7C74;font-weight:bold;">⏱ DURACIÓN: ${ejercicio.duracionLabel.toUpperCase()}</p>
+        <p style="margin:12px 0 0;font-size:11px;letter-spacing:1px;color:#0E7C74;font-weight:bold;">DURACIÓN: ${ejercicio.duracionLabel.toUpperCase()}</p>
       </div>
       <div style="text-align:center;">
         <a href="${enlace}" style="display:inline-block;background:#0E3B3B;color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:10px;">Realizar ejercicio ahora</a>
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
     body: JSON.stringify({
       from: "FreshBreak <recordatorios@freshbreak.online>",
       to: [body.correo],
-      subject: "¡Hora de tu pausa visual! 👁️",
+      subject: "¡Hora de tu pausa visual!",
       html,
     }),
   });

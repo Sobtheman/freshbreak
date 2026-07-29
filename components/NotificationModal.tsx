@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Ejercicio } from "@/lib/exercises";
 import EmailPreview from "./EmailPreview";
 import { useApp } from "./providers";
+import { IconCampana, IconoEjercicio } from "./icons";
 
 export default function NotificationModal({
   ejercicio,
@@ -24,11 +25,11 @@ export default function NotificationModal({
   });
   const lineaCorreo =
     correoEstado === "enviado"
-      ? `📧 Correo real enviado a ${user?.correo}`
+      ? `Correo real enviado a ${user?.correo}`
       : correoEstado === "enviando"
-        ? "📧 Enviando el correo a tu bandeja…"
+        ? "Enviando el correo a tu bandeja…"
         : correoEstado === "error"
-          ? "📧 El correo no pudo enviarse (modo sandbox de Resend: solo entrega al dueño de la cuenta)"
+          ? "El correo no pudo enviarse: revisa la conexión o inténtalo de nuevo"
           : null;
 
   return (
@@ -51,7 +52,7 @@ export default function NotificationModal({
             animate={{ rotate: [0, -14, 14, -10, 10, 0] }}
             transition={{ duration: 1.1, repeat: Infinity, repeatDelay: 1.2 }}
           >
-            🔔
+            <IconCampana className="h-9 w-9 text-brand-tealDark" />
           </motion.div>
           <h2 className="text-2xl font-bold text-brand-accent">
             ¡Hora de tu pausa visual!
@@ -73,13 +74,13 @@ export default function NotificationModal({
           </p>
 
           <div className="mt-4 rounded-2xl bg-brand-bg p-5">
-            <div className="text-4xl">{ejercicio.emoji}</div>
+            <div className="mx-auto flex justify-center"><span className="icon-chip"><IconoEjercicio id={ejercicio.id} className="h-6 w-6" /></span></div>
             <p className="mt-1 text-lg font-bold">{ejercicio.nombre}</p>
             <p className="mt-1 text-sm text-black/60">
               {ejercicio.objetivo}
             </p>
             <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-tealDark">
-              ⏱ {ejercicio.duracionLabel}
+              {ejercicio.duracionLabel}
             </p>
           </div>
 
@@ -98,7 +99,7 @@ export default function NotificationModal({
               onClick={() => setVerCorreo(true)}
               className="mx-auto block text-sm font-semibold text-brand-accent underline underline-offset-4 hover:opacity-75"
             >
-              📧 Vista previa del correo
+              Vista previa del correo
             </button>
           </div>
         </motion.div>

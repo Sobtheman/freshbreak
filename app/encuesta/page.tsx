@@ -101,7 +101,7 @@ export default function EncuestaPage() {
               </>
             ) : (
               <>
-                ✅ Bienvenido/a, {user.nombre.split(" ")[0]}: tu nivel de fatiga
+                Bienvenido/a, {user.nombre.split(" ")[0]}: tu nivel de fatiga
                 visual es bajo. ¡Sigamos cuidando tus ojos!
               </>
             )}
@@ -145,11 +145,11 @@ export default function EncuestaPage() {
           presenta, indica también su intensidad.
         </p>
         <button onClick={autollenar} className="btn-ghost-page mt-4 text-sm">
-          ⚡ Rellenar con ejemplo (demo)
+          Rellenar con ejemplo (demo)
         </button>
         {precargadas > 0 && (
           <p className="mt-3 text-xs font-semibold text-brand-tealDark dark:text-marine-line">
-            ✓ {precargadas} respuesta{precargadas > 1 ? "s" : ""} precargada
+            {precargadas} respuesta{precargadas > 1 ? "s" : ""} precargada
             {precargadas > 1 ? "s" : ""} de tu avance en la página de inicio
           </p>
         )}

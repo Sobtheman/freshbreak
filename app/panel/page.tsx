@@ -10,7 +10,7 @@ import { DIAS, hoyIndice } from "@/lib/schedule";
 import ComplianceChart from "@/components/ComplianceChart";
 import SymptomChart from "@/components/SymptomChart";
 import PerfilModal from "@/components/PerfilModal";
-import { IconCampana, IconCorreo, IconPerfil, IconReloj } from "@/components/icons";
+import { IconCampana, IconCorreo, IconPerfil, IconReloj, IconoEjercicio } from "@/components/icons";
 
 function fmt(s: number) {
   const m = Math.floor(s / 60);
@@ -68,7 +68,7 @@ export default function PanelPage() {
               <span className="text-brand-tealDark dark:text-marine-line">
                 {user.nombre.split(" ")[0]}
               </span>
-              ! 👋
+              !
             </h1>
             <p className="mt-1 text-ink/60 dark:text-mist-tint/60">
               {DIAS[hoyIndice()]} · pausas cada {intervaloMin} min según tu
@@ -104,13 +104,13 @@ export default function PanelPage() {
                 onClick={() => (jornadaActiva ? detenerJornada() : iniciarJornada())}
                 className="inline-flex items-center gap-2 rounded-xl bg-brand-orange px-6 py-3 font-bold text-[#0E2A47] shadow-lg transition hover:scale-[1.02] hover:bg-brand-orangeDark"
               >
-                {jornadaActiva ? "⏸ Pausar recordatorios" : "📚 Iniciar jornada de estudio"}
+                {jornadaActiva ? "Pausar recordatorios" : "Iniciar jornada de estudio"}
               </button>
               <button
                 onClick={dispararPausaAhora}
                 className="rounded-xl border border-white/40 px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10"
               >
-                ✉️ Simular llegada del correo
+                Simular llegada del correo
               </button>
             </div>
             <label className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-white/75">
@@ -197,13 +197,13 @@ export default function PanelPage() {
         <div className="card">
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="m-0 text-lg font-bold text-ink">
-              Cumplimiento semanal
+              Cumplimiento de hoy
             </h2>
             <p className="m-0 text-3xl font-bold tabular-nums">{cumplimientoHoy} %</p>
           </div>
           <p className="mb-3 mt-1 text-sm text-ink/60">
-            Hoy: {cumplidasHoy} de {programadasHoy.length || "—"} pausas · la
-            barra de hoy se actualiza al completar ejercicios
+            Hoy: {cumplidasHoy} de {programadasHoy.length || "—"} pausas · los
+            días anteriores son de ejemplo hasta conectar la base de datos
           </p>
           <ComplianceChart hoyPct={cumplimientoHoy} />
         </div>
@@ -225,9 +225,15 @@ export default function PanelPage() {
           <h2 className="text-lg font-bold text-ink">
             Tus ejercicios
           </h2>
+          {(completions[masRealizado.id] ?? 0) === 0 ? (
+            <p className="mt-3 text-sm text-ink/55">
+              Aún no has completado ejercicios. Cuando llegue tu primera pausa,
+              aquí verás cuáles realizas más y cuáles menos.
+            </p>
+          ) : (
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             <div className="flex items-center gap-4 rounded-2xl bg-brand-tealDark/10 p-4">
-              <span className="text-4xl">{masRealizado.emoji}</span>
+              <span className="icon-chip"><IconoEjercicio id={masRealizado.id} className="h-6 w-6" /></span>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">
                   Más realizado
@@ -239,7 +245,7 @@ export default function PanelPage() {
               </div>
             </div>
             <div className="flex items-center gap-4 rounded-2xl bg-brand-orange/10 p-4">
-              <span className="text-4xl">{menosRealizado.emoji}</span>
+              <span className="icon-chip"><IconoEjercicio id={menosRealizado.id} className="h-6 w-6" /></span>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink/50">
                   Menos realizado
@@ -251,6 +257,7 @@ export default function PanelPage() {
               </div>
             </div>
           </div>
+          )}
         </div>
       </motion.section>
 
@@ -277,13 +284,13 @@ export default function PanelPage() {
               href={`/ejercicio/${e.id}`}
               className="card group flex items-center gap-3 !p-4 transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-brand-bg text-xl transition group-hover:scale-110 dark:bg-brand-dark">
-                {e.emoji}
+              <span className="icon-chip !h-11 !w-11 transition group-hover:scale-110">
+                <IconoEjercicio id={e.id} className="h-6 w-6" />
               </span>
               <span>
                 <span className="block text-sm font-bold">{e.nombre}</span>
                 <span className="block text-xs font-semibold uppercase tracking-wide text-brand-tealDark dark:text-marine-line">
-                  ⏱ {e.duracionLabel}
+                  {e.duracionLabel}
                 </span>
               </span>
             </Link>

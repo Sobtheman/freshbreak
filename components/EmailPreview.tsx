@@ -55,21 +55,21 @@ export default function EmailPreview({
           <div className="space-y-1 border-b border-black/10 px-5 py-4 text-sm">
             <p>
               <span className="font-semibold text-black/50">De: </span>
-              FreshBreak &lt;notificaciones@freshbreak.app&gt;
+              FreshBreak &lt;recordatorios@freshbreak.online&gt;
             </p>
             <p>
               <span className="font-semibold text-black/50">Para: </span>
               {correo}
             </p>
             <p className="pt-1 text-base font-bold">
-              Asunto: ¡Hora de tu pausa visual! 👁️
+              Asunto: ¡Hora de tu pausa visual!
             </p>
           </div>
 
           <div className="px-5 py-5">
             <div className="rounded-xl bg-brand-bg p-5">
               <p className="text-lg font-bold text-brand-accent">
-                Hola, {nombre} 👋
+                Hola, {nombre}
               </p>
               <p className="mt-2 text-sm">
                 Tu vista necesita un descanso. Este recordatorio está programado
@@ -78,7 +78,7 @@ export default function EmailPreview({
               </p>
               <div className="mt-4 rounded-xl bg-white p-4 shadow-sm">
                 <p className="font-bold">
-                  {ejercicio.emoji} {ejercicio.nombre}
+                  {ejercicio.nombre}
                 </p>
                 <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-black/75">
                   {ejercicio.pasos.slice(0, 3).map((p) => (
@@ -86,7 +86,7 @@ export default function EmailPreview({
                   ))}
                 </ol>
                 <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-black/50">
-                  ⏱ Duración: {ejercicio.duracionLabel}
+                  Duración: {ejercicio.duracionLabel}
                 </p>
               </div>
               <div className="mt-5 text-center">

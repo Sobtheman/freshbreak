@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { getEjercicio } from "@/lib/exercises";
 import { useApp } from "@/components/providers";
 import { ANIMACIONES } from "@/components/exercise-anims";
+import { IconoEjercicio } from "@/components/icons";
 
 function fmt(s: number) {
   const m = Math.floor(s / 60);
@@ -32,7 +33,7 @@ export default function EjercicioPage() {
   if (!ejercicio) {
     return (
       <div className="card mx-auto max-w-md text-center">
-        <p className="text-lg font-bold">Ejercicio no encontrado 😕</p>
+        <p className="text-lg font-bold">Ejercicio no encontrado</p>
         <Link href="/panel" className="btn-primary mt-4">
           Volver al panel
         </Link>
@@ -63,8 +64,11 @@ export default function EjercicioPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-2xl font-bold sm:text-3xl">
-          {ejercicio.emoji} {ejercicio.nombre}
+        <h1 className="flex items-center gap-3 text-2xl font-bold sm:text-3xl">
+          <span className="icon-chip !h-11 !w-11">
+            <IconoEjercicio id={ejercicio.id} className="h-6 w-6" />
+          </span>
+          {ejercicio.nombre}
         </h1>
         <p className="mt-2 text-ink/70 dark:text-mist-tint/70">
           <span className="font-semibold text-brand-tealDark dark:text-marine-line">
@@ -117,7 +121,7 @@ export default function EjercicioPage() {
           <div className="card flex flex-col items-center gap-5">
             <div className="flex w-full justify-center py-1">{Anim && <Anim />}</div>
             <p className="w-full rounded-xl bg-brand-tealDark/10 px-4 py-2.5 text-center text-xs font-medium text-brand-tealDeep">
-              💡 {ejercicio.guia}
+              {ejercicio.guia}
             </p>
 
             <div className="w-full">
@@ -154,7 +158,7 @@ export default function EjercicioPage() {
               transition={terminado ? { duration: 1.2, repeat: Infinity } : undefined}
               className="btn-primary w-full text-base"
             >
-              Marcar como cumplido ✓
+              Marcar como cumplido
             </motion.button>
           </div>
         </motion.div>

@@ -89,10 +89,11 @@ function AdminContenido() {
 
       <div className="card !p-0">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-sm">
+          <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className="border-b border-ink/10 text-left text-xs font-bold uppercase tracking-wide text-ink/50">
                 <th className="px-4 py-3">Estudiante</th>
+                <th className="px-4 py-3">Registro</th>
                 <th className="px-4 py-3">CVS-Q inicial → actual</th>
                 <th className="px-4 py-3">Intervalo</th>
                 <th className="px-4 py-3">Bloques</th>
@@ -107,6 +108,15 @@ function AdminContenido() {
                   <td className="px-4 py-3">
                     <p className="m-0 font-bold text-ink">{e.nombre}</p>
                     <p className="m-0 text-xs text-ink/50">{e.correo}</p>
+                  </td>
+                  <td className="px-4 py-3 text-xs tabular-nums text-ink/70">
+                    {new Date(e.creado).toLocaleString("es-CO", {
+                      timeZone: "America/Bogota",
+                      day: "2-digit",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </td>
                   <td className="px-4 py-3 tabular-nums">
                     {e.cvsq_inicial === null ? (

@@ -745,7 +745,10 @@ export default function LandingPage() {
           </div>
           <footer className="border-t border-ink/10 bg-ink/5 py-5 text-center text-[11px] text-ink/60 dark:border-white/10 dark:bg-black/20 dark:text-white/60">
             <p className="m-0">
-              FreshBreak · Demo académica · Datos protegidos según la Ley 1581
+              FreshBreak · Demo académica ·{" "}
+              <Link href="/privacidad" className="underline underline-offset-2 hover:text-white">
+                Datos protegidos según la Ley 1581
+              </Link>
               de 2012 y el Decreto 1377 de 2013 — los correos solo incluyen tu
               nombre y las indicaciones del ejercicio.
             </p>

@@ -34,12 +34,16 @@ export default function PanelPage() {
     completions,
     cumplidasHoy,
     programadasHoy,
+    cargando,
+    esDemo,
+    semana,
+    historialCvsq,
   } = useApp();
   const [editandoPerfil, setEditandoPerfil] = useState(false);
 
   useEffect(() => {
-    if (!user || !onboarded) router.replace("/");
-  }, [user, onboarded, router]);
+    if (!cargando && (!user || !onboarded)) router.replace("/");
+  }, [cargando, user, onboarded, router]);
   if (!user || !onboarded) return null;
 
   const ahora = new Date();
@@ -75,12 +79,22 @@ export default function PanelPage() {
               horario{score !== null && ` · CVS-Q: ${score} puntos`}
             </p>
           </div>
-          <button
-            onClick={() => setEditandoPerfil(true)}
-            className="btn-ghost-page gap-2 text-sm"
-          >
-            <IconPerfil className="h-5 w-5" /> Editar perfil
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setEditandoPerfil(true)}
+              className="btn-ghost-page gap-2 text-sm"
+            >
+              <IconPerfil className="h-5 w-5" /> Editar perfil
+            </button>
+            {!esDemo && (
+              <a
+                href="/api/auth/salir"
+                className="rounded-full px-3 py-2 text-sm font-semibold text-ink/50 transition hover:text-ink dark:text-mist-tint/50 dark:hover:text-white"
+              >
+                Salir
+              </a>
+            )}
+          </div>
         </div>
       </motion.div>
 
@@ -106,12 +120,14 @@ export default function PanelPage() {
               >
                 {jornadaActiva ? "Pausar recordatorios" : "Iniciar jornada de estudio"}
               </button>
-              <button
-                onClick={dispararPausaAhora}
-                className="rounded-xl border border-white/40 px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10"
-              >
-                Simular llegada del correo
-              </button>
+              {esDemo && (
+                <button
+                  onClick={dispararPausaAhora}
+                  className="rounded-xl border border-white/40 px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10"
+                >
+                  Simular llegada del correo
+                </button>
+              )}
             </div>
             <label className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-white/75">
               Intervalo:
@@ -126,7 +142,7 @@ export default function PanelPage() {
               >
                 <option value={60}>60 min (estándar)</option>
                 <option value={45}>45 min (con síntomas)</option>
-                <option value={1}>1 min (demo)</option>
+                {esDemo && <option value={1}>1 min (demo)</option>}
               </select>
               <span className="opacity-70">· recomendado: según tu CVS-Q</span>
             </label>
@@ -137,7 +153,9 @@ export default function PanelPage() {
             </span>
             <p className="m-0">
               Cada recordatorio llega como <b>notificación en la app</b> y{" "}
-              <b>correo a {user.correo}</b> con el ejercicio del momento.
+              <b>correo a {user.correo}</b> con el ejercicio del momento — el
+              correo se envía según tu horario aunque tengas la pestaña
+              cerrada.
             </p>
           </div>
         </div>
@@ -202,24 +220,42 @@ export default function PanelPage() {
             <p className="m-0 text-3xl font-bold tabular-nums">{cumplimientoHoy} %</p>
           </div>
           <p className="mb-3 mt-1 text-sm text-ink/60">
-            Hoy: {cumplidasHoy} de {programadasHoy.length || "—"} pausas · los
-            días anteriores son de ejemplo hasta conectar la base de datos
+            Hoy: {cumplidasHoy} de {programadasHoy.length || "—"} pausas
+            {semana
+              ? " · semana calculada de tu registro real"
+              : " · los días anteriores son de ejemplo (demo)"}
           </p>
-          <ComplianceChart hoyPct={cumplimientoHoy} />
+          <ComplianceChart hoyPct={cumplimientoHoy} semana={semana} />
         </div>
         <div className="card">
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="m-0 text-lg font-bold text-ink">
-              Reducción de síntomas
+              Evolución de síntomas
             </h2>
             <p className="m-0 text-3xl font-bold text-[#C05E14]">
-              −61 %
+              {(() => {
+                if (!historialCvsq) return "−61 %"; // demo
+                if (historialCvsq.length < 2) return "—";
+                const primero = historialCvsq[0].puntaje;
+                const ultimo = historialCvsq[historialCvsq.length - 1].puntaje;
+                if (primero === 0) return ultimo === 0 ? "0 %" : "+";
+                const delta = Math.round(((ultimo - primero) / primero) * 100);
+                return `${delta > 0 ? "+" : "−"}${Math.abs(delta)} %`;
+              })()}
             </p>
           </div>
           <p className="mb-3 mt-1 text-sm text-ink/60">
-            Puntaje CVS-Q reportado por semana (datos simulados)
+            {historialCvsq
+              ? "Tu puntaje CVS-Q por medición · repítelo cada semana"
+              : "Puntaje CVS-Q reportado por semana (datos simulados de la demo)"}
           </p>
-          <SymptomChart />
+          <SymptomChart historial={historialCvsq} />
+          <Link
+            href="/encuesta"
+            className="mt-3 inline-block text-xs font-bold text-brand-tealDark underline underline-offset-4"
+          >
+            Repetir cuestionario CVS-Q
+          </Link>
         </div>
         <div className="card lg:col-span-2">
           <h2 className="text-lg font-bold text-ink">

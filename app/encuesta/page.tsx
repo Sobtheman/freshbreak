@@ -25,7 +25,7 @@ const MAPA_TEASER: [number, number][] = [
 
 export default function EncuestaPage() {
   const router = useRouter();
-  const { user, setScore, teaser } = useApp();
+  const { user, setScore, teaser, cargando, onboarded } = useApp();
   const [respuestas, setRespuestas] = useState<Respuesta[]>(() =>
     PREGUNTAS.map((_, i) => {
       const slot = MAPA_TEASER.find(([qi]) => qi === i);
@@ -39,14 +39,15 @@ export default function EncuestaPage() {
   const precargadas = teaser.filter((t) => t !== null).length;
 
   useEffect(() => {
-    if (!user) router.replace("/");
-  }, [user, router]);
+    if (!cargando && !user) router.replace("/");
+  }, [cargando, user, router]);
 
   const contestadas = respuestas.filter((r) => r.frecuencia !== null).length;
   const puntaje = useMemo(() => calcularPuntaje(respuestas), [respuestas]);
   const tieneSintomas = puntaje >= UMBRAL;
 
   if (!user) return null;
+
 
   function setFrecuencia(i: number, f: 0 | 1 | 2) {
     setRespuestas((rs) =>
@@ -72,6 +73,13 @@ export default function EncuestaPage() {
   function enviar() {
     setScore(puntaje);
     setEnviada(true);
+    // Guarda la medición en el historial del servidor (el CVS-Q se puede
+    // repetir en el tiempo para ver la evolución de los síntomas).
+    fetch("/api/cvsq", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ puntaje, respuestas }),
+    }).catch(() => {});
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -96,7 +104,7 @@ export default function EncuestaPage() {
           >
             {tieneSintomas ? (
               <>
-                ⚠️ Presentas síntomas de fatiga visual digital — este aplicativo
+                Presentas síntomas de fatiga visual digital — este aplicativo
                 te ayudará a reducirlos con pausas y ejercicios guiados.
               </>
             ) : (
@@ -115,11 +123,13 @@ export default function EncuestaPage() {
             transition={{ delay: 1.4 }}
             className="mt-8"
           >
-            <Link href="/horario" className="btn-primary">
-              Continuar: mi horario →
+            <Link href={onboarded ? "/panel" : "/horario"} className="btn-primary">
+              {onboarded ? "Volver a mi panel →" : "Continuar: mi horario →"}
             </Link>
             <p className="mt-3 text-xs text-ink/50">
-              Último paso: registra tus bloques de estudio para programar tus pausas.
+              {onboarded
+                ? "Esta medición queda en tu historial de evolución."
+                : "Último paso: registra tus bloques de estudio para programar tus pausas."}
             </p>
           </motion.div>
         </div>

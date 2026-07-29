@@ -28,6 +28,13 @@ export type Usuario = {
   correccion: "Sí" | "No";
 };
 
+export type SemanaDia = {
+  fecha: string;
+  dia: number;
+  programadas: number;
+  cumplidas: number;
+};
+
 type AppState = {
   user: Usuario | null;
   setUser: (u: Usuario) => void;
@@ -55,11 +62,18 @@ type AppState = {
   detenerJornada: () => void;
   dispararPausaAhora: () => void;
 
-  // cumplimiento (en sesión)
+  // cumplimiento (en sesión + servidor)
   completions: Record<string, number>;
   cumplidasHoy: number;
   programadasHoy: string[];
-  registrarCumplimiento: (id: string) => void;
+  registrarCumplimiento: (id: string, tokenCorreo?: string | null) => void;
+
+  // datos reales del servidor (null hasta que carguen o si no hay sesión)
+  cargando: boolean;
+  esDemo: boolean;
+  semana: SemanaDia[] | null;
+  historialCvsq: { puntaje: number; fecha: string }[] | null;
+  recargarDatos: () => Promise<boolean>;
 
   // estado del envío real por Resend
   correoEstado: "enviando" | "enviado" | "error" | null;
@@ -106,6 +120,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // al entrar por "explora la demo" (seedDemo).
   const [completions, setCompletions] = useState<Record<string, number>>({});
   const [cumplidasHoy, setCumplidasHoy] = useState(0);
+  const [cargando, setCargando] = useState(true);
+  const [esDemo, setEsDemo] = useState(false);
+  const [semana, setSemana] = useState<SemanaDia[] | null>(null);
+  const [historialCvsq, setHistorialCvsq] = useState<
+    { puntaje: number; fecha: string }[] | null
+  >(null);
 
   // Respuestas del mini CVS-Q y días marcados en la landing: precargan
   // la encuesta y el horario para no pedir nada dos veces.
@@ -124,6 +144,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", dark);
     localStorage.setItem("pv-theme", dark ? "dark" : "light");
   }, [dark]);
+
+  // Si hay sesión (cookie), el servidor devuelve todo el estado guardado:
+  // el progreso sobrevive a recargas y a cambios de dispositivo.
+  const recargarDatos = useCallback(async () => {
+    try {
+      const r = await fetch("/api/mi", { cache: "no-store" });
+      if (!r.ok) return false;
+      const d = await r.json();
+      if (!d.ok) return false;
+      setUser(d.usuario);
+      setHorasPantalla(d.horasPantalla);
+      setBloques(d.bloques);
+      setIntervaloMin(d.intervaloMin);
+      setCompletions(d.completions);
+      setCumplidasHoy(d.cumplidasHoy);
+      setSemana(d.semana);
+      setHistorialCvsq(d.historialCvsq);
+      if (d.historialCvsq.length) {
+        setScore(d.historialCvsq[d.historialCvsq.length - 1].puntaje);
+      }
+      if (d.bloques.length) setOnboarded(true);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    let vivo = true;
+    recargarDatos().finally(() => {
+      if (vivo) setCargando(false);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, [recargarDatos]);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -184,12 +240,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const registrarCumplimiento = useCallback(
-    (id: string) => {
+    (id: string, tokenCorreo?: string | null) => {
       setCompletions((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
       setCumplidasHoy((n) => n + 1);
       showToast("Recordatorio cumplido: registrado en tu historial");
+      if (!esDemo) {
+        fetch("/api/cumplimientos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ejercicioId: id, u: tokenCorreo ?? undefined }),
+        })
+          .then(() => recargarDatos())
+          .catch(() => {});
+      }
     },
-    [showToast]
+    [showToast, esDemo, recargarDatos]
   );
 
   const seedDemo = useCallback(() => {
@@ -206,6 +271,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIntervaloMin(recomendarIntervalo(9, 8));
     setCompletions(SEED_COMPLETIONS);
     setCumplidasHoy(2);
+    setSemana(null);
+    setHistorialCvsq(null);
+    setEsDemo(true);
     setOnboarded(true);
   }, []);
 
@@ -253,6 +321,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         cumplidasHoy,
         programadasHoy,
         registrarCumplimiento,
+        cargando,
+        esDemo,
+        semana,
+        historialCvsq,
+        recargarDatos,
         correoEstado,
         dark,
         toggleDark: () => setDark((d) => !d),

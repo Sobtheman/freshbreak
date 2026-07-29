@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { getEjercicio } from "@/lib/exercises";
 import { useApp } from "@/components/providers";
@@ -15,8 +15,12 @@ function fmt(s: number) {
   return `${String(m).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export default function EjercicioPage() {
+function EjercicioContenido() {
   const params = useParams<{ id: string }>();
+  const busqueda = useSearchParams();
+  // Token del enlace del correo: permite registrar el cumplimiento aunque
+  // el estudiante llegue sin sesión abierta en este navegador.
+  const tokenCorreo = busqueda.get("u");
   const router = useRouter();
   const { registrarCumplimiento } = useApp();
   const ejercicio = getEjercicio(params.id);
@@ -46,7 +50,7 @@ export default function EjercicioPage() {
   const terminado = restante === 0;
 
   function completar() {
-    registrarCumplimiento(ejercicio!.id);
+    registrarCumplimiento(ejercicio!.id, tokenCorreo);
     router.push("/panel");
   }
 
@@ -164,5 +168,13 @@ export default function EjercicioPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function EjercicioPage() {
+  return (
+    <Suspense>
+      <EjercicioContenido />
+    </Suspense>
   );
 }

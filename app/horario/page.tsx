@@ -31,6 +31,7 @@ export default function HorarioPage() {
     iniciarJornada,
     showToast,
     teaserDias,
+    cargando,
   } = useApp();
   // Los días marcados en la página de inicio precargan bloques de 8 a 12
   const [lista, setLista] = useState<Bloque[]>(() =>
@@ -41,8 +42,8 @@ export default function HorarioPage() {
   const [confirmado, setConfirmado] = useState(false);
 
   useEffect(() => {
-    if (!user) router.replace("/");
-  }, [user, router]);
+    if (!cargando && !user) router.replace("/");
+  }, [cargando, user, router]);
   if (!user) return null;
 
   const recomendado = recomendarIntervalo(score, horasPantalla);
@@ -70,6 +71,17 @@ export default function HorarioPage() {
     setIntervaloMin(recomendado);
     setOnboarded(true);
     iniciarJornada(recomendado * 60);
+    // Guarda el horario en el servidor: desde aquí el cron envía los
+    // recordatorios por correo aunque la pestaña esté cerrada.
+    fetch("/api/horario", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        bloques: lista,
+        horasPantalla,
+        intervaloMin: recomendado,
+      }),
+    }).catch(() => {});
     showToast("Recordatorios activados según tu horario");
     router.push("/panel");
   }

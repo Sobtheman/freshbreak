@@ -9,10 +9,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { DIAS, DIAS_CORTO } from "@/lib/schedule";
+import type { SemanaDia } from "./providers";
 
-// Días pasados simulados; la barra de "Hoy" es real y se actualiza al
-// completar ejercicios en la sesión.
-const PASADOS = [
+// Sin datos del servidor (modo demo) se muestra una semana de ejemplo; con
+// sesión real, las barras salen del registro de cumplimientos guardado.
+const DEMO = [
   { dia: "L", pct: 80 },
   { dia: "M", pct: 60 },
   { dia: "X", pct: 90 },
@@ -24,10 +26,25 @@ const PASADOS = [
 // Teales de marca ajustados a la banda de luminosidad de marcas de datos
 // (validados junto al naranja para contraste y visión del color en ambos temas).
 const MARK_LIGHT = "#17A398";
-const MARK_DARK = "#14A292";
 
-export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
-  const DATA = [...PASADOS, { dia: "Hoy", pct: hoyPct }];
+export default function ComplianceChart({
+  hoyPct = 0,
+  semana,
+}: {
+  hoyPct?: number;
+  semana?: SemanaDia[] | null;
+}) {
+  const DATA = semana
+    ? semana.map((d, i) => ({
+        dia: i === semana.length - 1 ? "Hoy" : DIAS_CORTO[d.dia],
+        pct:
+          d.programadas > 0
+            ? Math.min(100, Math.round((d.cumplidas / d.programadas) * 100))
+            : d.cumplidas > 0
+              ? 100
+              : 0,
+      }))
+    : [...DEMO, { dia: "Hoy", pct: hoyPct }];
   const mark = MARK_LIGHT;
   const hoyMark = "#D9711C";
   const ink = "#0E3B3B99";
@@ -53,7 +70,7 @@ export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
             cursor={{ fill: "#0E3B3B14" }}
             formatter={(v: number) => [`${v} %`, "Cumplimiento"]}
             labelFormatter={(l: string) =>
-              ({ L: "Lunes", M: "Martes", X: "Miércoles", J: "Jueves", V: "Viernes", S: "Sábado" }[l] ?? l)
+              DIAS[DIAS_CORTO.indexOf(l)] ?? l
             }
             contentStyle={{
               borderRadius: 12,
@@ -66,8 +83,8 @@ export default function ComplianceChart({ hoyPct = 0 }: { hoyPct?: number }) {
             }}
           />
           <Bar dataKey="pct" radius={[4, 4, 0, 0]}>
-            {DATA.map((d) => (
-              <Cell key={d.dia} fill={d.dia === "Hoy" ? hoyMark : mark} />
+            {DATA.map((d, i) => (
+              <Cell key={`${d.dia}-${i}`} fill={d.dia === "Hoy" ? hoyMark : mark} />
             ))}
           </Bar>
         </BarChart>

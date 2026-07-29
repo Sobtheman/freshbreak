@@ -38,6 +38,12 @@ export default function RegistroPage() {
         }),
       });
       const d = await r.json().catch(() => ({ ok: false }));
+      if (!d.ok && d.code === "cuenta_existente") {
+        showToast("Este correo ya tiene una cuenta: entra con tu enlace");
+        setGuardando(false);
+        router.push("/entrar");
+        return;
+      }
       if (!d.ok) {
         showToast("Aviso: no se pudo guardar en el servidor; continúas en modo local");
       }

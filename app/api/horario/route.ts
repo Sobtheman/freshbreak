@@ -22,22 +22,32 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ ok: false, error: "Cuerpo inválido" }, { status: 400 });
   }
-  const bloques = (body.bloques ?? []).filter(
+  // Actualización parcial: los campos ausentes conservan su valor actual
+  // (el panel puede cambiar solo el intervalo sin reenviar los bloques).
+  const bloques = body.bloques?.filter(
     (b) =>
       Number.isInteger(b.dia) && b.dia >= 0 && b.dia <= 6 &&
       Number.isInteger(b.inicio) && Number.isInteger(b.fin) &&
       b.inicio >= 0 && b.fin > b.inicio && b.fin <= 24
   );
+  const horas =
+    body.horasPantalla === undefined
+      ? null
+      : Math.max(1, Math.min(16, body.horasPantalla));
+  const intervalo =
+    body.intervaloMin === undefined ? null : body.intervaloMin === 45 ? 45 : 60;
   try {
     const sql = await db();
-    await sql`DELETE FROM bloques WHERE usuario_id = ${usuarioId}`;
-    for (const b of bloques) {
-      await sql`INSERT INTO bloques (usuario_id, dia, inicio, fin) VALUES (${usuarioId}, ${b.dia}, ${b.inicio}, ${b.fin})`;
+    if (bloques !== undefined) {
+      await sql`DELETE FROM bloques WHERE usuario_id = ${usuarioId}`;
+      for (const b of bloques) {
+        await sql`INSERT INTO bloques (usuario_id, dia, inicio, fin) VALUES (${usuarioId}, ${b.dia}, ${b.inicio}, ${b.fin})`;
+      }
     }
     await sql`
       UPDATE usuarios SET
-        horas_pantalla = ${Math.max(1, Math.min(16, body.horasPantalla ?? 6))},
-        intervalo_min = ${body.intervaloMin === 45 ? 45 : 60},
+        horas_pantalla = COALESCE(${horas}, horas_pantalla),
+        intervalo_min = COALESCE(${intervalo}, intervalo_min),
         recordatorios_activos = TRUE
       WHERE id = ${usuarioId}
     `;

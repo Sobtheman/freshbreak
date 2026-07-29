@@ -38,16 +38,21 @@ export async function POST(req: Request) {
 
   try {
     const sql = await db();
+    // Si el correo ya tiene cuenta NO se abre sesión con solo conocerlo:
+    // eso permitiría suplantar a otra persona. El dueño entra por su
+    // enlace mágico (/entrar), que sí verifica el acceso al buzón.
+    const existentes = (await sql`
+      SELECT id FROM usuarios WHERE correo = ${correo}
+    `) as { id: number }[];
+    if (existentes.length) {
+      return NextResponse.json(
+        { ok: false, code: "cuenta_existente", error: "Este correo ya tiene una cuenta" },
+        { status: 409 }
+      );
+    }
     const filas = (await sql`
       INSERT INTO usuarios (correo, nombre, edad, ocupacion, correccion, consentimiento)
       VALUES (${correo}, ${nombre}, ${body.edad ?? ""}, ${body.ocupacion ?? ""}, ${body.correccion ?? ""}, TRUE)
-      ON CONFLICT (correo) DO UPDATE SET
-        nombre = EXCLUDED.nombre,
-        edad = EXCLUDED.edad,
-        ocupacion = EXCLUDED.ocupacion,
-        correccion = EXCLUDED.correccion,
-        consentimiento = TRUE,
-        recordatorios_activos = TRUE
       RETURNING id
     `) as { id: number }[];
     crearSesion(filas[0].id);

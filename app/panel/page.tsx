@@ -137,6 +137,14 @@ export default function PanelPage() {
                   const v = Number(e.target.value);
                   setIntervaloMin(v);
                   if (jornadaActiva) iniciarJornada(v * 60);
+                  // Sincroniza el cron del servidor (solo intervalos reales)
+                  if (!esDemo && (v === 45 || v === 60)) {
+                    fetch("/api/horario", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ intervaloMin: v }),
+                    }).catch(() => {});
+                  }
                 }}
                 className="rounded-lg border border-white/30 bg-white/10 px-2.5 py-1.5 font-semibold text-white outline-none [&>option]:text-black"
               >

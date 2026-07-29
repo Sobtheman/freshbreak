@@ -22,7 +22,7 @@ function EjercicioContenido() {
   // el estudiante llegue sin sesión abierta en este navegador.
   const tokenCorreo = busqueda.get("u");
   const router = useRouter();
-  const { registrarCumplimiento } = useApp();
+  const { registrarCumplimiento, user } = useApp();
   const ejercicio = getEjercicio(params.id);
   const [restante, setRestante] = useState(ejercicio?.duracion ?? 0);
 
@@ -51,7 +51,9 @@ function EjercicioContenido() {
 
   function completar() {
     registrarCumplimiento(ejercicio!.id, tokenCorreo);
-    router.push("/panel");
+    // Quien llega desde el correo sin sesión en este navegador no tiene
+    // panel que ver: vuelve al inicio (su cumplimiento ya quedó registrado).
+    router.push(user ? "/panel" : "/");
   }
 
   return (

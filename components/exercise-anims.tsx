@@ -63,9 +63,11 @@ export function ParpadeoAnim() {
           {/* párpado: tapa cuyo borde inferior coincide con el contorno del
              ojo al cerrar, de modo que lo cubre POR COMPLETO (nada de ojo a
              medio cerrar) */}
-          <motion.g
-            animate={{ y: cerrado ? 0 : -160 }}
-            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+          <g
+            style={{
+              transform: cerrado ? "translateY(0px)" : "translateY(-160px)",
+              transition: "transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
           >
             <path
               d="M-10 -100 H230 V70 Q110 154 -10 70 Z"
@@ -79,7 +81,7 @@ export function ParpadeoAnim() {
               strokeWidth="3.5"
               opacity="0.55"
             />
-          </motion.g>
+          </g>
         </g>
         {/* contorno */}
         <path
@@ -130,61 +132,19 @@ export function Regla202020Anim() {
 
   return (
     <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: 290 }}>
-      {/* la pantalla se apaga: fondo que pasa de claro a anochecer */}
+      {/* la pantalla se APAGA de verdad: nada que mirar aquí, solo un
+         conteo gigante legible de reojo mientras la mirada está a 6 m */}
       <motion.div
         className="absolute inset-0"
         animate={{ opacity: fase === "lejos" ? 1 : 0 }}
         transition={{ duration: 1.2 }}
-        style={{ background: "linear-gradient(180deg,#1B2A4A,#27436B 60%,#101C33)" }}
+        style={{ background: "radial-gradient(ellipse at 50% 40%, #101D2C 0%, #070E18 70%)" }}
       />
       <motion.div
         className="absolute inset-0 bg-mist-tint"
         animate={{ opacity: fase === "lejos" ? 0 : 1 }}
         transition={{ duration: 1.2 }}
       />
-      {/* horizonte con un punto lejano REAL para fijar la vista: un faro al
-         fondo cuyos anillos convergen hacia él (la señal de "mira lejos").
-         El paisaje entero se acerca lentamente para sugerir profundidad. */}
-      <motion.svg
-        className="absolute inset-x-0 bottom-0 h-2/3 w-full"
-        viewBox="0 0 400 160"
-        preserveAspectRatio="none"
-        aria-hidden
-        animate={{
-          opacity: fase === "lejos" ? 1 : 0,
-          scale: fase === "lejos" ? 1.09 : 1,
-        }}
-        transition={{ opacity: { duration: 1.2 }, scale: { duration: 20, ease: "linear" } }}
-        style={{ transformOrigin: "50% 60%" }}
-      >
-        <circle cx="316" cy="46" r="18" fill="#F3EAC8" opacity="0.85" />
-        <circle cx="316" cy="46" r="30" fill="#F3EAC8" opacity="0.14" />
-        <path d="M0 96 L400 88" stroke="#8FB8D8" strokeWidth="2" opacity="0.5" />
-        <path d="M0 160 L0 110 Q80 84 170 104 T400 96 L400 160 Z" fill="#0C1830" />
-        <path d="M0 160 L0 128 Q120 104 230 122 T400 116 L400 160 Z" fill="#070F20" />
-        {/* faro en el horizonte: el punto donde "aterriza" la mirada */}
-        <g>
-          <rect x="196" y="74" width="8" height="22" rx="2" fill="#1E3A5C" />
-          <motion.circle
-            cx="200"
-            cy="70"
-            r="4"
-            fill="#F3EAC8"
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.circle
-            cx="200"
-            cy="70"
-            fill="none"
-            stroke="#F3EAC8"
-            strokeWidth="1.4"
-            animate={{ r: [34, 8], opacity: [0, 0.45, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeOut" }}
-          />
-        </g>
-      </motion.svg>
-
       <div className="relative z-10 flex min-h-[290px] flex-col items-center justify-center gap-4 p-5">
         {fase === "prep" && (
           <motion.div
@@ -211,25 +171,24 @@ export function Regla202020Anim() {
             className="flex flex-col items-center gap-3 text-white"
           >
             <div className="relative">
-              <svg width="112" height="112" viewBox="0 0 100 100" className="-rotate-90">
-                <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff26" strokeWidth="8" />
+              <svg width="150" height="150" viewBox="0 0 100 100" className="-rotate-90">
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff1f" strokeWidth="7" />
                 <motion.circle
                   cx="50" cy="50" r="44" fill="none"
-                  stroke="#F79A56" strokeWidth="8" strokeLinecap="round"
+                  stroke="#F79A56" strokeWidth="7" strokeLinecap="round"
                   strokeDasharray={C}
                   initial={{ strokeDashoffset: 0 }}
                   animate={{ strokeDashoffset: C }}
                   transition={{ duration: 20, ease: "linear" }}
                 />
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-4xl font-bold tabular-nums">
+              <div className="absolute inset-0 flex items-center justify-center text-6xl font-bold tabular-nums">
                 {25 - t}
               </div>
             </div>
-            <p className="font-semibold">Fija la mirada en TU punto lejano</p>
-            <p className="text-xs text-white/60">
-              No mires la pantalla: ella solo lleva el tiempo, como el faro del
-              fondo
+            <p className="text-lg font-bold">Aparta la vista de la pantalla</p>
+            <p className="text-xs text-white/55">
+              Sostén la mirada en tu punto lejano · el conteo se ve de reojo
             </p>
           </motion.div>
         )}
@@ -339,14 +298,15 @@ export function OchoAnim() {
     <div className="flex w-full flex-col items-center gap-4">
       <div
         ref={boxRef}
-        className="relative h-64 w-full overflow-hidden rounded-2xl bg-mist-tint"
+        className="relative h-64 w-full overflow-hidden rounded-2xl"
+        style={{ background: "linear-gradient(160deg, #0B3A3C 0%, #06282A 60%, #052022 100%)" }}
       >
         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden>
           <polyline
             points={puntos}
             fill="none"
-            stroke="currentColor"
-            strokeOpacity="0.18"
+            stroke="#40BFC0"
+            strokeOpacity="0.35"
             strokeWidth="1.5"
             vectorEffect="non-scaling-stroke"
           />
@@ -493,23 +453,31 @@ function ManoPosicionada({
 function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
   const frotar = fase === "frotar";
   return (
-    <svg width="280" height="180" viewBox="0 0 280 180" aria-hidden>
-      {/* rostro con ojos cerrados */}
+    <svg width="300" height="190" viewBox="0 0 300 190" aria-hidden>
+      {/* rostro centrado, con ojos cerrados, pestañitas y mejillas */}
       <g>
-        <ellipse cx="92" cy="86" rx="56" ry="60" fill="#FBE8D6" stroke="#0E2A47" strokeWidth="3.5" />
-        <g stroke="#0E2A47" strokeWidth="4" strokeLinecap="round" fill="none">
+        <ellipse cx="150" cy="88" rx="58" ry="62" fill="#FDE9D6" stroke="#14344A" strokeWidth="3.5" />
+        {/* mejillas */}
+        <circle cx="116" cy="104" r="8" fill="#F6B8A0" opacity="0.55" />
+        <circle cx="184" cy="104" r="8" fill="#F6B8A0" opacity="0.55" />
+        <g stroke="#14344A" strokeWidth="4" strokeLinecap="round" fill="none">
           {/* ojos cerrados (párpados relajados) */}
-          <path d="M58 80 Q70 90 82 80" />
-          <path d="M102 80 Q114 90 126 80" />
+          <path d="M116 82 Q128 92 140 82" />
+          <path d="M160 82 Q172 92 184 82" />
           {/* cejas */}
-          <path d="M56 66 Q70 60 84 66" opacity="0.65" />
-          <path d="M100 66 Q114 60 128 66" opacity="0.65" />
+          <path d="M114 66 Q128 60 142 66" opacity="0.6" />
+          <path d="M158 66 Q172 60 186 66" opacity="0.6" />
           {/* boca serena */}
-          <path d="M82 118 Q92 124 102 118" opacity="0.75" />
+          <path d="M140 122 Q150 129 160 122" opacity="0.75" />
+        </g>
+        {/* pestañitas */}
+        <g stroke="#14344A" strokeWidth="2.5" strokeLinecap="round" opacity="0.7">
+          <path d="M120 88 L116 95 M128 90 L128 97 M136 88 L140 95" />
+          <path d="M164 88 L160 95 M172 90 L172 97 M180 88 L184 95" />
         </g>
       </g>
 
-      {/* calor al frotar (junto a las manos, no sobre el rostro) */}
+      {/* calor al frotar (junto a las manos, sin tapar el rostro) */}
       {frotar && (
         <motion.g
           initial={{ opacity: 0 }}
@@ -520,9 +488,9 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
           strokeLinecap="round"
           fill="none"
         >
-          <path d="M204 50 q4 -8 0 -16" />
-          <path d="M216 54 q4 -8 0 -16" />
-          <path d="M228 50 q4 -8 0 -16" />
+          <path d="M228 92 q4 -8 0 -16" />
+          <path d="M240 96 q4 -8 0 -16" />
+          <path d="M252 92 q4 -8 0 -16" />
         </motion.g>
       )}
 
@@ -530,20 +498,20 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
       <ManoPosicionada
         transform={
           frotar
-            ? "translate(180px, 58px) rotate(8deg)"
-            : "translate(48px, 30px) rotate(8deg)"
+            ? "translate(204px, 106px) rotate(8deg)"
+            : "translate(106px, 34px) rotate(8deg)"
         }
-        oscila={frotar ? "0 0;16 0;0 0" : undefined}
+        oscila={frotar ? "0 0;12 0;0 0" : undefined}
       />
       {/* mano derecha (espejo): cubre el ojo derecho */}
       <ManoPosicionada
         espejo
         transform={
           frotar
-            ? "translate(214px, 62px) rotate(-8deg)"
-            : "translate(94px, 30px) rotate(-8deg)"
+            ? "translate(236px, 110px) rotate(-8deg)"
+            : "translate(152px, 34px) rotate(-8deg)"
         }
-        oscila={frotar ? "0 0;-16 0;0 0" : undefined}
+        oscila={frotar ? "0 0;-12 0;0 0" : undefined}
       />
     </svg>
   );
@@ -560,24 +528,15 @@ export function MasajeAnim() {
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex h-52 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100">
-        <motion.div
-          animate={
-            fase === "colocar"
-              ? { scale: [1, 1.06, 1], x: [0, 3, 0, -3, 0], y: [0, -2, 0, 2, 0] }
-              : { scale: 1, x: 0, y: 0 }
-          }
-          transition={
-            fase === "colocar"
-              ? {
-                  scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-                  x: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                }
-              : {}
-          }
+        {/* la escena respira con el mismo reloj que el texto de inhala/exhala */}
+        <div
+          style={{
+            transform: fase === "colocar" && inhala ? "scale(1.06)" : "scale(1)",
+            transition: "transform 4s ease-in-out",
+          }}
         >
           <ManosGuia fase={fase} />
-        </motion.div>
+        </div>
       </div>
       <AnimatePresence mode="wait">
         <motion.p
@@ -631,13 +590,15 @@ export function PalmingAnim() {
         </>
       ) : (
         <>
-          <motion.div
-            animate={{
-              scale: [1, 1.6, 1],
-              opacity: fase === "salida" ? [0.45, 0.65, 0.45] : [0.15, 0.35, 0.15],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          {/* el círculo respira con el MISMO reloj que el texto: crece los
+             4 s de inhalar y se encoge los 4 s de exhalar */}
+          <div
             className="h-28 w-28 rounded-full bg-[#123657] shadow-[0_0_60px_rgba(30,84,134,0.5)]"
+            style={{
+              transform: inhala ? "scale(1.6)" : "scale(1)",
+              opacity: fase === "salida" ? 0.6 : 0.32,
+              transition: "transform 4s ease-in-out, opacity 2s ease",
+            }}
           />
           <AnimatePresence mode="wait">
             <motion.p
@@ -697,8 +658,12 @@ export function PencilAnim() {
     <div className="flex w-full flex-col items-center gap-4">
       <div
         ref={boxRef}
-        className="relative h-64 w-full overflow-hidden rounded-2xl bg-mist-tint"
+        className="relative h-64 w-full overflow-hidden rounded-2xl"
+        style={{ background: "linear-gradient(160deg, #0B3A3C 0%, #06282A 60%, #052022 100%)" }}
       >
+        {/* guías tenues de los dos ejes del recorrido */}
+        <div className="absolute left-0 top-1/2 h-px w-full bg-marine-line/20" />
+        <div className="absolute left-1/2 top-0 h-full w-px bg-marine-line/20" />
         <div ref={dotRef} className="absolute left-0 top-0" style={DOT_STYLE} />
       </div>
       <p className="text-center text-sm font-medium">

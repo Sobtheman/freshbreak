@@ -41,7 +41,7 @@ export const EJERCICIOS: Ejercicio[] = [
       "Asegúrate de que el objeto esté bien iluminado.",
       "Puedes mirar por la ventana o enfocar un punto lejano en la habitación.",
     ],
-    guia: "La pantalla se atenúa 20 segundos con un horizonte lejano: es tu señal para apartar la vista.",
+    guia: "La pantalla se apaga 20 segundos y solo queda un conteo gigante, legible de reojo: tu señal para apartar la vista.",
   },
   {
     id: "ocho-horizontal",

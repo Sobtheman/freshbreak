@@ -5,7 +5,7 @@
 // líneas de luz irradiando y parpadeo periódico. Sustituir por el archivo
 // vectorizado original si llega como archivo.
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 
 // Punto sobre la curva del párpado superior (para anclar pestañas)
 function lidPoint(t: number) {
@@ -167,24 +167,22 @@ export function EyeHero({
         {/* lagrimal */}
         <path d="M154 300 C168 284 190 280 204 290 C190 306 172 312 158 308 Z" fill="#D8A0BC" opacity="0.85" />
 
-        {/* párpado que parpadea */}
-        <motion.g
-          initial={false}
-          animate={blink ? { y: [-310, -310, 0, -310, -310] } : { y: -310 }}
-          transition={
-            blink
-              ? {
-                  duration: 6,
-                  times: [0, 0.93, 0.955, 0.98, 1],
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }
-              : undefined
-          }
-        >
+        {/* párpado que parpadea: animateTransform nativo del navegador
+           (framer-motion no aplica transforms a <g> de SVG de forma fiable) */}
+        <g transform="translate(0 -310)">
+          {blink && (
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              values="0 -310; 0 -310; 0 0; 0 -310; 0 -310"
+              keyTimes="0; 0.93; 0.955; 0.98; 1"
+              dur="6s"
+              repeatCount="indefinite"
+            />
+          )}
           <path d="M100 -300 H840 V280 Q470 452 100 280 Z" fill="#0A3F40" />
           <path d="M100 280 Q470 452 840 280" fill="none" stroke="#062F31" strokeWidth="8" />
-        </motion.g>
+        </g>
       </g>
 
       </g>

@@ -88,6 +88,24 @@ function AdminContenido() {
         <Stat titulo="Correos enviados" valor={datos.totales.correos} />
       </div>
 
+      <div className="card !py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-bold text-ink">Exportar datos (CSV):</span>
+          {["usuarios", "bloques", "cvsq", "cumplimientos", "envios"].map((t) => (
+            <a
+              key={t}
+              href={`/api/admin/export?tabla=${t}&clave=${encodeURIComponent(clave)}`}
+              className="rounded-full border border-ink/20 px-3 py-1.5 text-xs font-semibold text-ink transition hover:bg-ink/5"
+            >
+              {t}
+            </a>
+          ))}
+          <span className="text-xs text-ink/50">
+            Cada archivo abre en Excel; fechas en hora de Bogotá.
+          </span>
+        </div>
+      </div>
+
       <div className="card !p-0">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[940px] text-sm">

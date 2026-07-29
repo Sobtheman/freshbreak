@@ -12,7 +12,10 @@ export const maxDuration = 60;
 // cada 5 minutos; él revisa qué estudiantes tienen una pausa programada en
 // este momento (hora de Bogotá, dentro de sus bloques) y envía el correo.
 // La tabla `envios` garantiza que cada pausa se notifica UNA sola vez.
-const VENTANA_MIN = 7; // tolerancia: cubre el intervalo de 5 min del cron
+// Ventana amplia: si el cron externo falla unos minutos, la pausa no se
+// pierde; la unicidad en `envios` impide duplicados aunque dos ejecuciones
+// cubran la misma pausa.
+const VENTANA_MIN = 15;
 
 async function ejecutar(req: Request) {
   if (!esCronAutorizado(req)) {

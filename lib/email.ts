@@ -47,6 +47,48 @@ export function htmlRecordatorio(opts: {
   </div>`;
 }
 
+// Correo de bienvenida al activar (o actualizar) el plan: confirma que el
+// canal funciona y anuncia la próxima pausa, para que nadie se quede con la
+// sensación de "me registré y no pasó nada".
+export function htmlBienvenida(opts: {
+  nombre: string;
+  intervaloMin: number;
+  proximaTexto: string;
+  origen: string;
+  tokenEnlace?: string;
+}) {
+  const { nombre, intervaloMin, proximaTexto, origen, tokenEnlace } = opts;
+  const baja = tokenEnlace ? `${origen}/api/baja?u=${encodeURIComponent(tokenEnlace)}` : null;
+  return `
+  <div style="font-family:Arial,Helvetica,sans-serif;background:#F7FBFB;padding:24px;">
+    <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:14px;padding:28px;border:1px solid #E6F2F2;">
+      <p style="margin:0;font-size:12px;letter-spacing:2px;color:#0E7C74;font-weight:bold;">FRESHBREAK · TU PLAN ESTÁ ACTIVO</p>
+      <h1 style="margin:12px 0 0;font-size:22px;color:#0E3B3B;">Hola, ${nombre}</h1>
+      <p style="margin:10px 0 0;font-size:14px;color:#3D5C5C;">
+        Tus recordatorios de pausa visual quedaron programados dentro de tus
+        bloques de estudio, cada ${intervaloMin} minutos.
+      </p>
+      <div style="background:#F2F9F8;border-radius:12px;padding:18px;margin:18px 0;text-align:center;">
+        <p style="margin:0;font-size:12px;letter-spacing:1px;color:#0E7C74;font-weight:bold;">PRÓXIMA PAUSA</p>
+        <p style="margin:6px 0 0;font-size:20px;font-weight:bold;color:#0E3B3B;">${proximaTexto}</p>
+      </div>
+      <p style="margin:0;font-size:13px;color:#3D5C5C;">
+        Cada recordatorio llegará a este correo con el ejercicio del momento.
+        Si este mensaje cayó en spam, márcalo como «no es spam» para que los
+        siguientes lleguen a tu bandeja de entrada.
+      </p>
+      <div style="text-align:center;margin-top:18px;">
+        <a href="${origen}/panel" style="display:inline-block;background:#0E3B3B;color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:10px;">Ver mi panel</a>
+      </div>
+      <p style="margin:20px 0 0;font-size:11px;color:#8AA5A3;text-align:center;">
+        Datos protegidos según la Ley 1581 de 2012.${
+          baja ? `<br/><a href="${baja}" style="color:#8AA5A3;">Dejar de recibir recordatorios</a>` : ""
+        }
+      </p>
+    </div>
+  </div>`;
+}
+
 export async function enviarCorreo(opts: {
   para: string;
   asunto: string;

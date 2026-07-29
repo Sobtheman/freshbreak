@@ -32,6 +32,7 @@ export default function HorarioPage() {
     showToast,
     teaserDias,
     cargando,
+    esDemo,
   } = useApp();
   // Los días marcados en la página de inicio precargan bloques de 8 a 12
   const [lista, setLista] = useState<Bloque[]>(() =>
@@ -162,12 +163,14 @@ export default function HorarioPage() {
           <h2 className="m-0 text-lg font-bold text-ink">
             Bloques de estudio
           </h2>
-          <button
-            onClick={() => setLista(BLOQUES_EJEMPLO)}
-            className="btn-ghost px-4 py-2 text-xs"
-          >
-            Cargar ejemplo
-          </button>
+          {esDemo && (
+            <button
+              onClick={() => setLista(BLOQUES_EJEMPLO)}
+              className="btn-ghost px-4 py-2 text-xs"
+            >
+              Cargar ejemplo
+            </button>
+          )}
         </div>
 
         <div className="mt-4 space-y-3">

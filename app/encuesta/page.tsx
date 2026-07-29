@@ -25,7 +25,7 @@ const MAPA_TEASER: [number, number][] = [
 
 export default function EncuestaPage() {
   const router = useRouter();
-  const { user, setScore, teaser, cargando, onboarded } = useApp();
+  const { user, setScore, teaser, cargando, onboarded, esDemo } = useApp();
   const [respuestas, setRespuestas] = useState<Respuesta[]>(() =>
     PREGUNTAS.map((_, i) => {
       const slot = MAPA_TEASER.find(([qi]) => qi === i);
@@ -154,9 +154,11 @@ export default function EncuestaPage() {
           Responde las 16 preguntas del cuestionario. Cuando un síntoma se
           presenta, indica también su intensidad.
         </p>
-        <button onClick={autollenar} className="btn-ghost-page mt-4 text-sm">
-          Rellenar con ejemplo (demo)
-        </button>
+        {esDemo && (
+          <button onClick={autollenar} className="btn-ghost-page mt-4 text-sm">
+            Rellenar con ejemplo (demo)
+          </button>
+        )}
         {precargadas > 0 && (
           <p className="mt-3 text-xs font-semibold text-brand-tealDark dark:text-marine-line">
             {precargadas} respuesta{precargadas > 1 ? "s" : ""} precargada

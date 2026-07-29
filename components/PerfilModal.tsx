@@ -5,15 +5,40 @@ import { motion } from "framer-motion";
 import { Usuario, useApp } from "./providers";
 
 export default function PerfilModal({ onClose }: { onClose: () => void }) {
-  const { user, setUser, showToast } = useApp();
+  const { user, setUser, showToast, esDemo } = useApp();
   const [form, setForm] = useState<Usuario>(
     user ?? { nombre: "", correo: "", edad: "", ocupacion: "", correccion: "No" }
   );
+  const [guardando, setGuardando] = useState(false);
 
-  function guardar(e: FormEvent) {
+  async function guardar(e: FormEvent) {
     e.preventDefault();
+    if (guardando) return;
+    // En modo demo no hay cuenta en el servidor: solo se actualiza local.
+    if (!esDemo) {
+      setGuardando(true);
+      try {
+        const r = await fetch("/api/perfil", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        const d = await r.json().catch(() => ({ ok: false }));
+        if (!d.ok && d.code === "correo_en_uso") {
+          showToast("Ese correo ya pertenece a otra cuenta");
+          setGuardando(false);
+          return;
+        }
+        if (!d.ok) {
+          showToast("Aviso: el cambio no se guardó en el servidor");
+        }
+      } catch {
+        showToast("Aviso: el cambio no se guardó en el servidor");
+      }
+      setGuardando(false);
+    }
     setUser(form);
-    showToast("✓ Perfil actualizado");
+    showToast("Perfil actualizado");
     onClose();
   }
 
@@ -114,8 +139,8 @@ export default function PerfilModal({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         </div>
-        <button type="submit" className="btn-primary w-full">
-          Guardar cambios
+        <button type="submit" disabled={guardando} className="btn-primary w-full">
+          {guardando ? "Guardando…" : "Guardar cambios"}
         </button>
       </motion.form>
     </motion.div>

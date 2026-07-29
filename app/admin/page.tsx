@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { DIAS_CORTO } from "@/lib/schedule";
 
 type Estudiante = {
   id: number;
@@ -12,7 +13,7 @@ type Estudiante = {
   intervalo_min: number;
   horas_pantalla: number;
   recordatorios_activos: boolean;
-  bloques: number;
+  bloques: { dia: number; inicio: number; fin: number }[];
   cumplimientos: number;
   cumplimientos_7d: number;
   correos_enviados: number;
@@ -89,14 +90,14 @@ function AdminContenido() {
 
       <div className="card !p-0">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-sm">
+          <table className="w-full min-w-[940px] text-sm">
             <thead>
               <tr className="border-b border-ink/10 text-left text-xs font-bold uppercase tracking-wide text-ink/50">
                 <th className="px-4 py-3">Estudiante</th>
                 <th className="px-4 py-3">Registro</th>
                 <th className="px-4 py-3">CVS-Q inicial → actual</th>
                 <th className="px-4 py-3">Intervalo</th>
-                <th className="px-4 py-3">Bloques</th>
+                <th className="px-4 py-3">Horario</th>
                 <th className="px-4 py-3">Cumplidas (7 d)</th>
                 <th className="px-4 py-3">Correos</th>
                 <th className="px-4 py-3">Estado</th>
@@ -131,7 +132,21 @@ function AdminContenido() {
                     )}
                   </td>
                   <td className="px-4 py-3 tabular-nums">{e.intervalo_min} min</td>
-                  <td className="px-4 py-3 tabular-nums">{e.bloques}</td>
+                  <td className="px-4 py-3 text-xs tabular-nums">
+                    {e.bloques.length === 0 ? (
+                      <span className="rounded-full bg-brand-orange/15 px-2 py-0.5 font-bold text-[#8A4A16]">
+                        sin horario
+                      </span>
+                    ) : (
+                      <div className="flex max-w-[190px] flex-wrap gap-x-2 gap-y-0.5">
+                        {e.bloques.map((b, i) => (
+                          <span key={i} className="whitespace-nowrap">
+                            <b>{DIAS_CORTO[b.dia]}</b> {b.inicio}–{b.fin}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </td>
                   <td className="px-4 py-3 tabular-nums">
                     {e.cumplimientos_7d}
                     <span className="ml-1 text-xs text-ink/50">

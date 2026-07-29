@@ -24,7 +24,8 @@ export async function GET(req: Request) {
         u.intervalo_min,
         u.horas_pantalla,
         u.recordatorios_activos,
-        (SELECT COUNT(*)::int FROM bloques b WHERE b.usuario_id = u.id) AS bloques,
+        (SELECT COALESCE(json_agg(json_build_object('dia', b.dia, 'inicio', b.inicio, 'fin', b.fin) ORDER BY b.dia, b.inicio), '[]')
+          FROM bloques b WHERE b.usuario_id = u.id) AS bloques,
         (SELECT COUNT(*)::int FROM cumplimientos c WHERE c.usuario_id = u.id) AS cumplimientos,
         (SELECT COUNT(*)::int FROM cumplimientos c
           WHERE c.usuario_id = u.id AND c.fecha > now() - interval '7 days') AS cumplimientos_7d,

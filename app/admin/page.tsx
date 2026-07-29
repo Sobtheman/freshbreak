@@ -90,7 +90,13 @@ function AdminContenido() {
 
       <div className="card !py-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-bold text-ink">Exportar datos (CSV):</span>
+          <a
+            href={`/api/admin/export?tabla=todo&clave=${encodeURIComponent(clave)}`}
+            className="btn-primary !px-5 !py-2 text-sm"
+          >
+            Descargar todos los datos (ZIP)
+          </a>
+          <span className="text-xs text-ink/50">o por tabla:</span>
           {["usuarios", "bloques", "cvsq", "cumplimientos", "envios"].map((t) => (
             <a
               key={t}
@@ -101,7 +107,7 @@ function AdminContenido() {
             </a>
           ))}
           <span className="text-xs text-ink/50">
-            Cada archivo abre en Excel; fechas en hora de Bogotá.
+            Archivos CSV que abren en Excel, con nombre y correo en cada fila; fechas en hora de Bogotá.
           </span>
         </div>
       </div>

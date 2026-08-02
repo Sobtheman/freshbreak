@@ -378,7 +378,7 @@ function RecordatorioCard() {
         </div>
         <p className="mb-0 mt-2 text-sm font-bold">Es momento de descansar la vista</p>
         <p className="m-0 mt-1 text-xs text-ink/65">
-          Llevas 2 horas en pantalla. Mira a 20 pies (6 m) durante 20 segundos.
+          Llevas 2 horas en pantalla. Mira a 6 m durante 20 segundos y luego a 20 cm otros 20.
         </p>
         <Link
           href="/ejercicio/regla-20-20-20"
@@ -428,7 +428,7 @@ const CIENCIA = [
   },
   {
     t: "La regla 20-20-20 relaja la acomodación",
-    d: "Cada 20 minutos, mirar 20 segundos a 20 pies (6 m) reduce la fatiga acomodativa.",
+    d: "Alternar 20 segundos de visión lejana (6 m) con 20 segundos de visión cercana (20 cm) reduce la fatiga acomodativa.",
   },
   {
     t: "El movimiento amplio ejercita los músculos oculares",
@@ -470,6 +470,119 @@ const FAQS = [
     a: "Sí. Desde tu panel puedes editar tus bloques de estudio, tu perfil y el intervalo entre pausas en cualquier momento.",
   },
 ];
+
+/* ---------- Contacto: caja para escribirnos, bajo el FAQ ---------- */
+function FormularioContacto() {
+  const [nombre, setNombre] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [web, setWeb] = useState(""); // campo trampa anti-spam
+  const [estado, setEstado] = useState<"inicial" | "enviando" | "enviado" | "error">("inicial");
+
+  async function enviar(e: React.FormEvent) {
+    e.preventDefault();
+    if (estado === "enviando") return;
+    setEstado("enviando");
+    try {
+      const r = await fetch("/api/contacto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, correo, mensaje, web }),
+      });
+      const d = await r.json().catch(() => ({ ok: false }));
+      setEstado(d.ok ? "enviado" : "error");
+      if (d.ok) {
+        setNombre("");
+        setCorreo("");
+        setMensaje("");
+      }
+    } catch {
+      setEstado("error");
+    }
+  }
+
+  if (estado === "enviado") {
+    return (
+      <div className="card text-center">
+        <p className="m-0 text-lg font-bold text-ink">Mensaje enviado</p>
+        <p className="mt-2 text-sm text-ink/70">
+          Gracias por escribirnos. Te responderemos al correo que nos dejaste.
+        </p>
+        <button
+          onClick={() => setEstado("inicial")}
+          className="btn-ghost mt-5 text-sm"
+        >
+          Escribir otro mensaje
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={enviar} className="card space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="c-nombre" className="label">Nombre</label>
+          <input
+            id="c-nombre"
+            className="field"
+            required
+            maxLength={120}
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="c-correo" className="label">Correo electrónico</label>
+          <input
+            id="c-correo"
+            type="email"
+            className="field"
+            required
+            maxLength={160}
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+          />
+        </div>
+      </div>
+      <div>
+        <label htmlFor="c-mensaje" className="label">Mensaje o comentario</label>
+        <textarea
+          id="c-mensaje"
+          className="field min-h-[130px] resize-y"
+          required
+          maxLength={4000}
+          placeholder="Cuéntanos tu duda, una sugerencia o algo que no te funcionó."
+          value={mensaje}
+          onChange={(e) => setMensaje(e.target.value)}
+        />
+      </div>
+      {/* campo trampa: invisible para las personas */}
+      <input
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        value={web}
+        onChange={(e) => setWeb(e.target.value)}
+        className="hidden"
+      />
+      {estado === "error" && (
+        <p className="m-0 text-sm font-semibold text-[#C05E14]">
+          No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.
+        </p>
+      )}
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" disabled={estado === "enviando"} className="btn-primary">
+          {estado === "enviando" ? "Enviando…" : "Enviar mensaje"}
+        </button>
+        <span className="text-xs text-ink/55">
+          Usamos tu correo solo para responderte.
+        </span>
+      </div>
+    </form>
+  );
+}
 
 export default function LandingPage() {
   const router = useRouter();
@@ -713,6 +826,18 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ============ CONTACTO ============ */}
+        <section id="contacto" className="relative">
+          <div className="mx-auto max-w-3xl px-4 pb-24">
+            <SectionHead
+              eyebrow="Contacto"
+              title="¿Tienes una duda o un comentario?"
+              sub="Escríbenos y te respondemos a tu correo."
+            />
+            <FormularioContacto />
           </div>
         </section>
 

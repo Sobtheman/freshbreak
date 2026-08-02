@@ -8,6 +8,7 @@ import { getEjercicio } from "@/lib/exercises";
 import { useApp } from "@/components/providers";
 import { ANIMACIONES } from "@/components/exercise-anims";
 import { IconoEjercicio } from "@/components/icons";
+import SonidoToggle from "@/components/SonidoToggle";
 
 function fmt(s: number) {
   const m = Math.floor(s / 60);
@@ -129,6 +130,9 @@ function EjercicioContenido() {
             <p className="w-full rounded-xl bg-brand-tealDark/10 px-4 py-2.5 text-center text-xs font-medium text-brand-tealDeep">
               {ejercicio.guia}
             </p>
+            {/* Varios ejercicios se hacen con los ojos cerrados o mirando
+               lejos: las señales sonoras avisan qué hacer sin ver la pantalla. */}
+            <SonidoToggle />
 
             <div className="w-full">
               <div className="mb-1.5 flex items-baseline justify-between">

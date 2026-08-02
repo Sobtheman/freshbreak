@@ -37,13 +37,19 @@ export async function GET(req: Request) {
       ORDER BY u.creado DESC
     `) as Record<string, unknown>[];
 
+    const mensajes = (await sql`
+      SELECT id, nombre, correo, mensaje,
+             creado AT TIME ZONE 'America/Bogota' AS creado
+      FROM mensajes ORDER BY creado DESC LIMIT 50
+    `) as Record<string, unknown>[];
+
     const totales = {
       estudiantes: filas.length,
       activos: filas.filter((f) => f.recordatorios_activos).length,
       cumplimientos: filas.reduce((a, f) => a + Number(f.cumplimientos), 0),
       correos: filas.reduce((a, f) => a + Number(f.correos_enviados), 0),
     };
-    return NextResponse.json({ ok: true, totales, estudiantes: filas });
+    return NextResponse.json({ ok: true, totales, estudiantes: filas, mensajes });
   } catch (e) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : "Error de base de datos" },

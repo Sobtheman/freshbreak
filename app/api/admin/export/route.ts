@@ -43,6 +43,11 @@ async function consultar(sql: Awaited<ReturnType<typeof db>>, tabla: string): Pr
                e.creado AT TIME ZONE 'America/Bogota' AS creado_bogota
         FROM envios e JOIN usuarios u ON u.id = e.usuario_id
         ORDER BY e.creado`) as Fila[];
+    case "mensajes":
+      return (await sql`
+        SELECT nombre, correo, mensaje,
+               creado AT TIME ZONE 'America/Bogota' AS creado_bogota
+        FROM mensajes ORDER BY creado`) as Fila[];
     default:
       return null;
   }
@@ -61,7 +66,7 @@ function aCsv(filas: Fila[]): string {
   );
 }
 
-const TABLAS = ["usuarios", "bloques", "cvsq", "cumplimientos", "envios"];
+const TABLAS = ["usuarios", "bloques", "cvsq", "cumplimientos", "envios", "mensajes"];
 
 export async function GET(req: Request) {
   if (!esCronAutorizado(req)) {
@@ -94,7 +99,7 @@ export async function GET(req: Request) {
     const filas = await consultar(sql, tabla);
     if (filas === null) {
       return NextResponse.json(
-        { ok: false, error: "Tabla desconocida. Opciones: todo, usuarios, bloques, cvsq, cumplimientos, envios" },
+        { ok: false, error: "Tabla desconocida. Opciones: todo, usuarios, bloques, cvsq, cumplimientos, envios, mensajes" },
         { status: 400 }
       );
     }

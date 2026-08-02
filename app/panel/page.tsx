@@ -123,12 +123,21 @@ export default function PanelPage() {
               {esDemo && (
                 <button
                   onClick={dispararPausaAhora}
+                  title="Solo para mostrar la app: abre la notificación de pausa sin esperar a la hora programada"
                   className="rounded-xl border border-white/40 px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10"
                 >
-                  Simular llegada del correo
+                  Ver ejemplo de recordatorio
                 </button>
               )}
             </div>
+            {esDemo && (
+              <p className="mx-auto mt-3 max-w-sm text-xs text-white/60">
+                Estás en el modo de demostración: el botón de arriba abre la
+                notificación de pausa al instante, sin esperar la hora
+                programada. Con una cuenta real los recordatorios llegan solos,
+                por correo, según tu horario.
+              </p>
+            )}
             <label className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-white/75">
               Intervalo:
               <select

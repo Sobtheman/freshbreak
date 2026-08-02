@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useAnimationFrame } from "framer-motion";
+import { type Senal, useSonido } from "@/lib/sonido";
 
 /*
  * Guías visuales v3. Patrones de las apps de entrenamiento ocular guiado:
@@ -32,6 +33,18 @@ function useSegundos() {
   return t;
 }
 
+// Dispara una señal sonora cada vez que `fase` cambia (no en el primer
+// render). Es la forma de avisar con los ojos cerrados o la vista lejos de
+// la pantalla, que es donde la guía visual no sirve.
+function useSenalDeFase(fase: string | number, senal: Senal | null) {
+  const { sonar } = useSonido();
+  const previa = useRef<string | number | null>(null);
+  useEffect(() => {
+    if (previa.current !== null && previa.current !== fase && senal) sonar(senal);
+    previa.current = fase;
+  }, [fase, senal, sonar]);
+}
+
 /* ---------- 1. Parpadeo consciente ----------
  * Ciclo por parpadeo: 4 s (abierto 2 s, cerrado 2 s) × 10 reps = 40 s,
  * descanso 10 s → ronda de 50 s; el párpado es una tapa real que baja. */
@@ -42,6 +55,12 @@ export function ParpadeoAnim() {
   const rep = parpadeando ? Math.floor(enRonda / 4) + 1 : 10;
   const cerrado = parpadeando && enRonda % 4 >= 2;
   const ronda = Math.floor(t / 50) + 1;
+
+  // Sonido: avisa cada cierre y cada apertura, y marca el descanso.
+  useSenalDeFase(
+    parpadeando ? `p${enRonda >= 2 ? Math.floor(enRonda / 2) : 0}` : "descanso",
+    parpadeando ? (cerrado ? "cerrar" : "abrir") : "fin"
+  );
 
   return (
     <div className="flex flex-col items-center gap-5">
@@ -123,27 +142,42 @@ export function ParpadeoAnim() {
 }
 
 /* ---------- 2. Regla 20-20-20 ----------
- * 5 s de preparación con la pantalla encendida → 20 s con la pantalla
- * atenuada (horizonte lejano + anillo) → cierre. */
+ * Corrección de la clienta: son DOS fases de 20 s — primero a 6 m (lejos) y
+ * luego a 20 cm (cerca). La pantalla se apaga en ambas: solo queda un conteo
+ * gigante legible de reojo, y el sonido avisa el cambio. */
 export function Regla202020Anim() {
   const t = useSegundos();
-  const fase: "prep" | "lejos" | "fin" = t < 5 ? "prep" : t < 25 ? "lejos" : "fin";
+  const fase: "prep" | "lejos" | "cerca" | "fin" =
+    t < 5 ? "prep" : t < 25 ? "lejos" : t < 45 ? "cerca" : "fin";
   const C = 2 * Math.PI * 44;
+
+  // Sonido: sin mirar la pantalla, el cambio de fase se oye.
+  useSenalDeFase(
+    fase,
+    fase === "lejos" ? "lejos" : fase === "cerca" ? "cerca" : fase === "fin" ? "fin" : null
+  );
+
+  const oscura = fase === "lejos" || fase === "cerca";
+  const restante = fase === "lejos" ? 25 - t : 45 - t;
 
   return (
     <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: 290 }}>
-      {/* la pantalla se APAGA de verdad: nada que mirar aquí, solo un
-         conteo gigante legible de reojo mientras la mirada está a 6 m */}
+      {/* la pantalla se APAGA de verdad: nada que mirar aquí */}
       <motion.div
         className="absolute inset-0"
-        animate={{ opacity: fase === "lejos" ? 1 : 0 }}
-        transition={{ duration: 1.2 }}
-        style={{ background: "radial-gradient(ellipse at 50% 40%, #101D2C 0%, #070E18 70%)" }}
+        animate={{ opacity: oscura ? 1 : 0 }}
+        transition={{ duration: 1 }}
+        style={{
+          background:
+            fase === "cerca"
+              ? "radial-gradient(ellipse at 50% 45%, #0E2A2C 0%, #061618 70%)"
+              : "radial-gradient(ellipse at 50% 40%, #101D2C 0%, #070E18 70%)",
+        }}
       />
       <motion.div
         className="absolute inset-0 bg-mist-tint"
-        animate={{ opacity: fase === "lejos" ? 0 : 1 }}
-        transition={{ duration: 1.2 }}
+        animate={{ opacity: oscura ? 0 : 1 }}
+        transition={{ duration: 1 }}
       />
       <div className="relative z-10 flex min-h-[290px] flex-col items-center justify-center gap-4 p-5">
         {fase === "prep" && (
@@ -153,19 +187,19 @@ export function Regla202020Anim() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <p className="text-lg font-bold">Elige tu punto lejano</p>
+            <p className="text-lg font-bold">Prepara tus dos puntos</p>
             <p className="mt-1 text-sm text-ink/60">
-              Una ventana o el punto más lejano de la habitación (6 m), bien
-              iluminado. Gira la silla si hace falta.
+              Uno lejano a 6 m (una ventana o el fondo de la habitación) y uno
+              cercano a 20 cm (tu dedo o un lápiz). Ambos bien iluminados.
             </p>
             <p className="mt-4 text-6xl font-bold tabular-nums text-brand-tealDark">
               {5 - t}
             </p>
           </motion.div>
         )}
-        {fase === "lejos" && (
+        {oscura && (
           <motion.div
-            key="lejos"
+            key={fase}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex flex-col items-center gap-3 text-white"
@@ -174,6 +208,7 @@ export function Regla202020Anim() {
               <svg width="150" height="150" viewBox="0 0 100 100" className="-rotate-90">
                 <circle cx="50" cy="50" r="44" fill="none" stroke="#ffffff1f" strokeWidth="7" />
                 <motion.circle
+                  key={fase}
                   cx="50" cy="50" r="44" fill="none"
                   stroke="#F79A56" strokeWidth="7" strokeLinecap="round"
                   strokeDasharray={C}
@@ -183,12 +218,18 @@ export function Regla202020Anim() {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center text-6xl font-bold tabular-nums">
-                {25 - t}
+                {restante}
               </div>
             </div>
-            <p className="text-lg font-bold">Aparta la vista de la pantalla</p>
+            <p className="text-lg font-bold">
+              {fase === "lejos"
+                ? "Fase 1 · Mira tu punto lejano (6 m)"
+                : "Fase 2 · Mira tu punto cercano (20 cm)"}
+            </p>
             <p className="text-xs text-white/55">
-              Sostén la mirada en tu punto lejano · el conteo se ve de reojo
+              {fase === "lejos"
+                ? "Aparta la vista de la pantalla · el conteo se ve de reojo"
+                : "Enfoca el objeto cercano sin forzar · falta poco"}
             </p>
           </motion.div>
         )}
@@ -286,6 +327,13 @@ export function OchoAnim() {
     dot.style.transform = `translate(${x - 12}px, ${y - 12}px)`;
   });
 
+  // Sonido: al entrar al descanso avisa que cierre los ojos, al salir que los
+  // abra, y marca el cambio de sentido.
+  useSenalDeFase(
+    caption,
+    caption === "pausa" ? "cerrar" : caption === "vuelta" ? "abrir" : "cambio"
+  );
+
   const puntos = useMemo(() => {
     const pts: string[] = [];
     for (let th = 0; th <= Math.PI * 2 + 0.001; th += 0.04) {
@@ -343,6 +391,9 @@ export function EnfoqueAnim() {
   const cerca = enCiclo < 10;
   const restante = cerca ? 10 - enCiclo : 20 - enCiclo;
   const ciclo = Math.min(Math.floor(t / 20) + 1, 10);
+
+  // Sonido: dos tonos distintos para saber a dónde mirar sin ver la pantalla.
+  useSenalDeFase(`${ciclo}-${cerca}`, cerca ? "cerca" : "lejos");
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
@@ -524,6 +575,17 @@ export function MasajeAnim() {
   const t = useSegundos();
   const fase: "frotar" | "colocar" = t < 10 ? "frotar" : "colocar";
   const inhala = t % 8 < 4;
+  const terminando = t >= 39; // el ejercicio dura 40 s
+
+  // Sonido: aviso al tapar los ojos, ritmo de respiración y aviso de apertura.
+  useSenalDeFase(
+    terminando ? "fin" : fase,
+    terminando ? "abrir" : fase === "colocar" ? "cerrar" : null
+  );
+  useSenalDeFase(
+    fase === "colocar" && !terminando ? Math.floor(t / 4) : "-",
+    fase === "colocar" && !terminando ? (inhala ? "inhalar" : "exhalar") : null
+  );
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -564,6 +626,13 @@ export function PalmingAnim() {
   const t = useSegundos();
   const fase: "prep" | "oscuro" | "salida" = t < 5 ? "prep" : t < 54 ? "oscuro" : "salida";
   const inhala = t % 8 < 4;
+
+  // Sonido: con los ojos tapados, todo el ejercicio se guía por oído.
+  useSenalDeFase(fase, fase === "oscuro" ? "cerrar" : fase === "salida" ? "abrir" : null);
+  useSenalDeFase(
+    fase === "oscuro" ? Math.floor(t / 4) : "-",
+    fase === "oscuro" ? (inhala ? "inhalar" : "exhalar") : null
+  );
 
   return (
     <motion.div
@@ -625,50 +694,96 @@ export function PalmingAnim() {
 }
 
 /* ---------- 7. Push up pencil ----------
- * El punto hace de lápiz: horizontal 30 s → vertical 30 s, velocidad constante. */
+ * Corrección de la clienta: NO es seguir el lápiz hacia los extremos. Es
+ * acercarlo al centro de los ojos hasta verlo DOBLE y alejarlo hasta volver
+ * a ver uno solo (ejercicio de convergencia). La guía imita esa vista: el
+ * lápiz crece al acercarse y se desdobla en la zona de visión doble. */
 export function PencilAnim() {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
-  const t = useRef(0);
-  const elapsed = useRef(0);
-  const [eje, setEje] = useState<"x" | "y">("x");
+  const [t, setT] = useState(0); // décimas de segundo, para movimiento fluido
+  useEffect(() => {
+    const iv = window.setInterval(() => setT((x) => x + 1), 100);
+    return () => window.clearInterval(iv);
+  }, []);
 
-  useAnimationFrame((_, delta) => {
-    const box = boxRef.current;
-    const dot = dotRef.current;
-    if (!box || !dot) return;
-    const dt = Math.min(delta, 64) / 1000;
-    elapsed.current += dt;
-    if (eje === "x" && elapsed.current >= 30) {
-      setEje("y");
-      t.current = 0;
-    }
-    t.current += dt * ((Math.PI * 2) / 8);
-    const tri = (2 / Math.PI) * Math.asin(Math.sin(t.current));
-    const w = box.clientWidth;
-    const h = box.clientHeight;
-    const hx = w / 2 - 16;
-    const hy = h / 2 - 16;
-    const x = w / 2 + (eje === "x" ? tri * hx : 0);
-    const y = h / 2 + (eje === "y" ? tri * hy : 0);
-    dot.style.transform = `translate(${x - 12}px, ${y - 12}px)`;
-  });
+  const CICLO = 120; // 12 s: acercar 5 s · zona doble 2 s · alejar 5 s
+  const enCiclo = t % CICLO;
+  const fase: "acercar" | "doble" | "alejar" =
+    enCiclo < 50 ? "acercar" : enCiclo < 70 ? "doble" : "alejar";
+
+  useSenalDeFase(fase, fase === "doble" ? "cambio" : fase === "alejar" ? "lejos" : "cerca");
+
+  // Proximidad 0 (brazo extendido) → 1 (cerca de la nariz)
+  const prox =
+    fase === "acercar"
+      ? enCiclo / 50
+      : fase === "doble"
+        ? 1
+        : Math.max(0, 1 - (enCiclo - 70) / 50);
+
+  const escala = 0.55 + prox * 0.95;
+  const separacion = fase === "doble" ? 26 : prox > 0.82 ? (prox - 0.82) * 90 : 0;
+  const dobleVision = separacion > 1;
+
+  const Lapiz = ({ dx, opacidad }: { dx: number; opacidad: number }) => (
+    <div
+      className="absolute left-1/2 top-1/2"
+      style={{
+        transform: `translate(calc(-50% + ${dx}px), -50%) scale(${escala})`,
+        opacity: opacidad,
+        transition: "transform 0.12s linear, opacity 0.25s ease",
+      }}
+    >
+      <svg width="42" height="150" viewBox="0 0 42 150" aria-hidden>
+        {/* punta */}
+        <path d="M21 4 L33 34 H9 Z" fill="#F2C6A0" />
+        <path d="M21 4 L26 16 H16 Z" fill="#2B2B2B" />
+        {/* cuerpo */}
+        <rect x="9" y="34" width="24" height="88" fill="#F79A56" />
+        <rect x="9" y="34" width="7" height="88" fill="#E8823B" opacity="0.55" />
+        {/* virola y goma */}
+        <rect x="9" y="122" width="24" height="12" fill="#C9CDD2" />
+        <rect x="9" y="134" width="24" height="14" rx="4" fill="#E88E96" />
+      </svg>
+    </div>
+  );
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
       <div
-        ref={boxRef}
         className="relative h-64 w-full overflow-hidden rounded-2xl"
         style={{ background: "linear-gradient(160deg, #0B3A3C 0%, #06282A 60%, #052022 100%)" }}
       >
-        {/* guías tenues de los dos ejes del recorrido */}
-        <div className="absolute left-0 top-1/2 h-px w-full bg-marine-line/20" />
+        {/* eje central: el lápiz viaja hacia el puente de la nariz */}
         <div className="absolute left-1/2 top-0 h-full w-px bg-marine-line/20" />
-        <div ref={dotRef} className="absolute left-0 top-0" style={DOT_STYLE} />
+
+        {dobleVision ? (
+          <>
+            <Lapiz dx={-separacion} opacidad={0.75} />
+            <Lapiz dx={separacion} opacidad={0.75} />
+          </>
+        ) : (
+          <Lapiz dx={0} opacidad={1} />
+        )}
+
+        <div className="absolute inset-x-0 bottom-3 text-center">
+          <span
+            className={`rounded-full px-4 py-1.5 text-sm font-bold ${
+              fase === "doble"
+                ? "bg-brand-orange text-[#0E2A47]"
+                : "bg-marine-line/15 text-marine-line"
+            }`}
+          >
+            {fase === "acercar"
+              ? "Acerca el lápiz al centro de tus ojos"
+              : fase === "doble"
+                ? "¿Lo ves doble? Detente ahí"
+                : "Aléjalo hasta ver un solo lápiz"}
+          </span>
+        </div>
       </div>
       <p className="text-center text-sm font-medium">
-        El punto hace de lápiz: síguelo sin mover la cabeza ·{" "}
-        <b>{eje === "x" ? "izquierda ↔ derecha" : "arriba ↕ abajo"}</b>
+        Sostén tu lápiz a la altura de los ojos y muévelo <b>en línea recta</b>{" "}
+        hacia el puente de la nariz, siguiéndolo con la mirada.
       </p>
     </div>
   );

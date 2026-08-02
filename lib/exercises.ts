@@ -26,22 +26,23 @@ export const EJERCICIOS: Ejercicio[] = [
       "Descansa 10 segundos.",
       "Hazlo durante 2 minutos.",
     ],
-    guia: "El ojo en pantalla marca el ritmo: se cierra 2 segundos y se abre contigo.",
+    guia: "El ojo en pantalla marca el ritmo y un sonido te avisa cuándo cerrar y cuándo abrir los ojos.",
   },
   {
     id: "regla-20-20-20",
     nombre: "Regla 20-20-20",
     objetivo: "Relajar la acomodación ocular.",
     porQue:
-      "Cada 20 minutos de pantalla, mirar 20 segundos a 20 pies (6 m) reduce la fatiga acomodativa.",
-    duracion: 25,
-    duracionLabel: "25 s · 5 s de preparación + 20 s",
+      "Alternar 20 segundos de visión lejana (6 m) con 20 segundos de visión cercana (20 cm) relaja y ejercita la acomodación.",
+    duracion: 45,
+    duracionLabel: "45 s · 20 s lejos + 20 s cerca",
     pasos: [
       "Cada 60 minutos, mira un objeto a 20 pies (6 metros) durante 20 segundos.",
-      "Asegúrate de que el objeto esté bien iluminado.",
-      "Puedes mirar por la ventana o enfocar un punto lejano en la habitación.",
+      "Enseguida, enfoca un objeto a 20 centímetros durante 20 segundos.",
+      "Asegúrate de que ambos objetos estén bien iluminados.",
+      "Puedes usar la ventana como punto lejano y tu dedo o un lápiz como punto cercano.",
     ],
-    guia: "La pantalla se apaga 20 segundos y solo queda un conteo gigante, legible de reojo: tu señal para apartar la vista.",
+    guia: "La pantalla se apaga y solo queda un conteo gigante: un aviso sonoro te indica cuándo pasar del punto lejano al cercano.",
   },
   {
     id: "ocho-horizontal",
@@ -52,18 +53,18 @@ export const EJERCICIOS: Ejercicio[] = [
     duracion: 70,
     duracionLabel: "70 s · 30 s por sentido + descanso",
     pasos: [
-      "Imagina un número ocho horizontal (∞) frente a ti.",
+      "Mira el número ocho horizontal (∞) que aparece en la pantalla.",
       "Con tus ojos, sin mover la cabeza, síguelo durante 30 segundos en una dirección y 30 segundos en la otra.",
       "Descansa 10 segundos.",
     ],
-    guia: "El punto naranja recorre el ocho a velocidad constante; síguelo solo con la mirada.",
+    guia: "El punto naranja recorre el ocho a velocidad constante; síguelo solo con la mirada. Un sonido avisa cuándo cerrar los ojos en el descanso y cuándo abrirlos.",
   },
   {
     id: "enfoque-cercano-lejano",
     nombre: "Enfoque cercano-lejano",
     objetivo: "Relajar y ejercitar los músculos ciliares.",
     porQue:
-      "Alternar distancias de enfoque entrena el cristalino y previene el espasmo acomodativo.",
+      "Alternar distancias de enfoque entrena el músculo ciliar y previene el espasmo acomodativo.",
     duracion: 200,
     duracionLabel: "3 min 20 s · 10 ciclos",
     pasos: [
@@ -72,7 +73,7 @@ export const EJERCICIOS: Ejercicio[] = [
       "Luego cambia el enfoque a un objeto lejano (mínimo 6 m).",
       "Repite el ciclo 10 veces.",
     ],
-    guia: "No mires fijo la pantalla: el conteo grande y el punto marcan el ritmo de cada fase de 10 s.",
+    guia: "No mires fijo la pantalla: un tono grave avisa que enfoques cerca y uno agudo que enfoques lejos, cada 10 segundos.",
   },
   {
     id: "masaje-palpebral",
@@ -87,7 +88,7 @@ export const EJERCICIOS: Ejercicio[] = [
       "Colócalas suavemente sobre los párpados cerrados durante 30 segundos.",
       "Respira profundamente y relájate.",
     ],
-    guia: "Primero la guía te muestra cómo frotar y colocar las palmas; luego marca la respiración.",
+    guia: "La guía te muestra cómo frotar y colocar las palmas; con los ojos tapados, el sonido marca la respiración y avisa cuándo abrirlos.",
   },
   {
     id: "palming",
@@ -102,23 +103,23 @@ export const EJERCICIOS: Ejercicio[] = [
       "Asegúrate de bloquear toda la luz.",
       "Respira lento y profundo durante 1 minuto.",
     ],
-    guia: "La pantalla se oscurece contigo y respira a tu ritmo; al final te avisa con una salida suave.",
+    guia: "Con los ojos cubiertos te guía el sonido: marca la respiración y avisa cuándo abrir los ojos al terminar.",
   },
   {
     id: "push-up-pencil",
     nombre: "Push up pencil",
-    objetivo: "Mejorar control oculomotor.",
+    objetivo: "Entrenar la convergencia y el control oculomotor.",
     porQue:
-      "El seguimiento lento de un objetivo entrena la convergencia y mejora el control oculomotor.",
+      "Acercar un objetivo hasta el punto en que se ve doble entrena la convergencia, que es la capacidad de los dos ojos de apuntar juntos a lo cercano.",
     duracion: 60,
     duracionLabel: "1 min",
     pasos: [
-      "Sostén un lápiz frente a ti.",
-      "Muévelo lentamente de izquierda a derecha y luego arriba-abajo.",
-      "Sigue con la mirada sin mover la cabeza.",
-      "Realiza por 1 minuto.",
+      "Sostén un lápiz frente a ti, a la altura de los ojos y con el brazo extendido.",
+      "Acércalo lentamente hacia el centro de tus ojos, mirándolo fijamente.",
+      "Detente cuando empieces a verlo doble.",
+      "Aléjalo despacio hasta volver a ver un solo lápiz y repite durante 1 minuto.",
     ],
-    guia: "Si no tienes un lápiz a mano, el punto naranja hace de lápiz: síguelo sin mover la cabeza.",
+    guia: "El lápiz de la pantalla imita lo que debes ver: crece al acercarse y se desdobla en la zona de visión doble.",
   },
 ];
 

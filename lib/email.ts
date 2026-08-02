@@ -93,6 +93,7 @@ export async function enviarCorreo(opts: {
   para: string;
   asunto: string;
   html: string;
+  responderA?: string; // para poder contestar directo al remitente
 }): Promise<{ ok: boolean; id?: string; error?: string }> {
   const key = process.env.RESEND_API_KEY ?? "";
   const r = await fetch("https://api.resend.com/emails", {
@@ -106,6 +107,7 @@ export async function enviarCorreo(opts: {
       to: [opts.para],
       subject: opts.asunto,
       html: opts.html,
+      ...(opts.responderA ? { reply_to: opts.responderA } : {}),
     }),
   });
   const data = await r.json().catch(() => ({}));

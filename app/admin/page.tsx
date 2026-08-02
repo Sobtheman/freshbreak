@@ -22,9 +22,18 @@ type Estudiante = {
   mediciones: number;
 };
 
+type Mensaje = {
+  id: number;
+  nombre: string;
+  correo: string;
+  mensaje: string;
+  creado: string;
+};
+
 type Datos = {
   totales: { estudiantes: number; activos: number; cumplimientos: number; correos: number };
   estudiantes: Estudiante[];
+  mensajes: Mensaje[];
 };
 
 function Stat({ titulo, valor }: { titulo: string; valor: number | string }) {
@@ -97,7 +106,7 @@ function AdminContenido() {
             Descargar todos los datos (ZIP)
           </a>
           <span className="text-xs text-ink/50">o por tabla:</span>
-          {["usuarios", "bloques", "cvsq", "cumplimientos", "envios"].map((t) => (
+          {["usuarios", "bloques", "cvsq", "cumplimientos", "envios", "mensajes"].map((t) => (
             <a
               key={t}
               href={`/api/admin/export?tabla=${t}&clave=${encodeURIComponent(clave)}`}
@@ -194,6 +203,51 @@ function AdminContenido() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mensajes del formulario de contacto de la página de inicio */}
+      <div className="card">
+        <h2 className="m-0 text-lg font-bold text-ink">
+          Mensajes recibidos{" "}
+          <span className="text-sm font-semibold text-ink/50">
+            ({datos.mensajes?.length ?? 0})
+          </span>
+        </h2>
+        {!datos.mensajes || datos.mensajes.length === 0 ? (
+          <p className="mt-2 text-sm text-ink/55">
+            Aún no hay mensajes del formulario de contacto.
+          </p>
+        ) : (
+          <ul className="mt-4 space-y-3">
+            {datos.mensajes.map((m) => (
+              <li key={m.id} className="rounded-xl bg-mist-tint p-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="m-0 text-sm font-bold text-ink">
+                    {m.nombre}{" "}
+                    <a
+                      href={`mailto:${m.correo}`}
+                      className="font-semibold text-brand-tealDark underline underline-offset-2"
+                    >
+                      {m.correo}
+                    </a>
+                  </p>
+                  <span className="text-xs tabular-nums text-ink/50">
+                    {new Date(m.creado).toLocaleString("es-CO", {
+                      timeZone: "America/Bogota",
+                      day: "2-digit",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <p className="m-0 mt-2 whitespace-pre-wrap text-sm text-ink/80">
+                  {m.mensaje}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </motion.div>
   );

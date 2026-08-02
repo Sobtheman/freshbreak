@@ -12,6 +12,7 @@ const ANCLAS = [
   { href: "#ciencia", label: "Ciencia" },
   { href: "#como-funciona", label: "Cómo funciona" },
   { href: "#faq", label: "FAQ" },
+  { href: "#contacto", label: "Contacto" },
 ];
 
 export default function Header() {

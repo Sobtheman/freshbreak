@@ -74,6 +74,13 @@ export function asegurarEsquema(): Promise<void> {
         fuente TEXT DEFAULT 'app',
         fecha TIMESTAMPTZ DEFAULT now()
       )`;
+      await sql`CREATE TABLE IF NOT EXISTS mensajes (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        correo TEXT NOT NULL,
+        mensaje TEXT NOT NULL,
+        creado TIMESTAMPTZ DEFAULT now()
+      )`;
       await sql`CREATE TABLE IF NOT EXISTS envios (
         id SERIAL PRIMARY KEY,
         usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,

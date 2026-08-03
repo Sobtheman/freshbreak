@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Ejercicio } from "@/lib/exercises";
 import { useApp } from "./providers";
+import { hora12 } from "@/lib/schedule";
 
 export default function EmailPreview({
   ejercicio,
@@ -103,7 +104,7 @@ export default function EmailPreview({
               </div>
               {proximas.length > 0 && (
                 <p className="mt-4 text-center text-xs text-black/50">
-                  Próximos recordatorios de hoy: {proximas.join(" · ")}
+                  Próximos recordatorios de hoy: {proximas.map(hora12).join(" · ")}
                 </p>
               )}
             </div>

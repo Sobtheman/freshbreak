@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { ahoraBogota, bdDisponible, db } from "@/lib/db";
 import { tokenEnlace, usuarioDeSesion } from "@/lib/session";
-import { DIAS, pausasDelDia, type Bloque } from "@/lib/schedule";
+import { DIAS, hora12, pausasDelDia, type Bloque } from "@/lib/schedule";
 import { enviarCorreo, htmlBienvenida } from "@/lib/email";
 
 // Próxima pausa a partir de ahora (hora de Bogotá). Recorre 8 días para
@@ -14,7 +14,7 @@ function proximaPausa(bloques: Bloque[], intervaloMin: number) {
     for (const h of pausasDelDia(bloques, d, intervaloMin)) {
       const [hh, mm] = h.split(":").map(Number);
       if (i > 0 || hh * 60 + mm > minutos) {
-        return i === 0 ? `Hoy a las ${h}` : `${DIAS[d]} a las ${h}`;
+        return i === 0 ? `Hoy a las ${hora12(h)}` : `${DIAS[d]} a las ${hora12(h)}`;
       }
     }
   }

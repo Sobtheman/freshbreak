@@ -161,7 +161,7 @@ export function ParpadeoAnim() {
  * gigante legible de reojo, y el sonido avisa el cambio. */
 function DiagramaDistancia({ cerca }: { cerca: boolean }) {
   return (
-    <svg width="230" height="70" viewBox="0 0 230 70" aria-hidden>
+    <svg width="240" height="88" viewBox="0 0 240 88" aria-hidden>
       <g stroke="#7FE7DC" fill="none" strokeWidth="2" strokeLinecap="round">
         {/* ojo de perfil, siempre a la izquierda */}
         <path d="M10 35 Q22 22 34 35 Q22 48 10 35 Z" />
@@ -187,17 +187,17 @@ function DiagramaDistancia({ cerca }: { cerca: boolean }) {
           <path d="M13 4 V34 M0 19 H26" stroke="#7FE7DC" strokeWidth="1.4" opacity="0.7" />
         </g>
       )}
-      {/* la distancia se rotula sobre la línea de mirada, no sobre el objeto */}
+      {/* la distancia va debajo de todo el diagrama, sin chocar con el objeto */}
       <text
-        x={cerca ? "65" : "112"}
-        y="58"
+        x="120"
+        y="80"
         fill="#7FE7DC"
         fontSize="12"
         fontWeight="700"
         textAnchor="middle"
         opacity="0.85"
       >
-        {cerca ? "20 cm" : "6 m"}
+        {cerca ? "20 centímetros" : "6 metros"}
       </text>
     </svg>
   );
@@ -247,8 +247,9 @@ export function Regla202020Anim() {
           >
             <p className="text-lg font-bold">Prepara tus dos puntos</p>
             <p className="mt-1 text-sm text-ink/60">
-              Uno lejano a 6 m (una ventana o el fondo de la habitación) y uno
-              cercano a 20 cm (tu dedo o un lápiz). Ambos bien iluminados.
+              Uno lejano a 6 metros (una ventana o el fondo de la habitación)
+              y uno cercano a 20 centímetros (tu dedo o un lápiz). Ambos bien
+              iluminados.
             </p>
             <p className="mt-4 text-6xl font-bold tabular-nums text-brand-tealDark">
               {5 - t}
@@ -281,8 +282,8 @@ export function Regla202020Anim() {
             </div>
             <p className="text-lg font-bold">
               {fase === "lejos"
-                ? "Fase 1 · Mira tu punto lejano (6 m)"
-                : "Fase 2 · Mira tu punto cercano (20 cm)"}
+                ? "Fase 1 · Mira tu punto lejano"
+                : "Fase 2 · Mira tu punto cercano"}
             </p>
             {/* El diagrama explica la distancia de un vistazo y se atenúa:
                es una indicación, no algo para quedarse mirando. */}
@@ -479,7 +480,7 @@ export function EnfoqueAnim() {
             exit={{ opacity: 0, y: -10 }}
             className="text-xl font-bold sm:text-2xl"
           >
-            {cerca ? "CERCA — enfoca tu dedo (15 cm)" : "LEJOS — objeto a 6 m"}
+            {cerca ? "CERCA — enfoca tu dedo (15 centímetros)" : "LEJOS — objeto a 6 metros"}
           </motion.p>
         </AnimatePresence>
         {/* conteo gigante: legible con visión periférica */}

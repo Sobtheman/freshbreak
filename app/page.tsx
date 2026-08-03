@@ -14,7 +14,7 @@ import {
 } from "@/components/icons";
 import { useApp } from "@/components/providers";
 import { PREGUNTAS } from "@/lib/cvsq";
-import { DIAS, DIAS_CORTO, pausasDelDia } from "@/lib/schedule";
+import { DIAS, DIAS_CORTO, hora12, pausasDelDia } from "@/lib/schedule";
 
 /* Campo de estrellas determinista: partículas teal que dan profundidad */
 function Starfield({ n = 70 }: { n?: number }) {
@@ -330,13 +330,13 @@ function SemanaWidget() {
         {primerDia !== null ? (
           <div className="rounded-2xl bg-mist-tint p-3">
             <p className="m-0 text-xs font-semibold text-ink/70">
-              {DIAS[primerDia]}, con un bloque de 8:00 a 12:00 y pausas cada hora:
+              {DIAS[primerDia]}, con un bloque de 8 a. m. a 12 p. m. y pausas cada hora:
             </p>
-            <p className="m-0 mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[13px] font-semibold tabular-nums">
+            <p className="m-0 mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[13px] font-semibold tabular-nums">
               {horas.map((h) => (
                 <span key={h} className="inline-flex items-center gap-1">
                   <span className="inline-block h-2 w-2 rounded-full bg-brand-orange" />
-                  {h}
+                  {hora12(h)}
                 </span>
               ))}
             </p>
@@ -378,7 +378,7 @@ function RecordatorioCard() {
         </div>
         <p className="mb-0 mt-2 text-sm font-bold">Es momento de descansar la vista</p>
         <p className="m-0 mt-1 text-xs text-ink/65">
-          Llevas 2 horas en pantalla. Mira a 6 m durante 20 segundos y luego a 20 cm otros 20.
+          Llevas 2 horas en pantalla. Mira a 6 metros durante 20 segundos y luego a 20 centímetros otros 20.
         </p>
         <Link
           href="/ejercicio/regla-20-20-20"
@@ -428,7 +428,7 @@ const CIENCIA = [
   },
   {
     t: "La regla 20-20-20 relaja la acomodación",
-    d: "Alternar 20 segundos de visión lejana (6 m) con 20 segundos de visión cercana (20 cm) reduce la fatiga acomodativa.",
+    d: "Alternar 20 segundos de visión lejana (6 metros) con 20 segundos de visión cercana (20 centímetros) reduce la fatiga acomodativa.",
   },
   {
     t: "El movimiento amplio ejercita los músculos oculares",

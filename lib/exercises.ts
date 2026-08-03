@@ -33,7 +33,7 @@ export const EJERCICIOS: Ejercicio[] = [
     nombre: "Regla 20-20-20",
     objetivo: "Relajar la acomodación ocular.",
     porQue:
-      "Alternar 20 segundos de visión lejana (6 m) con 20 segundos de visión cercana (20 cm) relaja y ejercita la acomodación.",
+      "Alternar 20 segundos de visión lejana (6 metros) con 20 segundos de visión cercana (20 centímetros) relaja y ejercita la acomodación.",
     duracion: 45,
     duracionLabel: "45 s · 20 s lejos + 20 s cerca",
     pasos: [
@@ -68,9 +68,9 @@ export const EJERCICIOS: Ejercicio[] = [
     duracion: 200,
     duracionLabel: "3 min 20 s · 10 ciclos",
     pasos: [
-      "Sostén tu dedo a 15 cm frente a tus ojos.",
+      "Sostén tu dedo a 15 centímetros frente a tus ojos.",
       "Enfoca en tu dedo durante 10 segundos.",
-      "Luego cambia el enfoque a un objeto lejano (mínimo 6 m).",
+      "Luego cambia el enfoque a un objeto lejano (mínimo 6 metros).",
       "Repite el ciclo 10 veces.",
     ],
     guia: "No mires fijo la pantalla: un tono grave avisa que enfoques cerca y uno agudo que enfoques lejos, cada 10 segundos.",

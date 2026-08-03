@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { DIAS_CORTO } from "@/lib/schedule";
+import { DIAS_CORTO, horaEntera12 } from "@/lib/schedule";
 
 type Estudiante = {
   id: number;
@@ -174,7 +174,7 @@ function AdminContenido() {
                       <div className="flex max-w-[190px] flex-wrap gap-x-2 gap-y-0.5">
                         {e.bloques.map((b, i) => (
                           <span key={i} className="whitespace-nowrap">
-                            <b>{DIAS_CORTO[b.dia]}</b> {b.inicio}–{b.fin}
+                            <b>{DIAS_CORTO[b.dia]}</b> {horaEntera12(b.inicio)}–{horaEntera12(b.fin)}
                           </span>
                         ))}
                       </div>

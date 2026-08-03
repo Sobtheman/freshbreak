@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useApp } from "@/components/providers";
 import { EJERCICIOS } from "@/lib/exercises";
-import { DIAS, hoyIndice } from "@/lib/schedule";
+import { DIAS, hora12, hoyIndice } from "@/lib/schedule";
 import ComplianceChart from "@/components/ComplianceChart";
 import SymptomChart from "@/components/SymptomChart";
 import PerfilModal from "@/components/PerfilModal";
@@ -205,7 +205,7 @@ export default function PanelPage() {
                           : "bg-mist-tint"
                     }`}
                   >
-                    <span className="font-mono tabular-nums">{h}</span>
+                    <span className="font-semibold tabular-nums">{hora12(h)}</span>
                     <span className="text-xs">
                       {cumplida ? "✓ Cumplida" : pasada ? "No realizada" : "Programada"}
                     </span>

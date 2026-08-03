@@ -9,6 +9,8 @@ import {
   BLOQUES_EJEMPLO,
   Bloque,
   DIAS,
+  hora12,
+  horaEntera12,
   hoyIndice,
   pausasDelDia,
   razonIntervalo,
@@ -117,7 +119,7 @@ export default function HorarioPage() {
                 Recordatorios programados para hoy ({DIAS[hoyIndice()]}):
               </p>
               <p className="mt-2 font-mono text-ink/70">
-                {pausasHoy.join(" · ")}
+                {pausasHoy.map(hora12).join(" · ")}
               </p>
               <p className="mt-2 text-xs text-ink/50">
                 Cada uno llega como notificación en la app y correo a {user.correo}
@@ -201,7 +203,7 @@ export default function HorarioPage() {
                     aria-label="Hora de inicio"
                   >
                     {HORAS.map((h) => (
-                      <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
+                      <option key={h} value={h}>{horaEntera12(h)}</option>
                     ))}
                   </select>
                   <span className="text-sm text-ink/50">a</span>
@@ -212,7 +214,7 @@ export default function HorarioPage() {
                     aria-label="Hora de fin"
                   >
                     {HORAS.filter((h) => h > b.inicio).map((h) => (
-                      <option key={h} value={h}>{String(h).padStart(2, "0")}:00</option>
+                      <option key={h} value={h}>{horaEntera12(h)}</option>
                     ))}
                   </select>
                   <button

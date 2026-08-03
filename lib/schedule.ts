@@ -59,6 +59,18 @@ export function pausasDelDia(bloques: Bloque[], dia: number, intervaloMin: numbe
   return horas;
 }
 
+// Presentación de horas en formato de 12 horas con a. m. / p. m., que es
+// como se leen las horas en Colombia (internamente todo sigue en 24 h).
+export function hora12(hhmm: string): string {
+  const [h, m] = hhmm.split(":").map(Number);
+  return `${((h % 12) || 12)}:${String(m).padStart(2, "0")} ${h % 24 < 12 ? "a. m." : "p. m."}`;
+}
+
+// Hora en punto: 8 → "8 a. m." · 14 → "2 p. m." · 24 → "12 a. m."
+export function horaEntera12(h: number): string {
+  return `${((h % 12) || 12)} ${h % 24 < 12 ? "a. m." : "p. m."}`;
+}
+
 // Día de la semana con Lunes = 0 (JS usa Domingo = 0).
 export function hoyIndice(): number {
   return (new Date().getDay() + 6) % 7;

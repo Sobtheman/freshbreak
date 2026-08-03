@@ -36,12 +36,23 @@ function useSegundos() {
 // Dispara una señal sonora cada vez que `fase` cambia (no en el primer
 // render). Es la forma de avisar con los ojos cerrados o la vista lejos de
 // la pantalla, que es donde la guía visual no sirve.
-function useSenalDeFase(fase: string | number, senal: Senal | null) {
+function useSenalDeFase(
+  fase: string | number,
+  senal: Senal | null,
+  // Algunos ejercicios necesitan la instrucción desde el segundo cero
+  // (p. ej. "empieza enfocando cerca"): con `inicial` también suena al montar.
+  inicial = false
+) {
   const { sonar } = useSonido();
   const previa = useRef<string | number | null>(null);
   useEffect(() => {
-    if (previa.current !== null && previa.current !== fase && senal) sonar(senal);
+    const primeraVez = previa.current === null;
+    if (senal && ((primeraVez && inicial) || (!primeraVez && previa.current !== fase))) {
+      sonar(senal);
+    }
     previa.current = fase;
+    // `inicial` solo importa en el montaje
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fase, senal, sonar]);
 }
 
@@ -56,10 +67,13 @@ export function ParpadeoAnim() {
   const cerrado = parpadeando && enRonda % 4 >= 2;
   const ronda = Math.floor(t / 50) + 1;
 
-  // Sonido: avisa cada cierre y cada apertura, y marca el descanso.
+  // Sonido: cierre y apertura de cada parpadeo, aviso al entrar al descanso y
+  // aviso de arranque al reanudar (en el descanso los ojos ya están abiertos,
+  // así que ahí "abrir" no tendría sentido).
+  const reanuda = parpadeando && enRonda < 2 && ronda > 1;
   useSenalDeFase(
-    parpadeando ? `p${enRonda >= 2 ? Math.floor(enRonda / 2) : 0}` : "descanso",
-    parpadeando ? (cerrado ? "cerrar" : "abrir") : "fin"
+    parpadeando ? `p${Math.floor(enRonda / 2)}` : "descanso",
+    !parpadeando ? "fin" : reanuda ? "cambio" : cerrado ? "cerrar" : "abrir"
   );
 
   return (
@@ -145,6 +159,50 @@ export function ParpadeoAnim() {
  * Corrección de la clienta: son DOS fases de 20 s — primero a 6 m (lejos) y
  * luego a 20 cm (cerca). La pantalla se apaga en ambas: solo queda un conteo
  * gigante legible de reojo, y el sonido avisa el cambio. */
+function DiagramaDistancia({ cerca }: { cerca: boolean }) {
+  return (
+    <svg width="230" height="70" viewBox="0 0 230 70" aria-hidden>
+      <g stroke="#7FE7DC" fill="none" strokeWidth="2" strokeLinecap="round">
+        {/* ojo de perfil, siempre a la izquierda */}
+        <path d="M10 35 Q22 22 34 35 Q22 48 10 35 Z" />
+        <circle cx="22" cy="35" r="5" fill="#7FE7DC" stroke="none" />
+        {/* línea de mirada hasta el objeto */}
+        <path
+          d={cerca ? "M38 35 H92" : "M38 35 H186"}
+          strokeDasharray="5 6"
+          opacity="0.8"
+        />
+      </g>
+      {cerca ? (
+        // objeto cercano: un lápiz a 20 cm
+        <g transform="translate(100 12)">
+          <rect x="6" y="10" width="9" height="34" fill="#F79A56" />
+          <path d="M6 10 L10.5 0 L15 10 Z" fill="#F2C6A0" />
+          <rect x="6" y="44" width="9" height="6" fill="#E88E96" />
+        </g>
+      ) : (
+        // objeto lejano: horizonte con una ventana al fondo
+        <g transform="translate(190 14)">
+          <rect x="0" y="4" width="26" height="30" rx="2" fill="none" stroke="#7FE7DC" strokeWidth="2" />
+          <path d="M13 4 V34 M0 19 H26" stroke="#7FE7DC" strokeWidth="1.4" opacity="0.7" />
+        </g>
+      )}
+      {/* la distancia se rotula sobre la línea de mirada, no sobre el objeto */}
+      <text
+        x={cerca ? "65" : "112"}
+        y="58"
+        fill="#7FE7DC"
+        fontSize="12"
+        fontWeight="700"
+        textAnchor="middle"
+        opacity="0.85"
+      >
+        {cerca ? "20 cm" : "6 m"}
+      </text>
+    </svg>
+  );
+}
+
 export function Regla202020Anim() {
   const t = useSegundos();
   const fase: "prep" | "lejos" | "cerca" | "fin" =
@@ -226,6 +284,15 @@ export function Regla202020Anim() {
                 ? "Fase 1 · Mira tu punto lejano (6 m)"
                 : "Fase 2 · Mira tu punto cercano (20 cm)"}
             </p>
+            {/* El diagrama explica la distancia de un vistazo y se atenúa:
+               es una indicación, no algo para quedarse mirando. */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 1, 0.35] }}
+              transition={{ duration: 6, times: [0, 0.12, 0.6, 1] }}
+            >
+              <DiagramaDistancia cerca={fase === "cerca"} />
+            </motion.div>
             <p className="text-xs text-white/55">
               {fase === "lejos"
                 ? "Aparta la vista de la pantalla · el conteo se ve de reojo"
@@ -393,7 +460,8 @@ export function EnfoqueAnim() {
   const ciclo = Math.min(Math.floor(t / 20) + 1, 10);
 
   // Sonido: dos tonos distintos para saber a dónde mirar sin ver la pantalla.
-  useSenalDeFase(`${ciclo}-${cerca}`, cerca ? "cerca" : "lejos");
+  // Suena también al empezar, porque la primera indicación es "enfoca cerca".
+  useSenalDeFase(`${ciclo}-${cerca}`, cerca ? "cerca" : "lejos", true);
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
@@ -574,8 +642,15 @@ function ManosGuia({ fase }: { fase: "frotar" | "colocar" }) {
 export function MasajeAnim() {
   const t = useSegundos();
   const fase: "frotar" | "colocar" = t < 10 ? "frotar" : "colocar";
-  const inhala = t % 8 < 4;
   const terminando = t >= 39; // el ejercicio dura 40 s
+  // La respiración se cuenta desde que empiezan las palmas sobre los ojos,
+  // así el primer aviso es siempre "inhala" (y texto y sonido comparten
+  // la misma variable: no pueden desincronizarse).
+  // Un segundo de margen tras el aviso de tapar los ojos, para que los dos
+  // sonidos no se pisen.
+  const enColocar = Math.max(0, t - 11);
+  const inhala = enColocar % 8 < 4;
+  const respirando = fase === "colocar" && t >= 11 && !terminando;
 
   // Sonido: aviso al tapar los ojos, ritmo de respiración y aviso de apertura.
   useSenalDeFase(
@@ -583,8 +658,8 @@ export function MasajeAnim() {
     terminando ? "abrir" : fase === "colocar" ? "cerrar" : null
   );
   useSenalDeFase(
-    fase === "colocar" && !terminando ? Math.floor(t / 4) : "-",
-    fase === "colocar" && !terminando ? (inhala ? "inhalar" : "exhalar") : null
+    respirando ? Math.floor(enColocar / 4) : "-",
+    respirando ? (inhala ? "inhalar" : "exhalar") : null
   );
 
   return (
@@ -610,9 +685,11 @@ export function MasajeAnim() {
         >
           {fase === "frotar"
             ? `Paso 1 · Frota tus manos hasta calentarlas… ${10 - t} s`
-            : inhala
-              ? "Paso 2 · Palmas sobre los párpados · Inhala profundo…"
-              : "Círculos suaves, sin presionar · Exhala…"}
+            : !respirando
+              ? "Paso 2 · Coloca las palmas sobre los párpados cerrados"
+              : inhala
+                ? "Círculos suaves, sin presionar · Inhala profundo…"
+                : "Círculos suaves, sin presionar · Exhala…"}
         </motion.p>
       </AnimatePresence>
     </div>
@@ -625,13 +702,17 @@ export function MasajeAnim() {
 export function PalmingAnim() {
   const t = useSegundos();
   const fase: "prep" | "oscuro" | "salida" = t < 5 ? "prep" : t < 54 ? "oscuro" : "salida";
-  const inhala = t % 8 < 4;
+  // Respiración contada desde que empieza la oscuridad: el primer aviso es
+  // "inhala", y el círculo y el texto usan esta misma variable.
+  // Un segundo de margen tras el aviso de cubrir los ojos.
+  const enOscuro = Math.max(0, t - 6);
+  const inhala = enOscuro % 8 < 4;
 
   // Sonido: con los ojos tapados, todo el ejercicio se guía por oído.
   useSenalDeFase(fase, fase === "oscuro" ? "cerrar" : fase === "salida" ? "abrir" : null);
   useSenalDeFase(
-    fase === "oscuro" ? Math.floor(t / 4) : "-",
-    fase === "oscuro" ? (inhala ? "inhalar" : "exhalar") : null
+    fase === "oscuro" && t >= 6 ? Math.floor(enOscuro / 4) : "-",
+    fase === "oscuro" && t >= 6 ? (inhala ? "inhalar" : "exhalar") : null
   );
 
   return (
@@ -710,7 +791,11 @@ export function PencilAnim() {
   const fase: "acercar" | "doble" | "alejar" =
     enCiclo < 50 ? "acercar" : enCiclo < 70 ? "doble" : "alejar";
 
-  useSenalDeFase(fase, fase === "doble" ? "cambio" : fase === "alejar" ? "lejos" : "cerca");
+  useSenalDeFase(
+    fase,
+    fase === "doble" ? "cambio" : fase === "alejar" ? "lejos" : "cerca",
+    true // arranca indicando "acerca el lápiz"
+  );
 
   // Proximidad 0 (brazo extendido) → 1 (cerca de la nariz)
   const prox =

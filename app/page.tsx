@@ -667,12 +667,16 @@ export default function LandingPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="order-1 lg:order-2 lg:-my-14 lg:-mr-20"
+              className="order-1 lg:order-2 lg:-my-14 xl:-mr-4 2xl:-mr-20"
             >
-              <EyeHero className="w-full scale-110 lg:scale-125" />
+              {/* La escala y el sangrado a la derecha crecen con el ancho: a
+                 125 % y -80 px el ojo se salía cortado por el borde en 1280 px. */}
+              <EyeHero className="w-full scale-110 lg:scale-105 xl:scale-[1.15] 2xl:scale-125" />
             </motion.div>
           </div>
-          <div className="absolute inset-x-0 top-[56%] z-0 hidden lg:block">
+          {/* La línea arranca en la columna del ojo: a todo lo ancho pasaba por
+             detrás del botón "Crear mi plan". */}
+          <div className="absolute left-[48%] right-0 top-[56%] z-0 hidden lg:block">
             <LineaConPunto />
           </div>
         </section>

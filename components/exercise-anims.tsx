@@ -129,13 +129,20 @@ export function ParpadeoAnim() {
         <AnimatePresence mode="wait">
           {parpadeando ? (
             <motion.div key="b" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <p className="text-2xl font-bold tabular-nums">
-                Parpadeo {rep} / 10 ·{" "}
-                <span className={cerrado ? "text-brand-tealDark" : "text-[#C05E14]"}>
-                  {cerrado ? "cierra…" : "abre"}
-                </span>
+              {/* La instrucción es lo principal; el conteo va encima, más
+                 pequeño. Antes decía "cierra…" al final de la línea y se leía
+                 como un texto cortado. */}
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/50 tabular-nums">
+                Parpadeo {rep} de 10
               </p>
-              <p className="text-sm text-ink/60">
+              <p
+                className={`mt-1 text-3xl font-bold ${
+                  cerrado ? "text-brand-tealDark" : "text-[#C05E14]"
+                }`}
+              >
+                {cerrado ? "Cierra los ojos" : "Abre los ojos"}
+              </p>
+              <p className="mt-1 text-sm text-ink/60">
                 Ronda {ronda} · 2 segundos cerrado, 2 segundos abierto
               </p>
             </motion.div>

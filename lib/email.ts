@@ -89,6 +89,54 @@ export function htmlBienvenida(opts: {
   </div>`;
 }
 
+// Invitación a la evaluación final (CVS-Q de cierre + escala SUS) al cumplir
+// las seis semanas, o cuando el equipo cierra el estudio antes (`anticipado`:
+// entonces no se puede decir "terminaste las seis semanas"). `recordatorio`
+// es el único aviso de seguimiento.
+export function htmlCierre(opts: {
+  nombre: string;
+  origen: string;
+  tokenEnlace: string;
+  recordatorio?: boolean;
+  anticipado?: boolean;
+}) {
+  const { nombre, origen, tokenEnlace, recordatorio, anticipado } = opts;
+  const enlace = `${origen}/cierre?u=${encodeURIComponent(tokenEnlace)}`;
+  const baja = `${origen}/api/baja?u=${encodeURIComponent(tokenEnlace)}`;
+  return `
+  <div style="font-family:Arial,Helvetica,sans-serif;background:#F7FBFB;padding:24px;">
+    <div style="max-width:520px;margin:0 auto;background:#ffffff;border-radius:14px;padding:28px;border:1px solid #E6F2F2;">
+      <p style="margin:0;font-size:12px;letter-spacing:2px;color:#0E7C74;font-weight:bold;">FRESHBREAK · ${
+        recordatorio ? "TE FALTA LA EVALUACIÓN FINAL" : "EVALUACIÓN FINAL"
+      }</p>
+      <h1 style="margin:12px 0 0;font-size:22px;color:#0E3B3B;">Hola, ${nombre}</h1>
+      <p style="margin:10px 0 0;font-size:14px;color:#3D5C5C;">
+        ${
+          recordatorio
+            ? "Hace unos días te invitamos a la evaluación final de FreshBreak y aún no la has respondido. Tus respuestas son las que permiten saber si las pausas sirvieron."
+            : anticipado
+              ? "El equipo de FreshBreak está cerrando el estudio. Necesitamos tu opinión para saber si las pausas visuales te sirvieron durante el tiempo que usaste la aplicación."
+              : "Terminaste las seis semanas de uso de FreshBreak. Ahora necesitamos tu opinión para saber si las pausas visuales te sirvieron."
+        }
+      </p>
+      <div style="background:#F2F9F8;border-radius:12px;padding:18px;margin:18px 0;">
+        <p style="margin:0;font-size:14px;color:#0E3B3B;"><b>Son dos partes, unos 4 minutos:</b></p>
+        <ol style="margin:10px 0 0;padding-left:20px;font-size:13px;color:#3D5C5C;">
+          <li style="margin:0 0 6px;">El cuestionario de síntomas, el mismo del inicio, para comparar.</li>
+          <li style="margin:0;">Diez preguntas cortas sobre qué tan fácil y útil te resultó la aplicación.</li>
+        </ol>
+      </div>
+      <div style="text-align:center;">
+        <a href="${enlace}" style="display:inline-block;background:#0E3B3B;color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:10px;">Responder la evaluación final</a>
+      </div>
+      <p style="margin:20px 0 0;font-size:11px;color:#8AA5A3;text-align:center;">
+        Datos protegidos según la Ley 1581 de 2012.<br/>
+        <a href="${baja}" style="color:#8AA5A3;">Dejar de recibir correos de FreshBreak</a>
+      </p>
+    </div>
+  </div>`;
+}
+
 export async function enviarCorreo(opts: {
   para: string;
   asunto: string;

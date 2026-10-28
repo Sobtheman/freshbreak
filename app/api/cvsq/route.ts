@@ -23,9 +23,15 @@ export async function POST(req: Request) {
   }
   try {
     const sql = await db();
+    // La primera medición es la basal; las siguientes, seguimiento semanal.
+    // La final la registra /api/cierre.
     await sql`
-      INSERT INTO cvsq (usuario_id, puntaje, respuestas)
-      VALUES (${usuarioId}, ${body.puntaje}, ${JSON.stringify(body.respuestas ?? null)})
+      INSERT INTO cvsq (usuario_id, puntaje, respuestas, momento)
+      VALUES (
+        ${usuarioId}, ${body.puntaje}, ${JSON.stringify(body.respuestas ?? null)},
+        CASE WHEN EXISTS (SELECT 1 FROM cvsq WHERE usuario_id = ${usuarioId})
+             THEN 'seguimiento' ELSE 'inicial' END
+      )
     `;
     return NextResponse.json({ ok: true });
   } catch (e) {

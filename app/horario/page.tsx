@@ -267,7 +267,7 @@ export default function HorarioPage() {
         <button
           onClick={() => setConfirmado(true)}
           disabled={lista.length === 0}
-          className="btn-primary w-full text-base sm:w-auto sm:px-12"
+          className="btn-primary btn-primary-fondo w-full text-base sm:w-auto sm:px-12"
         >
           Ver mi plan de pausas →
         </button>

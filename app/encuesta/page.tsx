@@ -3,10 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  FRECUENCIAS,
-  INTENSIDADES,
   PREGUNTAS,
   PUNTAJE_MAXIMO,
   Respuesta,
@@ -15,6 +13,7 @@ import {
 } from "@/lib/cvsq";
 import { useApp } from "@/components/providers";
 import Gauge from "@/components/Gauge";
+import CvsqPreguntas from "@/components/CvsqPreguntas";
 
 // El mini CVS-Q de la landing precarga estas preguntas (índice → respuesta)
 const MAPA_TEASER: [number, number][] = [
@@ -145,7 +144,7 @@ export default function EncuestaPage() {
         className="mb-6"
       >
         <p className="text-xs font-bold uppercase tracking-widest text-ink/50 dark:text-mist-tint/50">
-          Paso 2 de 3
+          {onboarded ? "Seguimiento de síntomas" : "Paso 2 de 3"}
         </p>
         <h1 className="mt-1 text-2xl font-bold text-ink dark:text-white sm:text-3xl">
           Cuestionario CVS-Q
@@ -182,87 +181,17 @@ export default function EncuestaPage() {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {PREGUNTAS.map((p, i) => {
-          const r = respuestas[i];
-          return (
-            <motion.div
-              key={p.num}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              className="card"
-            >
-              <p className="mb-3 font-semibold">
-                <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-tealDark/15 text-sm font-bold text-brand-tealDark">
-                  {p.num}
-                </span>
-                {p.texto}
-              </p>
-              <div className="grid gap-2 sm:grid-cols-3">
-                {FRECUENCIAS.map((f, fi) => (
-                  <button
-                    key={f}
-                    type="button"
-                    onClick={() => setFrecuencia(i, fi as 0 | 1 | 2)}
-                    aria-pressed={r.frecuencia === fi}
-                    className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition ${
-                      r.frecuencia === fi
-                        ? "border-ink bg-ink text-white"
-                        : "border-ink/15 bg-mist-bg text-ink/80 hover:border-ink/40"
-                    }`}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {p.intensidad && !!r.frecuencia && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="mt-3 border-t border-ink/10 pt-3">
-                      <p className="mb-2 text-sm font-semibold">
-                        <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-orange/20 text-xs font-bold text-[#C05E14]">
-                          {p.intensidad.num}
-                        </span>
-                        {p.intensidad.texto}
-                      </p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {INTENSIDADES.map((s, si) => (
-                          <button
-                            key={s}
-                            type="button"
-                            onClick={() => setIntensidad(i, (si + 1) as 1 | 2)}
-                            aria-pressed={r.intensidad === si + 1}
-                            className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-                              r.intensidad === si + 1
-                                ? "border-brand-orangeDark bg-brand-orange text-[#0E2A47]"
-                                : "border-brand-accent/15 bg-white text-black/80 hover:border-brand-orange/60"
-                            }`}
-                          >
-                            {s}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
-      </div>
+      <CvsqPreguntas
+        respuestas={respuestas}
+        setFrecuencia={setFrecuencia}
+        setIntensidad={setIntensidad}
+      />
 
       <div className="mt-8 flex justify-center">
         <button
           onClick={enviar}
           disabled={contestadas < PREGUNTAS.length}
-          className="btn-primary w-full text-base sm:w-auto sm:px-12"
+          className="btn-primary btn-primary-fondo w-full text-base sm:w-auto sm:px-12"
         >
           Ver mi resultado
         </button>

@@ -32,14 +32,21 @@ export async function GET(req: Request) {
         (SELECT COUNT(*)::int FROM envios e WHERE e.usuario_id = u.id) AS correos_enviados,
         (SELECT q.puntaje FROM cvsq q WHERE q.usuario_id = u.id ORDER BY q.fecha ASC LIMIT 1) AS cvsq_inicial,
         (SELECT q.puntaje FROM cvsq q WHERE q.usuario_id = u.id ORDER BY q.fecha DESC LIMIT 1) AS cvsq_actual,
-        (SELECT COUNT(*)::int FROM cvsq q WHERE q.usuario_id = u.id) AS mediciones
+        (SELECT COUNT(*)::int FROM cvsq q WHERE q.usuario_id = u.id) AS mediciones,
+        (SELECT q.puntaje FROM cvsq q WHERE q.usuario_id = u.id AND q.momento = 'final'
+          ORDER BY q.fecha DESC LIMIT 1) AS cvsq_final,
+        (SELECT s.puntaje::float FROM sus s WHERE s.usuario_id = u.id) AS sus,
+        u.cierre_enviado,
+        u.consentimiento,
+        FLOOR(EXTRACT(EPOCH FROM (now() - u.creado)) / 86400)::int AS dias
       FROM usuarios u
       ORDER BY u.creado DESC
     `) as Record<string, unknown>[];
 
+    // `creado` va con su zona horaria: la página ya lo muestra en hora de
+    // Bogotá. Convertirlo también aquí lo restaba dos veces (10:00 → 5:00).
     const mensajes = (await sql`
-      SELECT id, nombre, correo, mensaje,
-             creado AT TIME ZONE 'America/Bogota' AS creado
+      SELECT id, nombre, correo, mensaje, creado
       FROM mensajes ORDER BY creado DESC LIMIT 50
     `) as Record<string, unknown>[];
 
@@ -49,7 +56,24 @@ export async function GET(req: Request) {
       cumplimientos: filas.reduce((a, f) => a + Number(f.cumplimientos), 0),
       correos: filas.reduce((a, f) => a + Number(f.correos_enviados), 0),
     };
-    return NextResponse.json({ ok: true, totales, estudiantes: filas, mensajes });
+
+    // Resultados del estudio (objetivos 3 y 4): solo quienes completaron la
+    // evaluación final y tienen medición inicial cuentan para el pre/post.
+    const media = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
+    const completos = filas.filter((f) => f.sus !== null);
+    const pares = completos.filter((f) => f.cvsq_inicial !== null && f.cvsq_final !== null);
+    const estudio = {
+      invitados: filas.filter((f) => f.cierre_enviado !== null).length,
+      completados: completos.length,
+      susMedia: media(completos.map((f) => Number(f.sus))),
+      cvsqInicialMedia: media(pares.map((f) => Number(f.cvsq_inicial))),
+      cvsqFinalMedia: media(pares.map((f) => Number(f.cvsq_final))),
+      pares: pares.length,
+      pendientesDeInvitar: filas.filter(
+        (f) => f.consentimiento && f.recordatorios_activos && f.cierre_enviado === null && f.sus === null
+      ).length,
+    };
+    return NextResponse.json({ ok: true, totales, estudio, estudiantes: filas, mensajes });
   } catch (e) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : "Error de base de datos" },

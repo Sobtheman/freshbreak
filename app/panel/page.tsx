@@ -40,6 +40,20 @@ export default function PanelPage() {
     historialCvsq,
   } = useApp();
   const [editandoPerfil, setEditandoPerfil] = useState(false);
+  // Evaluación final del estudio: aparece al cumplir las seis semanas (o
+  // cuando el equipo la abre) y desaparece una vez respondida.
+  const [cierrePendiente, setCierrePendiente] = useState(false);
+  const [seisSemanas, setSeisSemanas] = useState(true);
+  useEffect(() => {
+    if (esDemo || !user) return;
+    fetch("/api/cierre")
+      .then((r) => r.json())
+      .then((d) => {
+        setCierrePendiente(Boolean(d.ok && d.disponible && !d.completado));
+        setSeisSemanas(Boolean(d.ok && d.diasRestantes === 0));
+      })
+      .catch(() => {});
+  }, [esDemo, user]);
 
   useEffect(() => {
     if (!cargando && (!user || !onboarded)) router.replace("/");
@@ -97,6 +111,28 @@ export default function PanelPage() {
           </div>
         </div>
       </motion.div>
+
+      {cierrePendiente && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-brand-orange/40 bg-brand-orange/10 p-5"
+        >
+          <div>
+            <p className="m-0 font-bold text-ink dark:text-white">
+              {seisSemanas
+                ? "Terminaste tus seis semanas: responde la evaluación final"
+                : "Ya puedes responder la evaluación final"}
+            </p>
+            <p className="m-0 mt-1 text-sm text-ink/70 dark:text-mist-tint/70">
+              El cuestionario de síntomas otra vez y diez preguntas sobre la aplicación. Unos 4 minutos.
+            </p>
+          </div>
+          <Link href="/cierre" className="btn-primary btn-primary-fondo !px-6 !py-2.5 text-sm">
+            Responder ahora →
+          </Link>
+        </motion.div>
+      )}
 
       {/* Agenda de pausas de hoy */}
       <motion.section

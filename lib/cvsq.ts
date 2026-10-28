@@ -103,6 +103,21 @@ export function calcularPuntaje(respuestas: Respuesta[]): number {
   }, 0);
 }
 
+// Validación en el servidor: las 16 respondidas, con valores del rango.
+export function respuestasCvsqValidas(r: unknown): r is Respuesta[] {
+  return (
+    Array.isArray(r) &&
+    r.length === PREGUNTAS.length &&
+    r.every(
+      (x) =>
+        x !== null &&
+        typeof x === "object" &&
+        [0, 1, 2].includes((x as Respuesta).frecuencia as number) &&
+        [1, 2].includes((x as Respuesta).intensidad)
+    )
+  );
+}
+
 export const UMBRAL = 6;
 // 3 preguntas con intensidad (máx 2×2=4) + 10 solo frecuencia (máx 2) = 32
 export const PUNTAJE_MAXIMO = 32;

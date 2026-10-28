@@ -29,7 +29,12 @@ function getSql() {
   if (!cliente) {
     const url = urlBaseDatos();
     if (!url) throw new Error("Base de datos no configurada (DATABASE_URL)");
-    cliente = neon(url);
+    // El driver HTTP de Neon consulta con fetch(), y Next 14 guarda en su
+    // caché de datos (sin caducidad) los fetch de las rutas GET que no leen
+    // cookies, aunque declaren `dynamic = "force-dynamic"`. Le pasaba a la
+    // vista del equipo y a la exportación de CSV: devolvían datos viejos.
+    // `no-store` aquí desactiva esa caché para todas las consultas.
+    cliente = neon(url, { fetchOptions: { cache: "no-store" } });
   }
   return cliente;
 }
@@ -90,6 +95,19 @@ export function asegurarEsquema(): Promise<void> {
         creado TIMESTAMPTZ DEFAULT now(),
         UNIQUE (usuario_id, fecha_dia, hora)
       )`;
+      // Evaluación final del estudio (seis semanas): escala SUS, una por
+      // estudiante, y marca de qué medición del CVS-Q es la inicial y cuál
+      // la final, para que el análisis pre/post no dependa de adivinar fechas.
+      await sql`CREATE TABLE IF NOT EXISTS sus (
+        id SERIAL PRIMARY KEY,
+        usuario_id INT UNIQUE REFERENCES usuarios(id) ON DELETE CASCADE,
+        puntaje NUMERIC(5,1) NOT NULL,
+        respuestas JSONB NOT NULL,
+        fecha TIMESTAMPTZ DEFAULT now()
+      )`;
+      await sql`ALTER TABLE cvsq ADD COLUMN IF NOT EXISTS momento TEXT`;
+      await sql`ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS cierre_enviado TIMESTAMPTZ`;
+      await sql`ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS cierre_recordado TIMESTAMPTZ`;
     })();
   }
   return esquemaListo;

@@ -4,6 +4,8 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { DIAS_CORTO, horaEntera12 } from "@/lib/schedule";
+import { interpretarSUS } from "@/lib/sus";
+import { DIAS_INTERVENCION } from "@/lib/estudio";
 
 type Estudiante = {
   id: number;
@@ -20,6 +22,10 @@ type Estudiante = {
   cvsq_inicial: number | null;
   cvsq_actual: number | null;
   mediciones: number;
+  cvsq_final: number | null;
+  sus: number | null;
+  cierre_enviado: string | null;
+  dias: number;
 };
 
 type Mensaje = {
@@ -30,16 +36,33 @@ type Mensaje = {
   creado: string;
 };
 
+type Estudio = {
+  invitados: number;
+  completados: number;
+  susMedia: number | null;
+  cvsqInicialMedia: number | null;
+  cvsqFinalMedia: number | null;
+  pares: number;
+  pendientesDeInvitar: number;
+};
+
 type Datos = {
   totales: { estudiantes: number; activos: number; cumplimientos: number; correos: number };
+  estudio: Estudio;
   estudiantes: Estudiante[];
   mensajes: Mensaje[];
 };
 
+// Decimales con coma, como en el resto de la aplicación.
+const dec = (n: number) => n.toFixed(1).replace(".", ",");
+
 function Stat({ titulo, valor }: { titulo: string; valor: number | string }) {
+  const largo = String(valor).length > 6;
   return (
     <div className="card !p-5 text-center">
-      <p className="m-0 text-3xl font-bold tabular-nums">{valor}</p>
+      <p className={`m-0 whitespace-nowrap font-bold tabular-nums ${largo ? "text-2xl leading-9" : "text-3xl"}`}>
+        {valor}
+      </p>
       <p className="m-0 mt-1 text-xs font-semibold uppercase tracking-wide text-ink/50">
         {titulo}
       </p>
@@ -52,16 +75,50 @@ function AdminContenido() {
   const clave = params.get("clave") ?? "";
   const [datos, setDatos] = useState<Datos | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cerrando, setCerrando] = useState(false);
+  const [avisoCierre, setAvisoCierre] = useState<string | null>(null);
+
+  function cargar() {
+    fetch(`/api/admin?clave=${encodeURIComponent(clave)}`)
+      .then((r) => r.json())
+      .then((d) => (d.ok ? setDatos(d) : setError(d.error ?? "Error")))
+      .catch(() => setError("No se pudo cargar el resumen"));
+  }
+
+  async function cerrarEstudio(pendientes: number) {
+    if (
+      !window.confirm(
+        `Se enviará ahora la invitación a la evaluación final a ${pendientes} ` +
+          `estudiante${pendientes === 1 ? "" : "s"}, aunque no hayan cumplido los ` +
+          `${DIAS_INTERVENCION} días. No se puede deshacer. ¿Continuar?`
+      )
+    )
+      return;
+    setCerrando(true);
+    setAvisoCierre(null);
+    try {
+      const r = await fetch(`/api/admin/cierre?clave=${encodeURIComponent(clave)}`, { method: "POST" });
+      const d = await r.json();
+      setAvisoCierre(
+        d.ok
+          ? `Invitaciones enviadas: ${d.enviados} de ${d.pendientes}.`
+          : `No se pudo enviar: ${d.error ?? "error"}`
+      );
+      cargar();
+    } catch {
+      setAvisoCierre("No se pudo enviar. Revisa la conexión.");
+    } finally {
+      setCerrando(false);
+    }
+  }
 
   useEffect(() => {
     if (!clave) {
       setError("Falta la clave: abre /admin?clave=… con la clave del equipo.");
       return;
     }
-    fetch(`/api/admin?clave=${encodeURIComponent(clave)}`)
-      .then((r) => r.json())
-      .then((d) => (d.ok ? setDatos(d) : setError(d.error ?? "Error")))
-      .catch(() => setError("No se pudo cargar el resumen"));
+    cargar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clave]);
 
   if (error) {
@@ -97,6 +154,55 @@ function AdminContenido() {
         <Stat titulo="Correos enviados" valor={datos.totales.correos} />
       </div>
 
+      {/* Resultados del estudio: evaluación final (objetivos 3 y 4) */}
+      <div className="card">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="m-0 text-lg font-bold text-ink">Evaluación final del estudio</h2>
+            <p className="m-0 mt-1 text-sm text-ink/60">
+              CVS-Q de cierre y escala SUS. Se envía sola a los {DIAS_INTERVENCION} días
+              del registro; con el botón se envía ya a todos.
+            </p>
+          </div>
+          <button
+            onClick={() => cerrarEstudio(datos.estudio.pendientesDeInvitar)}
+            disabled={cerrando || datos.estudio.pendientesDeInvitar === 0}
+            className="btn-primary !px-5 !py-2 text-sm disabled:opacity-50"
+          >
+            {cerrando
+              ? "Enviando…"
+              : datos.estudio.pendientesDeInvitar === 0
+                ? "Todos invitados"
+                : `Enviar evaluación final ya (${datos.estudio.pendientesDeInvitar})`}
+          </button>
+        </div>
+        {avisoCierre && (
+          <p className="m-0 mt-3 text-sm font-semibold text-brand-tealDark">{avisoCierre}</p>
+        )}
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Stat titulo="Invitados" valor={datos.estudio.invitados} />
+          <Stat titulo="Respondieron" valor={datos.estudio.completados} />
+          <Stat
+            titulo="SUS promedio"
+            valor={datos.estudio.susMedia === null ? "—" : dec(datos.estudio.susMedia)}
+          />
+          <Stat
+            titulo={`CVS-Q inicial → final (n=${datos.estudio.pares})`}
+            valor={
+              datos.estudio.cvsqInicialMedia === null || datos.estudio.cvsqFinalMedia === null
+                ? "—"
+                : `${dec(datos.estudio.cvsqInicialMedia)} → ${dec(datos.estudio.cvsqFinalMedia)}`
+            }
+          />
+        </div>
+        {datos.estudio.susMedia !== null && (
+          <p className="m-0 mt-3 text-xs text-ink/55">
+            SUS promedio {dec(datos.estudio.susMedia)} de 100: {interpretarSUS(datos.estudio.susMedia)}.
+            Promedios descriptivos; la prueba estadística (t pareada o Wilcoxon) se hace con el CSV.
+          </p>
+        )}
+      </div>
+
       <div className="card !py-4">
         <div className="flex flex-wrap items-center gap-2">
           <a
@@ -106,7 +212,7 @@ function AdminContenido() {
             Descargar todos los datos (ZIP)
           </a>
           <span className="text-xs text-ink/50">o por tabla:</span>
-          {["usuarios", "bloques", "cvsq", "cumplimientos", "envios", "mensajes"].map((t) => (
+          {["usuarios", "bloques", "cvsq", "sus", "cumplimientos", "envios", "mensajes"].map((t) => (
             <a
               key={t}
               href={`/api/admin/export?tabla=${t}&clave=${encodeURIComponent(clave)}`}
@@ -123,12 +229,13 @@ function AdminContenido() {
 
       <div className="card !p-0">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[940px] text-sm">
+          <table className="w-full min-w-[1080px] text-sm">
             <thead>
               <tr className="border-b border-ink/10 text-left text-xs font-bold uppercase tracking-wide text-ink/50">
                 <th className="px-4 py-3">Estudiante</th>
                 <th className="px-4 py-3">Registro</th>
                 <th className="px-4 py-3">CVS-Q inicial → actual</th>
+                <th className="px-4 py-3">Evaluación final</th>
                 <th className="px-4 py-3">Intervalo</th>
                 <th className="px-4 py-3">Horario</th>
                 <th className="px-4 py-3">Cumplidas (7 d)</th>
@@ -162,6 +269,26 @@ function AdminContenido() {
                           ({e.mediciones} med.)
                         </span>
                       </>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    {e.sus !== null ? (
+                      <>
+                        <span className="rounded-full bg-brand-tealDark/10 px-2 py-0.5 font-bold text-brand-tealDark">
+                          SUS {dec(e.sus)}
+                        </span>
+                        {e.cvsq_final !== null && (
+                          <p className="m-0 mt-1 tabular-nums text-ink/60">
+                            CVS-Q final {e.cvsq_final}
+                          </p>
+                        )}
+                      </>
+                    ) : e.cierre_enviado ? (
+                      <span className="font-semibold text-[#8A4A16]">Invitado, sin responder</span>
+                    ) : (
+                      <span className="tabular-nums text-ink/45">
+                        Día {e.dias} de {DIAS_INTERVENCION}
+                      </span>
                     )}
                   </td>
                   <td className="px-4 py-3 tabular-nums">{e.intervalo_min} min</td>

@@ -4,6 +4,13 @@ import { esCronAutorizado, tokenEnlace } from "@/lib/session";
 import { pausasDelDia } from "@/lib/schedule";
 import { randomEjercicio } from "@/lib/exercises";
 import { enviarCorreo, htmlRecordatorio } from "@/lib/email";
+import { invitarCierre } from "@/lib/cierre";
+import {
+  CIERRE_DESDE_MIN,
+  CIERRE_HASTA_MIN,
+  DIAS_INTERVENCION,
+  DIAS_RECORDATORIO_CIERRE,
+} from "@/lib/estudio";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -88,7 +95,33 @@ async function ejecutar(req: Request) {
         }
       }
     }
-    return NextResponse.json({ ok: true, fecha, dia, minutos, usuarios: usuarios.length, enviados, errores });
+    // Evaluación final: a los 42 días del registro, una invitación (en horario
+    // diurno) y, si no se responde, un único recordatorio 3 días después. Se
+    // respeta la baja: quien desactivó los correos no recibe la invitación.
+    let cierres = 0;
+    if (minutos >= CIERRE_DESDE_MIN && minutos < CIERRE_HASTA_MIN) {
+      const porInvitar = (await sql`
+        SELECT u.id, u.correo, u.nombre FROM usuarios u
+        WHERE u.consentimiento AND u.recordatorios_activos
+          AND u.cierre_enviado IS NULL
+          AND u.creado <= now() - make_interval(days => ${DIAS_INTERVENCION})
+          AND NOT EXISTS (SELECT 1 FROM sus s WHERE s.usuario_id = u.id)
+      `) as { id: number; correo: string; nombre: string }[];
+      for (const u of porInvitar) if (await invitarCierre(sql, u, false)) cierres++;
+
+      const porRecordar = (await sql`
+        SELECT u.id, u.correo, u.nombre FROM usuarios u
+        WHERE u.consentimiento AND u.recordatorios_activos
+          AND u.cierre_recordado IS NULL
+          AND u.cierre_enviado <= now() - make_interval(days => ${DIAS_RECORDATORIO_CIERRE})
+          AND NOT EXISTS (SELECT 1 FROM sus s WHERE s.usuario_id = u.id)
+      `) as { id: number; correo: string; nombre: string }[];
+      for (const u of porRecordar) if (await invitarCierre(sql, u, true)) cierres++;
+    }
+
+    return NextResponse.json({
+      ok: true, fecha, dia, minutos, usuarios: usuarios.length, enviados, errores, cierres,
+    });
   } catch (e) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : "Error" },
